@@ -1,17 +1,16 @@
 package io.littlehorse.kafka.connect;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.connector.Task;
-import org.apache.kafka.connect.sink.SinkConnector;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.connect.connector.Task;
+import org.apache.kafka.connect.sink.SinkConnector;
 
 @Slf4j
 public class LHSinkConnector extends SinkConnector {
@@ -34,9 +33,7 @@ public class LHSinkConnector extends SinkConnector {
     }
 
     @Override
-    public void stop() {
-
-    }
+    public void stop() {}
 
     @Override
     public ConfigDef config() {
@@ -45,11 +42,15 @@ public class LHSinkConnector extends SinkConnector {
 
     @Override
     public String version() {
-        URL resource = getClass().getClassLoader().getResource(MANIFEST_FILENAME);
+        URL resource = getClass()
+            .getClassLoader()
+            .getResource(MANIFEST_FILENAME);
         if (resource != null) {
             try {
                 Manifest manifest = new Manifest(resource.openStream());
-                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+                return manifest
+                    .getMainAttributes()
+                    .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
             } catch (IOException e) {
                 log.error("Error trying to reach {}", MANIFEST_FILENAME, e);
                 return null;

@@ -63,3 +63,10 @@ shadowJar {
         attributes 'Implementation-Version': "${version}"
     }
 }
+
+spotless {
+    java {
+        prettier(['prettier': '3.0.3', 'prettier-plugin-java': '2.3.0'])
+                .config(['parser': 'java', 'tabWidth': 4, 'plugins': ['prettier-plugin-java']])
+    }
+}

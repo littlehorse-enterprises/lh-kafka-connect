@@ -12,6 +12,8 @@ repositories {
 def mockitoVersion ="5.15.2"
 def kafkaVersion = "3.8.0"
 def lhVersion = "0.12.4"
+def slf4jVersion = "2.0.16"
+def lombokVersion = "1.18.36"
 
 dependencies {
     // littlehorse
@@ -22,14 +24,14 @@ dependencies {
     compileOnly "org.apache.kafka:connect-runtime:${kafkaVersion}"
 
     // log
-    implementation 'org.slf4j:slf4j-api:2.0.16'
-    implementation 'org.slf4j:slf4j-reload4j:2.0.16'
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-reload4j:${slf4jVersion}"
 
     // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.36'
-    annotationProcessor 'org.projectlombok:lombok:1.18.36'
-    testCompileOnly 'org.projectlombok:lombok:1.18.36'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // tests
     testImplementation platform('org.junit:junit-bom:5.11.4')

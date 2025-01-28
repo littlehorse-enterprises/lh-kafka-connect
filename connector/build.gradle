@@ -1,0 +1,65 @@
+plugins {
+    id 'java-library'
+    // https://docs.confluent.io/platform/current/connect/devguide.html#package-a-connector
+    id 'com.gradleup.shadow' version '9.0.0-beta6'
+    id 'com.diffplug.spotless' version '7.0.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def mockitoVersion ="5.15.2"
+def kafkaVersion = "3.8.0"
+def lhVersion = "0.12.4"
+
+dependencies {
+    // littlehorse
+    implementation "io.littlehorse:littlehorse-client:${lhVersion}"
+
+    // kafka connect
+    compileOnly "org.apache.kafka:connect-api:${kafkaVersion}"
+    compileOnly "org.apache.kafka:connect-runtime:${kafkaVersion}"
+
+    // log
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'org.slf4j:slf4j-reload4j:2.0.16'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    testCompileOnly 'org.projectlombok:lombok:1.18.36'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    // tests
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation 'net.datafaker:datafaker:2.4.2'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+shadowJar {
+    mergeServiceFiles()
+    archiveBaseName = 'lh-kafka-connect'
+    archiveClassifier = ''
+    archiveVersion = ''
+    manifest {
+        attributes 'Implementation-Version': "${version}"
+    }
+}

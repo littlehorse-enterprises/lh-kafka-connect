@@ -1,35 +1,37 @@
 package io.littlehorse.kafka.connect;
 
-import io.littlehorse.sdk.common.config.LHConfig;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
 
+@Getter
 @Slf4j
 public class LHSinkConnector extends SinkConnector {
 
-    public static final String MANIFEST_FILENAME = "META-INF/MANIFEST.MF";
+    private Map<String, String> props;
 
     @Override
-    public void start(Map<String, String> map) {
-        LHConfig lhConfig = new LHConfig();
+    public void start(Map<String, String> props) {
+        this.props = props;
     }
 
     @Override
     public Class<? extends Task> taskClass() {
-        return null;
+        return LHSinkTask.class;
     }
 
     @Override
-    public List<Map<String, String>> taskConfigs(int i) {
-        return List.of();
+    public List<Map<String, String>> taskConfigs(int maxTasks) {
+        return Stream
+            .generate(this::getProps)
+            .limit(maxTasks)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -37,25 +39,11 @@ public class LHSinkConnector extends SinkConnector {
 
     @Override
     public ConfigDef config() {
-        return null;
+        return LHSinkConnectorConfig.CONFIG_DEF;
     }
 
     @Override
     public String version() {
-        URL resource = getClass()
-            .getClassLoader()
-            .getResource(MANIFEST_FILENAME);
-        if (resource != null) {
-            try {
-                Manifest manifest = new Manifest(resource.openStream());
-                return manifest
-                    .getMainAttributes()
-                    .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
-            } catch (IOException e) {
-                log.error("Error trying to reach {}", MANIFEST_FILENAME, e);
-                return null;
-            }
-        }
-        return null;
+        return LHSinkConnectorVersion.version();
     }
 }

@@ -34,6 +34,8 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // tests
+    testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
+    testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -58,6 +60,7 @@ java {
 
 shadowJar {
     mergeServiceFiles()
+    destinationDirectory = layout.buildDirectory.dir("bundle")
     archiveBaseName = 'lh-kafka-connect'
     archiveClassifier = ''
     archiveVersion = ''
@@ -68,6 +71,7 @@ shadowJar {
 
 spotless {
     java {
+        removeUnusedImports()
         prettier(['prettier': '3.0.3', 'prettier-plugin-java': '2.3.0'])
                 .config(['parser': 'java', 'tabWidth': 4, 'plugins': ['prettier-plugin-java']])
     }

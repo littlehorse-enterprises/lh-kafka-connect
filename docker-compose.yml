@@ -11,12 +11,18 @@ services:
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
     ports:
       - "19092:19092"
     restart: on-failure
-    volumes:
-      - kafka1_data:/var/lib/kafka/data
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   kafka2:
     image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
@@ -30,12 +36,18 @@ services:
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
     ports:
       - "29092:29092"
     restart: on-failure
-    volumes:
-      - kafka2_data:/var/lib/kafka/data
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   kafka3:
     image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
@@ -49,12 +61,18 @@ services:
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
     ports:
       - "39092:39092"
     restart: on-failure
-    volumes:
-      - kafka3_data:/var/lib/kafka/data
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   schema-registry:
     image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
@@ -64,10 +82,24 @@ services:
       SCHEMA_REGISTRY_DEBUG: "true"
       SCHEMA_REGISTRY_HOST_NAME: localhost
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
-      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: registry.schemas
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: __registry_schemas
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     ports:
       - "8081:8081"
     restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8081
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
   kafka-connect:
     image: confluentinc/cp-kafka-connect:${CONFLUENT_VERSION}
@@ -81,16 +113,55 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_CONFIG_STORAGE_TOPIC: connect.config
-      CONNECT_OFFSET_STORAGE_TOPIC: connect.offsets
-      CONNECT_STATUS_STORAGE_TOPIC: connect.status
+      CONNECT_CONFIG_STORAGE_TOPIC: __connect_config
+      CONNECT_OFFSET_STORAGE_TOPIC: __connect_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: __connect_status
     ports:
       - "8083:8083"
     restart: on-failure
+    depends_on:
+      littlehorse:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8083
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     volumes:
-      - ./connector/build/libs:/usr/local/share/kafka/plugins
+      - ./connector/build/bundle:/usr/local/share/kafka/plugins
 
-volumes:
-  kafka1_data:
-  kafka2_data:
-  kafka3_data:
+  lhctl:
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}
+    command: version
+    depends_on:
+      littlehorse:
+        condition: service_healthy
+    environment:
+      LHC_API_HOST: littlehorse
+      LHC_API_PORT: 2024
+
+  littlehorse:
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:${LITTLEHORSE_VERSION}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:1822/liveness" ]
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "2023:2023"
+    restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    environment:
+      LHS_LISTENERS: EXTERNAL:2023,INTERNAL:2024
+      LHS_ADVERTISED_LISTENERS: EXTERNAL://localhost:2023,INTERNAL://littlehorse:2024
+      LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
+      LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN

@@ -7,9 +7,9 @@ LittleHorse Sink Connector for Kafka Connect
 - node (for prettier)
 - httpie (for rest requests)
 - docker
-- java 21
+- java
 
-## Commands:
+## Getting Started
 
 Build plugin bundle:
 
@@ -23,14 +23,44 @@ Run kafka connect:
 docker compose up -d
 ```
 
-List connect
+## Other Commands
 
-```shell
-http :8083/connector-plugins
-```
+### Docker
 
 Restart kafka connect:
 
 ```shell
 docker compose restart kafka-connect
+```
+
+Stop containers:
+
+```shell
+docker compose down
+```
+
+### Rest API
+
+List connector plugins:
+
+```shell
+http :8083/connector-plugins
+```
+
+Create a LH Sink Connector:
+
+```shell
+http :8083/connectors < examples/basic.json
+```
+
+List connectors:
+
+```shell
+http :8083/connectors
+```
+
+Delete connector:
+
+```shell
+http DELETE :8083/connectors/littlehorse-sink
 ```

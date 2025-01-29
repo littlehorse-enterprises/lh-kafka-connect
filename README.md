@@ -53,10 +53,16 @@ Create a LH Sink Connector:
 http :8083/connectors < examples/basic.json
 ```
 
+Get sink:
+
+```shell
+http :8083/connectors/littlehorse-sink
+```
+
 List connectors:
 
 ```shell
-http :8083/connectors
+http :8083/connectors expand==status
 ```
 
 Delete connector:

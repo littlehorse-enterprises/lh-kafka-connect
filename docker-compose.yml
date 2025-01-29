@@ -139,6 +139,7 @@ services:
     depends_on:
       littlehorse:
         condition: service_healthy
+    restart: on-failure
     environment:
       LHC_API_HOST: littlehorse
       LHC_API_PORT: 2024

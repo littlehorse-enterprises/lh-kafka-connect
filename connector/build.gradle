@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    // https://docs.confluent.io/platform/current/connect/devguide.html#package-a-connector
     id 'com.gradleup.shadow' version '9.0.0-beta6'
     id 'com.diffplug.spotless' version '7.0.2'
 }
@@ -9,7 +8,7 @@ repositories {
     mavenCentral()
 }
 
-def mockitoVersion ="5.15.2"
+def mockitoVersion = "5.15.2"
 def kafkaVersion = "3.8.0"
 def lhVersion = "0.12.4"
 def slf4jVersion = "2.0.16"
@@ -60,10 +59,9 @@ java {
 
 shadowJar {
     mergeServiceFiles()
-    destinationDirectory = layout.buildDirectory.dir("bundle")
+    destinationDirectory = layout.buildDirectory.dir("bundle/lh-kafka-connect")
     archiveBaseName = 'lh-kafka-connect'
     archiveClassifier = ''
-    archiveVersion = ''
     manifest {
         attributes 'Implementation-Version': "${version}"
     }
@@ -73,6 +71,6 @@ spotless {
     java {
         removeUnusedImports()
         prettier(['prettier': '3.0.3', 'prettier-plugin-java': '2.3.0'])
-                .config(['parser': 'java', 'tabWidth': 4, 'plugins': ['prettier-plugin-java']])
+                .config(['parser': 'java', 'tabWidth': 4, 'printWidth': 80, 'plugins': ['prettier-plugin-java']])
     }
 }

@@ -21,13 +21,11 @@ public class LHSinkTask extends SinkTask {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
             props
         );
-        //        sinkClient = new LHSinkClient(connectorConfig.toLHConfig());
+        sinkClient = new LHSinkClient(connectorConfig.toLHConfig());
 
         log.info(
-            "PEDROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Connecting to LH Server with version {},{},{}",
-            connectorConfig.toLHConfig().getApiBootstrapHost(),
-            connectorConfig.toLHConfig().getApiBootstrapPort(),
-            connectorConfig.toLHConfig().getApiProtocol()
+            "Connecting to LH Server with version {}",
+            sinkClient.getServerVersion()
         );
     }
 

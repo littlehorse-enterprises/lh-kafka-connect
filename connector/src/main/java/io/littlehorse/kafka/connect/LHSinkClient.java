@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ServerVersion;
 
-public class LHSinkClient {
+public class LHSinkClient implements AutoCloseable {
 
     private final LittleHorseBlockingStub blockingStub;
 
@@ -27,4 +27,7 @@ public class LHSinkClient {
                 : ""
         );
     }
+
+    @Override
+    public void close() {}
 }

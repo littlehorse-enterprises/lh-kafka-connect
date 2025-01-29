@@ -9,7 +9,7 @@ import org.apache.kafka.connect.sink.SinkTask;
 @Slf4j
 public class LHSinkTask extends SinkTask {
 
-    private LHSinkClient sinkClient;
+    private LHSinkClient lhClient;
 
     @Override
     public String version() {
@@ -21,11 +21,11 @@ public class LHSinkTask extends SinkTask {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
             props
         );
-        sinkClient = new LHSinkClient(connectorConfig.toLHConfig());
+        lhClient = new LHSinkClient(connectorConfig.toLHConfig());
 
         log.info(
             "Connecting to LH Server with version {}",
-            sinkClient.getServerVersion()
+            lhClient.getServerVersion()
         );
     }
 
@@ -33,5 +33,9 @@ public class LHSinkTask extends SinkTask {
     public void put(Collection<SinkRecord> records) {}
 
     @Override
-    public void stop() {}
+    public void stop() {
+        log.debug("Closing LHSinkTask");
+        if (lhClient == null) return;
+        lhClient.close();
+    }
 }

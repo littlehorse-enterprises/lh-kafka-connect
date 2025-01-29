@@ -10,7 +10,7 @@ repositories {
 
 def mockitoVersion = "5.15.2"
 def kafkaVersion = "3.8.0"
-def lhVersion = "0.12.4"
+def lhVersion = "0.12.5"
 def slf4jVersion = "2.0.16"
 def lombokVersion = "1.18.36"
 

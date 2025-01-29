@@ -62,6 +62,7 @@ shadowJar {
     destinationDirectory = layout.buildDirectory.dir("bundle/lh-kafka-connect")
     archiveBaseName = 'lh-kafka-connect'
     archiveClassifier = ''
+    relocate 'io.grpc', 'shadow.io.grpc'
     manifest {
         attributes 'Implementation-Version': "${version}"
     }

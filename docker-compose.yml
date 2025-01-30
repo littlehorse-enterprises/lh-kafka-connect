@@ -1,0 +1,168 @@
+services:
+  kafka1:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9092,EXTERNAL://localhost:19092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
+    ports:
+      - "19092:19092"
+    restart: on-failure
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  kafka2:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:9092,EXTERNAL://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
+    ports:
+      - "29092:29092"
+    restart: on-failure
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  kafka3:
+    image: confluentinc/cp-kafka:${CONFLUENT_VERSION}
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:9092,EXTERNAL://localhost:39092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+      KAFKA_MIN_INSYNC_REPLICAS: "2"
+      KAFKA_NUM_PARTITIONS: "10"
+    ports:
+      - "39092:39092"
+    restart: on-failure
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:${CONFLUENT_VERSION}
+    environment:
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      SCHEMA_REGISTRY_DEBUG: "true"
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: __registry_schemas
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    ports:
+      - "8081:8081"
+    restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8081
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect:${CONFLUENT_VERSION}
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: localhost
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect-sandbox
+      CONNECT_PLUGIN_PATH: /usr/local/share/kafka/plugins
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_CONFIG_STORAGE_TOPIC: __connect_config
+      CONNECT_OFFSET_STORAGE_TOPIC: __connect_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: __connect_status
+    ports:
+      - "8083:8083"
+    restart: on-failure
+    depends_on:
+      littlehorse:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8083
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./connector/build/bundle:/usr/local/share/kafka/plugins
+
+  lhctl:
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}
+    command: version
+    depends_on:
+      littlehorse:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      LHC_API_HOST: littlehorse
+      LHC_API_PORT: 2024
+
+  littlehorse:
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:${LITTLEHORSE_VERSION}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:1822/liveness" ]
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "2023:2023"
+    restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    environment:
+      LHS_LISTENERS: EXTERNAL:2023,INTERNAL:2024
+      LHS_ADVERTISED_LISTENERS: EXTERNAL://localhost:2023,INTERNAL://littlehorse:2024
+      LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
+      LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN

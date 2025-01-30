@@ -35,7 +35,9 @@ public class LHSinkConnector extends SinkConnector {
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+        log.debug("Closing LHSinkConnector");
+    }
 
     @Override
     public ConfigDef config() {

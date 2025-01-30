@@ -59,7 +59,7 @@ http PUT :8083/connectors/littlehorse-sink/config \
 "lhc.tenant.id"="default"
 ```
 
-> Or using the example: `http :8083/connectors < examples/basic.json`
+> Or using an example: `http :8083/connectors < examples/basic.json`
 
 Get sink information:
 

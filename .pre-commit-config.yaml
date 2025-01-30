@@ -23,4 +23,4 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: ./gradlew build
+        entry: ./gradlew buildBundle

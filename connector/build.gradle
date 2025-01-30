@@ -1,7 +1,9 @@
+import groovy.json.JsonOutput
+
 plugins {
-    id 'java-library'
-    id 'com.gradleup.shadow' version '9.0.0-beta6'
-    id 'com.diffplug.spotless' version '7.0.2'
+    id "java-library"
+    id "com.gradleup.shadow" version "9.0.0-beta6"
+    id "com.diffplug.spotless" version "7.0.2"
 }
 
 repositories {
@@ -35,20 +37,20 @@ dependencies {
     // tests
     testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
     testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
-    testImplementation platform('org.junit:junit-bom:5.11.4')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.assertj:assertj-core:3.27.3"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-    testImplementation 'net.datafaker:datafaker:2.4.2'
+    testImplementation "net.datafaker:datafaker:2.4.2"
 }
 
 test {
     useJUnitPlatform()
     testLogging {
-        events 'passed', 'skipped', 'failed'
-        exceptionFormat = 'full'
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"
     }
 }
 
@@ -57,21 +59,91 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").get()
+
 shadowJar {
     mergeServiceFiles()
-    destinationDirectory = layout.buildDirectory.dir("bundle/lh-kafka-connect")
-    archiveBaseName = 'lh-kafka-connect'
-    archiveClassifier = ''
-    relocate 'io.grpc', 'shadow.io.grpc'
+    destinationDirectory = bundleDirectory.asFile
+    archiveBaseName = rootProject.name
+    archiveClassifier = ""
+    relocate "io.grpc", "shadow.io.grpc"
     manifest {
-        attributes 'Implementation-Version': "${version}"
+        attributes "Implementation-Version": version
     }
 }
 
 spotless {
     java {
         removeUnusedImports()
-        prettier(['prettier': '3.0.3', 'prettier-plugin-java': '2.3.0'])
-                .config(['parser': 'java', 'tabWidth': 4, 'printWidth': 80, 'plugins': ['prettier-plugin-java']])
+        prettier(["prettier": "3.0.3", "prettier-plugin-java": "2.3.0"])
+                .config(["parser": "java", "tabWidth": 4, "printWidth": 80, "plugins": ["prettier-plugin-java"]])
     }
+}
+
+tasks.register("generateManifest", Task) {
+    description = "Generate bundle manifest.json file"
+    def data = [
+            name             : rootProject.name,
+            tags             : ["littlehorse", "microservice", "workflow", "workflow engine"],
+            version          : version,
+            title            : "LittleHorse Connector for Apache Kafka",
+            description      : "The LittleHorse Server is a high-performance and developer-first platform for building Durable Workflows in code",
+            documentation_url: "https://littlehorse.io/docs",
+            owner            : [
+                    username: "littlehorse",
+                    name    : "LittleHorse Enterprises LLC",
+                    url     : "https://littlehorse.io",
+                    logo    : "assets/logo.svg"
+            ],
+            support          : [
+                    logo         : "assets/logo.svg",
+                    summary      : "Officially supported by LittleHorse Enterprises LLC",
+                    url          : "https://littlehorse.io/contact",
+                    provider_name: "LittleHorse Enterprises LLC"
+            ],
+            features         : [
+                    supported_encodings                 : ["any"],
+                    confluent_control_center_integration: true,
+                    delivery_guarantee                  : ["exactly_once"],
+                    single_message_transforms           : true,
+                    kafka_connect_api                   : true
+            ],
+            logo             : "assets/logo.svg",
+            source_url       : "https://github.com/littlehorse-enterprises/lh-kafka-connect",
+            component_types  : ["sink"],
+            release_date     : "${new Date().format("yyyy-MM-dd")}",
+            license          : [
+                    [
+                            name: "Apache License, Version 2.0",
+                            url : "http://www.apache.org/licenses/LICENSE-2.0"
+                    ]
+            ]
+    ]
+    def manifest = bundleDirectory.file("manifest.json")
+    doFirst {
+        bundleDirectory.asFile.mkdirs()
+        manifest.asFile.createNewFile()
+    }
+    doLast {
+        file(manifest).write(JsonOutput.prettyPrint(JsonOutput.toJson(data)))
+    }
+}
+
+
+tasks.register("copyAssets", Copy) {
+    destinationDir = bundleDirectory.asFile
+    from("../assets") {
+        into("./assets")
+    }
+
+    from("../README.md") {
+        into("./doc")
+    }
+}
+
+tasks.register("buildBundle", Zip) {
+    dependsOn "test", "generateManifest", "copyAssets", "shadowJar"
+    archiveFileName = "${rootProject.name}-${version}.zip"
+    destinationDirectory = layout.buildDirectory.dir("dist")
+    from bundleDirectory
 }

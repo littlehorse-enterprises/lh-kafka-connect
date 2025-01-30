@@ -4,6 +4,9 @@
     "tasks.max": "1",
     "connector.class": "io.littlehorse.kafka.connect.LHSinkConnector",
     "topics": "littlehorse-events",
+    "errors.tolerance": "all",
+    "errors.deadletterqueue.topic.name": "littlehorse-dlq",
+    "errors.deadletterqueue.context.headers.enable": true,
     "lhc.api.port": "2024",
     "lhc.api.host": "littlehorse",
     "lhc.tenant.id": "default"

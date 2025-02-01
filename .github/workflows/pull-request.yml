@@ -16,4 +16,4 @@ jobs:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
       - name: Tests
-        run: ./gradlew build shadowJar
+        run: ./gradlew buildBundle

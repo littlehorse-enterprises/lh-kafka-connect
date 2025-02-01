@@ -48,7 +48,7 @@ public class ExtractFieldsTests {
 
     @Test
     public void shouldInstallLHKafkaConnectPlugin()
-        throws InterruptedException, MalformedURLException {
+        throws MalformedURLException {
         Map<Object, Object> plugin = Map.of(
             "class",
             "io.littlehorse.kafka.connect.LHSinkConnector",

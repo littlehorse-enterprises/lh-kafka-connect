@@ -15,6 +15,7 @@ def kafkaVersion = "3.8.0"
 def lhVersion = "0.12.5"
 def slf4jVersion = "2.0.16"
 def lombokVersion = "1.18.36"
+def testcontainersVersion = "1.20.4"
 
 dependencies {
     // littlehorse
@@ -26,7 +27,6 @@ dependencies {
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-    implementation "org.slf4j:slf4j-reload4j:${slf4jVersion}"
 
     // lombok
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -35,6 +35,10 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // tests
+    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation "org.testcontainers:kafka:${testcontainersVersion}"
+    testImplementation "org.testcontainers:testcontainers:${testcontainersVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
     testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
     testImplementation platform("org.junit:junit-bom:5.11.4")
@@ -44,6 +48,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "net.datafaker:datafaker:2.4.2"
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
 }
 
 test {
@@ -52,6 +57,32 @@ test {
         events "passed", "skipped", "failed"
         exceptionFormat = "full"
     }
+}
+
+sourceSets {
+    e2e {
+        java {
+            srcDirs("src/e2e")
+        }
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+configurations {
+    e2eImplementation.extendsFrom testImplementation
+    e2eRuntime.extendsFrom testRuntime
+}
+
+tasks.register("e2e", Test) {
+    dependsOn "buildBundle"
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"
+    }
+    testClassesDirs = sourceSets.e2e.output.classesDirs
+    classpath = sourceSets.e2e.runtimeClasspath
 }
 
 java {
@@ -63,7 +94,7 @@ def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").ge
 
 shadowJar {
     mergeServiceFiles()
-    destinationDirectory = bundleDirectory.asFile
+    destinationDirectory = bundleDirectory
     archiveBaseName = rootProject.name
     archiveClassifier = ""
     relocate "io.grpc", "shadow.io.grpc"
@@ -75,13 +106,20 @@ shadowJar {
 spotless {
     java {
         removeUnusedImports()
-        prettier(["prettier": "3.0.3", "prettier-plugin-java": "2.3.0"])
-                .config(["parser": "java", "tabWidth": 4, "printWidth": 80, "plugins": ["prettier-plugin-java"]])
+        prettier([
+                "prettier"            : "3.0.3",
+                "prettier-plugin-java": "2.3.0"
+        ])
+                .config([
+                        "parser"    : "java",
+                        "tabWidth"  : 4,
+                        "printWidth": 80,
+                        "plugins"   : ["prettier-plugin-java"]
+                ])
     }
 }
 
 tasks.register("generateManifest", Task) {
-    description = "Generate bundle manifest.json file"
     def data = [
             name             : rootProject.name,
             tags             : ["littlehorse", "microservice", "workflow", "workflow engine"],
@@ -129,20 +167,18 @@ tasks.register("generateManifest", Task) {
     }
 }
 
-
 tasks.register("copyAssets", Copy) {
     destinationDir = bundleDirectory.asFile
     from("../assets") {
         into("./assets")
     }
-
     from("../README.md") {
         into("./doc")
     }
 }
 
 tasks.register("buildBundle", Zip) {
-    dependsOn "test", "generateManifest", "copyAssets", "shadowJar"
+    dependsOn "generateManifest", "copyAssets", "shadowJar"
     archiveFileName = "${rootProject.name}-${version}.zip"
     destinationDirectory = layout.buildDirectory.dir("dist")
     from bundleDirectory

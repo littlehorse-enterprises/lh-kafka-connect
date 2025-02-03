@@ -18,9 +18,15 @@ repos:
         always_run: true
         pass_filenames: false
         entry: ./gradlew spotlessApply
-      - id: java-build
+      - id: java-test
         name: run tests
         language: system
         always_run: true
         pass_filenames: false
-        entry: ./gradlew build
+        entry: ./gradlew test
+      - id: java-build
+        name: check build
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: ./gradlew buildBundle

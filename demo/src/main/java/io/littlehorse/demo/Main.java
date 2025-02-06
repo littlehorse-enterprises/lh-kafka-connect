@@ -1,5 +1,6 @@
 package io.littlehorse.demo;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.util.Properties;
 import picocli.CommandLine;
@@ -14,16 +15,27 @@ public class Main implements Runnable {
     private CommandSpec spec;
 
     public static void main(String[] args) throws IOException {
-        Properties props = new Properties();
-        props.load(
-            Main.class.getClassLoader()
-                .getResourceAsStream("producer.properties")
+        LHConfig lhConfig = new LHConfig(
+            getProperties("littlehorse.properties")
         );
 
+        // commands
+        Producer producer = new Producer(getProperties("producer.properties"));
+        Worker worker = new Worker(lhConfig);
+        Register register = new Register(lhConfig);
+
         CommandLine commandLine = new CommandLine(new Main())
-            .addSubcommand(new Producer(props));
+            .addSubcommand(producer)
+            .addSubcommand(register)
+            .addSubcommand(worker);
 
         System.exit(commandLine.execute(args));
+    }
+
+    private static Properties getProperties(String name) throws IOException {
+        Properties props = new Properties();
+        props.load(Main.class.getClassLoader().getResourceAsStream(name));
+        return props;
     }
 
     @Override

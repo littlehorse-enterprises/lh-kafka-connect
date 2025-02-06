@@ -3,9 +3,12 @@ plugins {
 }
 
 dependencies {
-    // app
+    // utils
     implementation "info.picocli:picocli:4.7.6"
     implementation "net.datafaker:datafaker:2.4.2"
+
+    // littlehorse
+    implementation "io.littlehorse:littlehorse-client:${lhVersion}"
 
     // kafka
     implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
@@ -29,4 +32,8 @@ test {
 
 application {
     mainClass = "io.littlehorse.demo.Main"
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
 }

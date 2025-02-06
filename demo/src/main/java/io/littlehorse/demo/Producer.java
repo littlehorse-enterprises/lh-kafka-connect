@@ -15,11 +15,11 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Slf4j
-@Command(name = "produce", description = "Produces messages to a topic.")
+@Command(name = "producer", description = "Produces messages to a topic.")
 public class Producer implements Callable<Integer> {
 
-    private final Properties props;
     private final Faker faker = new Faker();
+    private final Properties properties;
 
     @Parameters(index = "0", description = "Topic name.")
     private String topic;
@@ -31,22 +31,23 @@ public class Producer implements Callable<Integer> {
     )
     private int messages;
 
-    public Producer(Properties props) {
-        this.props = props;
+    public Producer(Properties properties) {
+        this.properties = properties;
     }
 
     @Override
     public Integer call() {
-        props.put(
+        properties.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class
         );
-        props.put(
+        properties.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class
         );
-
-        KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+        KafkaProducer<String, String> producer = new KafkaProducer<>(
+            properties
+        );
 
         for (int i = 0; i < messages; i++) {
             String character = faker.starWars().character();

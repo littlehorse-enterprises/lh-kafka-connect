@@ -24,5 +24,17 @@ kafka-topics --create --bootstrap-server localhost:19092 \
 Populate topic:
 
 ```shell
-./gradlew demo:run --args="produce -n 10 demo"
+./gradlew demo:run --args="producer -n 10 demo"
+```
+
+Register task and run worker:
+
+```shell
+./gradlew demo:run --args="worker"
+```
+
+Register workflow:
+
+```shell
+./gradlew demo:run --args="register"
 ```

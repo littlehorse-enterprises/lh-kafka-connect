@@ -12,7 +12,7 @@
 Build plugin bundle:
 
 ```shell
-./gradlew clean shadowJar
+./gradlew connector:buildConfluentBundle
 ```
 
 Run kafka connect:

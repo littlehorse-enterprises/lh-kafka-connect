@@ -63,7 +63,7 @@ configurations {
 }
 
 tasks.register("e2e", Test) {
-    dependsOn "buildBundle"
+    dependsOn "buildConfluentBundle"
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
@@ -149,7 +149,7 @@ tasks.register("copyAssets", Copy) {
     }
 }
 
-tasks.register("buildBundle", Zip) {
+tasks.register("buildConfluentBundle", Zip) {
     dependsOn "generateManifest", "copyAssets", "shadowJar"
     archiveFileName = "${rootProject.name}-${version}.zip"
     destinationDirectory = layout.buildDirectory.dir("dist")

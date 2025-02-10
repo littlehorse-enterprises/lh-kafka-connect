@@ -166,3 +166,18 @@ services:
       LHS_ADVERTISED_LISTENERS: EXTERNAL://localhost:2023,INTERNAL://littlehorse:2024
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
       LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN
+
+  akhq:
+    image: tchiotludo/akhq:latest
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            kafka:
+              properties:
+                bootstrap.servers: kafka1:9092,kafka2:9092,kafka3:9092
+              schema-registry:
+                url: http://schema-registry:8081

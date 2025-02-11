@@ -9,10 +9,14 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        stages: [ pre-commit ]
       - id: end-of-file-fixer
       - id: check-yaml
+        stages: [ pre-commit ]
       - id: check-json
+        stages: [ pre-commit ]
       - id: check-added-large-files
+        stages: [ pre-commit ]
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.0.0
     hooks:
@@ -23,18 +27,21 @@ repos:
   - repo: local
     hooks:
       - id: format-java
+        stages: [ pre-commit ]
         name: format code
         language: system
         always_run: true
         pass_filenames: false
         entry: ./gradlew spotlessApply
       - id: java-test
+        stages: [ pre-commit ]
         name: run tests
         language: system
         always_run: true
         pass_filenames: false
         entry: ./gradlew test
       - id: java-build
+        stages: [ pre-commit ]
         name: check build
         language: system
         always_run: true

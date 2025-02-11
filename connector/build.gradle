@@ -129,13 +129,13 @@ tasks.register("generateManifest", Task) {
                     ]
             ]
     ]
-    def manifest = bundleDirectory.file("manifest.json")
+    def manifestFile = bundleDirectory.file("manifest.json").asFile
     doFirst {
-        bundleDirectory.asFile.mkdirs()
-        manifest.asFile.createNewFile()
+        manifestFile.parentFile.mkdirs()
+        manifestFile.createNewFile()
     }
     doLast {
-        file(manifest).write(JsonOutput.prettyPrint(JsonOutput.toJson(data)))
+        file(manifestFile).write(JsonOutput.prettyPrint(JsonOutput.toJson(data)))
     }
 }
 
@@ -149,8 +149,20 @@ tasks.register("copyAssets", Copy) {
     }
 }
 
+tasks.register("generateConfigurationDoc", JavaExec) {
+    dependsOn "assemble"
+    def configurationsFile = bundleDirectory.file("doc/CONFIGURATIONS.md").asFile
+    doFirst {
+        configurationsFile.parentFile.mkdirs()
+        configurationsFile.createNewFile()
+    }
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "io.littlehorse.kafka.connect.LHSinkConnectorConfig"
+    args configurationsFile
+}
+
 tasks.register("buildConfluentBundle", Zip) {
-    dependsOn "generateManifest", "copyAssets", "shadowJar"
+    dependsOn "generateConfigurationDoc", "generateManifest", "copyAssets", "shadowJar"
     archiveFileName = "${rootProject.name}-${version}.zip"
     destinationDirectory = layout.buildDirectory.dir("dist")
     from bundleDirectory

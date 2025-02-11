@@ -1,6 +1,9 @@
 package io.littlehorse.kafka.connect;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.kafka.common.config.AbstractConfig;
@@ -53,5 +56,21 @@ public class LHSinkConnectorConfig extends AbstractConfig {
                     this::get
                 )
             );
+    }
+
+    public static void main(String[] args) throws IOException {
+        if (args.length < 1) {
+            System.err.println("Path was expected but not provided");
+            System.exit(1);
+        }
+        String docBuilder =
+            "# lh-kafka-connect" +
+            "\n\n" +
+            "LittleHorse Sink Connector for Kafka Connect" +
+            "\n\n" +
+            "## Configurations" +
+            "\n\n" +
+            CONFIG_DEF.toEnrichedRst();
+        Files.writeString(Path.of(args[0]), docBuilder);
     }
 }

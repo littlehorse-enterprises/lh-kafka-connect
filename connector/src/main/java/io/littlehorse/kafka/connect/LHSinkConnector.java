@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
@@ -47,5 +48,11 @@ public class LHSinkConnector extends SinkConnector {
     @Override
     public String version() {
         return LHSinkConnectorVersion.version();
+    }
+
+    @Override
+    public Config validate(Map<String, String> connectorConfigs) {
+        // validate connecting to LH
+        return super.validate(connectorConfigs);
     }
 }

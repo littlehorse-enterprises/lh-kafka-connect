@@ -45,7 +45,6 @@ public class LHSinkTask extends SinkTask {
     // if this operation fails, the SinkTask may throw a org. apache. kafka. connect. errors. RetriableExceptio
     // client timeout
     // manage schema
-
     @Override
     public void put(Collection<SinkRecord> records) {
         records.forEach(sinkRecord -> {

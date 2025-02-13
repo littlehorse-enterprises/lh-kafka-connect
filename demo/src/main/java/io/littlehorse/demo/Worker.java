@@ -10,7 +10,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Slf4j
-@Command(name = "worker", description = "Runs worker..")
+@Command(name = "worker", description = "Runs worker.")
 public class Worker implements Callable<Integer> {
 
     public static final String TASK_DEF_NAME = "greet";

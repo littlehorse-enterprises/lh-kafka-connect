@@ -30,7 +30,7 @@ public class LHSinkConnectorConfigTest {
     public static final String EXPECTED_NAME = "my-connector";
 
     @Test
-    void toBasicLHConfig() {
+    void shouldGenerateALHConfigObjectWithDefaultTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
             Map.of(
                 NAME,
@@ -47,10 +47,11 @@ public class LHSinkConnectorConfigTest {
         assertThat(lhConfig.getApiBootstrapHost()).isEqualTo(EXPECTED_HOST);
         assertThat(lhConfig.getApiBootstrapPort())
             .isEqualTo(Integer.valueOf(EXPECTED_PORT));
+        assertThat(lhConfig.getTenantId().getId()).isEqualTo("default");
     }
 
     @Test
-    void toTenantLHConfig() {
+    void shouldGenerateALHConfigObjectWithSpecificTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
             Map.of(
                 NAME,
@@ -70,7 +71,7 @@ public class LHSinkConnectorConfigTest {
     }
 
     @Test
-    void toOAuthLHConfig() {
+    void shouldIncludeOAuthConfigurationInLHConfig() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
             Map.of(
                 NAME,
@@ -96,7 +97,7 @@ public class LHSinkConnectorConfigTest {
     }
 
     @Test
-    void validateProtocol() {
+    void shouldValidateAllowedLHProtocols() {
         assertThrows(
             ConfigException.class,
             () ->
@@ -146,7 +147,7 @@ public class LHSinkConnectorConfigTest {
     }
 
     @Test
-    void validateMandatory() {
+    void shouldValidateMandatoryConfigs() {
         assertThrows(
             ConfigException.class,
             () -> new LHSinkConnectorConfig(Map.of())

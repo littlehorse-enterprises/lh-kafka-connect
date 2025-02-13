@@ -48,8 +48,7 @@ public class LHSinkTask extends SinkTask {
     public void stop() {
         log.debug("Closing LHSinkTask");
         // TODO: close channels
-        //        if (lhConfig == null) return;
-        //        lhConfig.closeConnections();
+        // lhConfig.closeConnections();
     }
 
     @Override
@@ -61,14 +60,19 @@ public class LHSinkTask extends SinkTask {
                 sinkRecord.kafkaPartition(),
                 sinkRecord.kafkaOffset()
             );
+
             try {
                 runWf(sinkRecord);
                 updateSuccessfulOffsets(sinkRecord);
             } catch (Exception e) {
                 log.error("Error processing record {}", e.getMessage(), e);
+
                 if (!doesTolerateErrors()) {
+                    // full stop
                     throw e;
                 }
+
+                // send error to the dlq
                 report(sinkRecord, e);
                 updateSuccessfulOffsets(sinkRecord);
             }

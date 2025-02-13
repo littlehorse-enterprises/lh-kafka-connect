@@ -18,6 +18,7 @@ public class LHSinkConnector extends SinkConnector {
 
     @Override
     public void start(Map<String, String> props) {
+        log.debug("Starting LHSinkConnector");
         this.props = props;
     }
 

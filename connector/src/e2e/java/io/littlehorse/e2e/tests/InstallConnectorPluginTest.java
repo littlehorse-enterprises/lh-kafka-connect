@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 @Testcontainers
-public class ExtractFieldsTests {
+public class InstallConnectorPluginTest {
 
     public static final String VERSION = "7.8.0";
     public static final DockerImageName KAFKA_CONNECT_IMAGE = DockerImageName

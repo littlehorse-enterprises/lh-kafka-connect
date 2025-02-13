@@ -12,7 +12,7 @@
 Build plugin bundle:
 
 ```shell
-./gradlew clean shadowJar
+./gradlew connector:buildConfluentBundle
 ```
 
 Run kafka connect:
@@ -48,16 +48,8 @@ http :8083/connector-plugins
 Modify/Create a sink connector:
 
 ```shell
-http PUT :8083/connectors/littlehorse-sink/config \
-"tasks.max"="1" \
-"connector.class"="io.littlehorse.kafka.connect.LHSinkConnector" \
-"topics"="littlehorse.sink.input" \
-"lhc.api.port"="2024" \
-"lhc.api.host"="littlehorse" \
-"lhc.tenant.id"="default"
+http :8083/connectors < examples/basic.json
 ```
-
-> Or using an example: `http :8083/connectors < examples/basic.json`
 
 Get sink information:
 

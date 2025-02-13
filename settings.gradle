@@ -1,2 +1,2 @@
-rootProject.name = 'lh-kafka-connect'
-include('connector')
+rootProject.name = "lh-kafka-connect"
+include "connector", "demo"

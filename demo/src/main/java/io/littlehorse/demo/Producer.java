@@ -1,8 +1,11 @@
 package io.littlehorse.demo;
 
+import io.confluent.kafka.serializers.KafkaJsonSerializer;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import lombok.Builder;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -35,28 +38,39 @@ public class Producer implements Callable<Integer> {
         this.properties = properties;
     }
 
+    @Data
+    @Builder
+    public static class StarWarsCharacter {
+
+        private String name;
+    }
+
     @Override
     public Integer call() {
-        properties.put(
-            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-            StringSerializer.class
-        );
         properties.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class
         );
-        KafkaProducer<String, String> producer = new KafkaProducer<>(
+        properties.put(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+            KafkaJsonSerializer.class
+        );
+
+        KafkaProducer<String, StarWarsCharacter> producer = new KafkaProducer<>(
             properties
         );
 
         for (int i = 0; i < messages; i++) {
-            String character = faker.starWars().character();
-
-            ProducerRecord<String, String> record = new ProducerRecord<>(
-                topic,
-                UUID.randomUUID().toString(),
-                character
+            StarWarsCharacter character = new StarWarsCharacter(
+                faker.starWars().character()
             );
+
+            ProducerRecord<String, StarWarsCharacter> record =
+                new ProducerRecord<>(
+                    topic,
+                    UUID.randomUUID().toString(),
+                    character
+                );
 
             producer.send(
                 record,

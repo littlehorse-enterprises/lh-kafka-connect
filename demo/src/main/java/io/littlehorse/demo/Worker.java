@@ -3,8 +3,8 @@ package io.littlehorse.demo;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import java.time.Duration;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -28,20 +28,20 @@ public class Worker implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+    public Integer call() {
         LHTaskWorker worker = new LHTaskWorker(this, TASK_DEF_NAME, lhConfig);
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() -> {
-                    worker.close();
-                    latch.countDown();
-                })
-            );
+        Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         worker.registerTaskDef();
         worker.start();
-        latch.await();
+
+        while (worker.healthStatus().isHealthy()) {
+            try {
+                Thread.sleep(Duration.ofSeconds(1).toMillis());
+            } catch (InterruptedException e) {
+                // nothing to do
+            }
+        }
+
         return CommandLine.ExitCode.OK;
     }
 }

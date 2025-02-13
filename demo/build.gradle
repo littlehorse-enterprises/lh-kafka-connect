@@ -12,6 +12,7 @@ dependencies {
 
     // kafka
     implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
+    implementation "io.confluent:kafka-json-serializer:${confluentVersion}"
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"

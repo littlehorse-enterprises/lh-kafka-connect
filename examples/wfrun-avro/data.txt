@@ -1,0 +1,20 @@
+{"name":"Naboo","population":7851468}
+{"name":"Christophsis","population":2843514}
+{"name":"Alderaan","population":8340508}
+{"name":"Felucia","population":7309777}
+{"name":"Dagobah","population":7993192}
+{"name":"Cantonica","population":5534075}
+{"name":"Eadu","population":7427501}
+{"name":"Lothal","population":4730100}
+{"name":"Jedha","population":5237163}
+{"name":"Ahch-To","population":4482258}
+{"name":"Alderaan","population":6969498}
+{"name":"Geonosis","population":9446111}
+{"name":"Crait","population":9054090}
+{"name":"Naboo","population":9853684}
+{"name":"Cantonica","population":3851943}
+{"name":"Kamino","population":3285211}
+{"name":"Jedha","population":7271592}
+{"name":"Felucia","population":3744329}
+{"name":"Tatooine","population":7256463}
+{"name":"Starkiller Base","population":8393969}

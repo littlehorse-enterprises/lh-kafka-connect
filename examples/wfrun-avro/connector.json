@@ -1,14 +1,15 @@
 {
   "tasks.max": 2,
   "connector.class": "io.littlehorse.kafka.connect.LHSinkConnector",
-  "topics": "example-wfrun-simple",
+  "topics": "example-wfrun-avro",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-  "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
   "transforms": "HoistField",
   "transforms.HoistField.type": "org.apache.kafka.connect.transforms.HoistField$Value",
-  "transforms.HoistField.field": "name",
+  "transforms.HoistField.field": "planet",
   "lhc.api.port": 2024,
   "lhc.api.host": "littlehorse",
   "lhc.tenant.id": "default",
-  "wf.spec.name": "example-wfrun-simple"
+  "wf.spec.name": "example-wfrun-avro"
 }

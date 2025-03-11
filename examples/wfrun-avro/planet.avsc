@@ -1,0 +1,14 @@
+{
+    "name": "Planet",
+    "type": "record",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "population",
+            "type": "long"
+        }
+    ]
+}

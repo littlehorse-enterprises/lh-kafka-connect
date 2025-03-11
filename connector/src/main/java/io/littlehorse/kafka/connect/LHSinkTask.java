@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.protocol.types.SchemaException;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
+import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 
@@ -133,20 +133,7 @@ public class LHSinkTask extends SinkTask {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, VariableValue> extractVariable(Object value) {
-        if (value instanceof Map) {
-            Map<String, Object> objectMap = (Map<String, Object>) value;
-            return objectMap
-                .keySet()
-                .stream()
-                .collect(
-                    Collectors.toMap(
-                        Function.identity(),
-                        field -> LHLibUtil.objToVarVal(objectMap.get(field))
-                    )
-                );
-        }
-
+    private Object removeInternalStruct(Object value) {
         if (value instanceof Struct) {
             Struct objectStruct = (Struct) value;
             Schema schema = objectStruct.schema();
@@ -156,14 +143,49 @@ public class LHSinkTask extends SinkTask {
                 .collect(
                     Collectors.toMap(
                         Field::name,
-                        field -> LHLibUtil.objToVarVal(objectStruct.get(field))
+                        field -> removeInternalStruct(objectStruct.get(field))
                     )
                 );
         }
 
-        throw new SchemaException(
-            "Expected schema structure not provided, it should be a key-value pair data set"
-        );
+        if (value instanceof Map) {
+            Map<String, Object> objectMap = (Map<String, Object>) value;
+            return objectMap
+                .keySet()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        key -> removeInternalStruct(objectMap.get(key))
+                    )
+                );
+        }
+
+        return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, VariableValue> extractVariable(Object value) {
+        if (!(value instanceof Map) && !(value instanceof Struct)) {
+            throw new DataException(
+                "Expected schema structure not provided, it should be a key-value pair data set"
+            );
+        }
+
+        Map<String, Object> variables = (Map<
+                String,
+                Object
+            >) removeInternalStruct(value);
+
+        return variables
+            .keySet()
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    key -> LHLibUtil.objToVarVal(variables.get(key))
+                )
+            );
     }
 
     private void report(SinkRecord sinkRecord, Exception e) {

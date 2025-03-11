@@ -79,3 +79,11 @@ List WfRuns:
 ```shell
 lhctl search wfRun --wfSpecName example-wfrun-simple
 ```
+
+## Produce in Interactive Shell
+
+```shell
+docker compose exec kafka-connect \
+kafka-console-producer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-simple
+```

@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.protocol.types.SchemaException;
+import org.apache.kafka.connect.data.Field;
+import org.apache.kafka.connect.data.Schema;
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 
@@ -47,8 +51,6 @@ public class LHSinkTask extends SinkTask {
     @Override
     public void stop() {
         log.debug("Closing LHSinkTask");
-        // TODO: close channels
-        // lhConfig.closeConnections();
     }
 
     @Override
@@ -86,7 +88,7 @@ public class LHSinkTask extends SinkTask {
         );
     }
 
-    private String calculateWfRunId(SinkRecord sinkRecord) {
+    private String calculateIdempotencyKey(SinkRecord sinkRecord) {
         // to ensure idempotency we use: connector name + topic + partition + offset
         return String.format(
             "%s-%s-%d-%d",
@@ -99,28 +101,14 @@ public class LHSinkTask extends SinkTask {
 
     private void runWf(SinkRecord sinkRecord) {
         try {
-            // it is supposed to be a json, it should be a Struct if using Schema Registry
-            @SuppressWarnings("unchecked")
-            Map<String, Object> value = (Map<
-                    String,
-                    Object
-                >) sinkRecord.value();
-
-            // extract all fields inside the json struct
-            Map<String, VariableValue> variables = value
-                .keySet()
-                .stream()
-                .collect(
-                    Collectors.toMap(
-                        Function.identity(),
-                        field -> LHLibUtil.objToVarVal(value.get(field))
-                    )
-                );
+            Map<String, VariableValue> variables = extractVariable(
+                sinkRecord.value()
+            );
 
             RunWfRequest request = RunWfRequest
                 .newBuilder()
                 .setWfSpecName(connectorConfig.getWfSpecName())
-                .setId(calculateWfRunId(sinkRecord))
+                .setId(calculateIdempotencyKey(sinkRecord))
                 .putAllVariables(variables)
                 .build();
 
@@ -142,6 +130,40 @@ public class LHSinkTask extends SinkTask {
             }
             log.warn("WfRun already exists, skipping");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, VariableValue> extractVariable(Object value) {
+        if (value instanceof Map) {
+            Map<String, Object> objectMap = (Map<String, Object>) value;
+            return objectMap
+                .keySet()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        field -> LHLibUtil.objToVarVal(objectMap.get(field))
+                    )
+                );
+        }
+
+        if (value instanceof Struct) {
+            Struct objectStruct = (Struct) value;
+            Schema schema = objectStruct.schema();
+            return schema
+                .fields()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        Field::name,
+                        field -> LHLibUtil.objToVarVal(objectStruct.get(field))
+                    )
+                );
+        }
+
+        throw new SchemaException(
+            "Expected schema structure not provided, it should be a key-value pair data set"
+        );
     }
 
     private void report(SinkRecord sinkRecord, Exception e) {

@@ -34,17 +34,23 @@ List connector plugins:
 http :8083/connector-plugins
 ```
 
-Modify/Create a sink connector:
+Create a sink connector:
 
 ```shell
-http :8083/connectors < examples/basic.json
+http :8083/connectors < my-connector.json
+```
+
+Create and update connector:
+
+```shell
+http PUT :8083/connectors/my-connector/config < my-connector.json
 ```
 
 Get sink information:
 
 ```shell
-http :8083/connectors/lh-sink
-http :8083/connectors/lh-sink/status
+http :8083/connectors/my-connector
+http :8083/connectors/my-connector/status
 ```
 
 List connectors:
@@ -56,49 +62,49 @@ http :8083/connectors expand==status expand==info
 Restart connector:
 
 ```shell
-http POST :8083/connectors/lh-sink/restart
+http POST :8083/connectors/my-connector/restart
 ```
 
 Restart connector including tasks:
 
 ```shell
-http POST :8083/connectors/lh-sink/restart includeTasks==true
+http POST :8083/connectors/my-connector/restart includeTasks==true
 ```
 
 Pause connector:
 
 ```shell
-http PUT :8083/connectors/lh-sink/pause
+http PUT :8083/connectors/my-connector/pause
 ```
 
 Resume connector:
 
 ```shell
-http PUT :8083/connectors/lh-sink/resume
+http PUT :8083/connectors/my-connector/resume
 ```
 
 Stop connector:
 
 ```shell
-http PUT :8083/connectors/lh-sink/stop
+http PUT :8083/connectors/my-connector/stop
 ```
 
 Delete connector:
 
 ```shell
-http DELETE :8083/connectors/lh-sink
+http DELETE :8083/connectors/my-connector
 ```
 
 List tasks:
 
 ```shell
-http :8083/connectors/lh-sink/tasks
+http :8083/connectors/my-connector/tasks
 ```
 
 Restart task:
 
 ```shell
-http POST :8083/connectors/lh-sink/tasks/0/restart
+http POST :8083/connectors/my-connector/tasks/0/restart
 ```
 
 Update logger level for the connector:

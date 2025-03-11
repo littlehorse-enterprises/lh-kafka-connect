@@ -1,0 +1,10 @@
+ERROR{"name":"Darth Sidious"}
+ERROR{"name":"Rey"}
+{"name":"Anakin Skywalker"}
+{"name":"Han Solo"}
+{"name":"Supreme Leader Snoke"}
+{"name":"Ahsoka Tano"}
+{"name":"Galen Erso"}
+{"name":"Ezra Bridger"}
+ERROR{"name":"Padme Amidala"}
+{"name":"Boba Fett"}

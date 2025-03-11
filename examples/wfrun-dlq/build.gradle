@@ -4,15 +4,11 @@ plugins {
 
 dependencies {
     // utils
-    implementation "info.picocli:picocli:4.7.6"
     implementation "net.datafaker:datafaker:2.4.2"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.18.3"
 
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${lhVersion}"
-
-    // kafka
-    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
-    implementation "io.confluent:kafka-json-serializer:${confluentVersion}"
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -32,9 +28,9 @@ test {
 }
 
 application {
-    mainClass = "io.littlehorse.demo.Main"
+    mainClass = System.getProperty("mainClass", "io.littlehorse.example.Main")
 }
 
 compileJava {
-    options.compilerArgs << '-parameters'
+    options.compilerArgs << "-parameters"
 }

@@ -15,108 +15,17 @@ Build plugin bundle:
 ./gradlew connector:buildConfluentBundle
 ```
 
-Run kafka connect:
+Run compose:
 
 ```shell
 docker compose up -d
 ```
 
-## Other Commands
+## Useful Commands
 
-### Docker
-
-Restart kafka connect:
-
-```shell
-docker compose restart kafka-connect
-```
-
-Stop containers:
-
-```shell
-docker compose down
-```
-
-### Rest API
-
-List connector plugins:
-
-```shell
-http :8083/connector-plugins
-```
-
-Modify/Create a sink connector:
-
-```shell
-http :8083/connectors < examples/basic.json
-```
-
-Get sink information:
-
-```shell
-http :8083/connectors/littlehorse-sink
-http :8083/connectors/littlehorse-sink/status
-```
-
-List connectors:
-
-```shell
-http :8083/connectors expand==status expand==info
-```
-
-Restart connector:
-
-```shell
-http POST :8083/connectors/littlehorse-sink/restart
-```
-
-> Including tasks: `
-http POST :8083/connectors/littlehorse-sink/restart includeTasks==true`
-
-Pause connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/pause
-```
-
-Resume connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/resume
-```
-
-Stop connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/stop
-```
-
-Delete connector:
-
-```shell
-http DELETE :8083/connectors/littlehorse-sink
-```
-
-List tasks:
-
-```shell
-http :8083/connectors/littlehorse-sink/tasks
-```
-
-Restart task:
-
-```shell
-http POST :8083/connectors/littlehorse-sink/tasks/0/restart
-```
-
-Update logger level for the connector:
-
-```shell
-http PUT :8083/admin/loggers/io.littlehorse.kafka.connect.LHSinkTask level=DEBUG
-http :8083/admin/loggers/
-```
+For more useful commands go to [COMMANDS.md](COMMANDS.md).
 
 ## Links
 
-- [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html)
+- [Confluent Schema Registry REST Interface](https://docs.confluent.io/platform/current/schema-registry/develop/api.html)
 - [Kafka Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html)

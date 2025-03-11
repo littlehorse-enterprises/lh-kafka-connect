@@ -156,6 +156,12 @@ tasks.register("generateConfigurationDoc", JavaExec) {
         configurationsFile.parentFile.mkdirs()
         configurationsFile.createNewFile()
     }
+    doLast {
+        copy {
+            from configurationsFile
+            into "../"
+        }
+    }
     classpath = sourceSets.test.runtimeClasspath
     mainClass = "io.littlehorse.kafka.connect.LHSinkConnectorConfig"
     args configurationsFile

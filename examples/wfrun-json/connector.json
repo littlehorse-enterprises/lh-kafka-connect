@@ -1,0 +1,12 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.kafka.connect.LHSinkConnector",
+  "topics": "example-wfrun-json",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-json"
+}

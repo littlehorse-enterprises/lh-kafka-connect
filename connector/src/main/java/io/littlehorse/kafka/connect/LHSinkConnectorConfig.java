@@ -194,7 +194,8 @@ public class LHSinkConnectorConfig extends AbstractConfig {
             "\n\n" +
             "## Configurations" +
             "\n\n" +
-            CONFIG_DEF.toEnrichedRst();
+            CONFIG_DEF.toEnrichedRst().strip() +
+            "\n";
         Files.writeString(Path.of(args[0]), docBuilder);
     }
 

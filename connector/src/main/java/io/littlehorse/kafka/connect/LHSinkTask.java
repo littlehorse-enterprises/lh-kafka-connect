@@ -126,6 +126,13 @@ public class LHSinkTask extends SinkTask {
 
             // blocking the thread we ensure sequential order by partition
             blockingStub.runWf(request);
+            //            if(isExternalEvent()){
+            //                blockingStub.putExternalEvent(PutExternalEventRequest.newBuilder()
+            //                                .setGuid(calculateIdempotencyKey(sinkRecord))
+            //                                .setWfRunId(WfRunId.newBuilder().setId(variables.get("wfRunID").getStr()))
+            //                                .setContent(variables.get("content"))
+            //                       .build());
+            //            }
         } catch (StatusRuntimeException grpcException) {
             if (
                 grpcException.getStatus().getCode() !=

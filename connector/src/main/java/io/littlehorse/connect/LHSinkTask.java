@@ -1,4 +1,4 @@
-package io.littlehorse.kafka.connect;
+package io.littlehorse.connect;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -108,19 +108,24 @@ public class LHSinkTask extends SinkTask {
             RunWfRequest request = RunWfRequest
                 .newBuilder()
                 .setWfSpecName(connectorConfig.getWfSpecName())
+                //.setParentWfRunId()
+                //                    .setMajorVersion()
+                //                    .setRevision()
                 .setId(calculateIdempotencyKey(sinkRecord))
                 .putAllVariables(variables)
                 .build();
 
+            //            io.littlehorse.connect.WfRunSinkConnector
+            //            io.littlehorse.connect.ExternalEventSinkConnector
+
             // blocking the thread we ensure sequential order by partition
             blockingStub.runWf(request);
-            //            if(isExternalEvent()){
-            //                blockingStub.putExternalEvent(PutExternalEventRequest.newBuilder()
-            //                                .setGuid(calculateIdempotencyKey(sinkRecord))
-            //                                .setWfRunId(WfRunId.newBuilder().setId(variables.get("wfRunID").getStr()))
-            //                                .setContent(variables.get("content"))
-            //                       .build());
-            //            }
+            //            blockingStub.putExternalEvent(PutExternalEventRequest.newBuilder()
+            //                            .setGuid(calculateIdempotencyKey(sinkRecord))
+            //                            .setWfRunId(WfRunId.newBuilder().setId(sinkRecord.key().toString()))
+            //                            .setContent((VariableValue) sinkRecord.value())
+            //                   .build());
+
         } catch (StatusRuntimeException grpcException) {
             if (
                 grpcException.getStatus().getCode() !=

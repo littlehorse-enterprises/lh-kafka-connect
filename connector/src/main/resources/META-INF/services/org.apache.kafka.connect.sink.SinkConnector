@@ -1,1 +1,1 @@
-io.littlehorse.kafka.connect.LHSinkConnector
+io.littlehorse.connect.LHSinkConnector

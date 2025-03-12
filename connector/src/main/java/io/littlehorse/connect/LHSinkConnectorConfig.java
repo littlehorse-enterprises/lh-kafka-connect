@@ -1,4 +1,4 @@
-package io.littlehorse.kafka.connect;
+package io.littlehorse.connect;
 
 import com.google.common.base.Strings;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -53,6 +53,9 @@ public class LHSinkConnectorConfig extends AbstractConfig {
     public static final String LHC_GRPC_KEEPALIVE_TIMEOUT_MS_KEY =
         parseKafkaConnectConfig(LHConfig.GRPC_KEEPALIVE_TIMEOUT_MS_KEY);
 
+    public static final String PLAINTEXT = "PLAINTEXT";
+    public static final String TLS = "TLS";
+
     public static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(
             LHC_API_HOST_KEY,
@@ -76,8 +79,8 @@ public class LHSinkConnectorConfig extends AbstractConfig {
         .define(
             LHC_API_PROTOCOL_KEY,
             Type.STRING,
-            "PLAINTEXT",
-            ConfigDef.ValidString.in("PLAINTEXT", "TLS"),
+            PLAINTEXT,
+            ConfigDef.ValidString.in(PLAINTEXT, TLS),
             Importance.HIGH,
             "The bootstrap protocol for the LittleHorse Server."
         )
@@ -146,15 +149,21 @@ public class LHSinkConnectorConfig extends AbstractConfig {
 
     private final String connectorName;
     private final String errorsTolerance;
+    private final String wfSpecName;
 
     public LHSinkConnectorConfig(Map<?, ?> props) {
         super(CONFIG_DEF, props);
         connectorName = extractConnectorName(originalsStrings());
         errorsTolerance = extractErrorsTolerance(originalsStrings());
+        wfSpecName = extractWfSpecName();
     }
 
-    public String getWfSpecName() {
-        return getString(WF_SPEC_NAME_KEY);
+    public String extractWfSpecName() {
+        String wfSpecName = getString(WF_SPEC_NAME_KEY);
+        if (Strings.isNullOrEmpty(wfSpecName)) {
+            throw new ConfigException(WF_SPEC_NAME_KEY, wfSpecName);
+        }
+        return wfSpecName;
     }
 
     private static String extractErrorsTolerance(Map<String, String> props) {

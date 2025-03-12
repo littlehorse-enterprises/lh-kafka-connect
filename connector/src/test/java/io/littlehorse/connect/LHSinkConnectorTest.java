@@ -1,4 +1,4 @@
-package io.littlehorse.kafka.connect;
+package io.littlehorse.connect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

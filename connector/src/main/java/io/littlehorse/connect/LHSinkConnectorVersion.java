@@ -1,4 +1,4 @@
-package io.littlehorse.kafka.connect;
+package io.littlehorse.connect;
 
 import java.io.IOException;
 import java.net.URL;

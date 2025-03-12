@@ -51,7 +51,7 @@ public class InstallConnectorPluginTest {
         throws MalformedURLException {
         Map<Object, Object> plugin = Map.of(
             "class",
-            "io.littlehorse.kafka.connect.LHSinkConnector",
+            "io.littlehorse.connect.LHSinkConnector",
             "type",
             "sink",
             "version",

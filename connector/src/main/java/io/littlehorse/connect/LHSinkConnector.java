@@ -1,4 +1,4 @@
-package io.littlehorse.kafka.connect;
+package io.littlehorse.connect;
 
 import java.util.List;
 import java.util.Map;

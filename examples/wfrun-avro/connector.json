@@ -1,6 +1,6 @@
 {
   "tasks.max": 2,
-  "connector.class": "io.littlehorse.kafka.connect.LHSinkConnector",
+  "connector.class": "io.littlehorse.connect.LHSinkConnector",
   "topics": "example-wfrun-avro",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "io.confluent.connect.avro.AvroConverter",
@@ -11,5 +11,7 @@
   "lhc.api.port": 2024,
   "lhc.api.host": "littlehorse",
   "lhc.tenant.id": "default",
-  "wf.spec.name": "example-wfrun-avro"
+  "wf.spec.name": "example-wfrun-avro",
+  "wf.spec.version": "example-wfrun-avro"
+
 }

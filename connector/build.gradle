@@ -163,7 +163,7 @@ tasks.register("generateConfigurationDoc", JavaExec) {
         }
     }
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = "io.littlehorse.kafka.connect.LHSinkConnectorConfig"
+    mainClass = "io.littlehorse.connect.LHSinkConnectorConfig"
     args configurationsFile
 }
 

@@ -110,7 +110,7 @@ http POST :8083/connectors/my-connector/tasks/0/restart
 Update logger level for the connector:
 
 ```shell
-http PUT :8083/admin/loggers/io.littlehorse.connect.LHSinkTask level=DEBUG
+http PUT :8083/admin/loggers/io.littlehorse.connect level=DEBUG
 http :8083/admin/loggers/
 ```
 

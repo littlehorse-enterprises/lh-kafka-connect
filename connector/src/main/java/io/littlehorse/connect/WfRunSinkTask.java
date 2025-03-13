@@ -2,6 +2,7 @@ package io.littlehorse.connect;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.connect.util.ObjectMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -9,13 +10,10 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.kafka.connect.data.Field;
-import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.errors.DataException;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -62,18 +60,6 @@ public class WfRunSinkTask extends LHSinkTask {
         return requestBuilder.build();
     }
 
-    private Object removeInternalStruct(Object value) {
-        if (value instanceof Struct) {
-            Struct objectStruct = (Struct) value;
-            Schema schema = objectStruct.schema();
-            return schema.fields().stream()
-                    .collect(Collectors.toMap(
-                            Field::name, field -> removeInternalStruct(objectStruct.get(field))));
-        }
-
-        return value;
-    }
-
     @SuppressWarnings("unchecked")
     private Map<String, VariableValue> extractVariable(Object value) {
         if (!(value instanceof Map) && !(value instanceof Struct)) {
@@ -81,10 +67,10 @@ public class WfRunSinkTask extends LHSinkTask {
                     "Expected schema structure not provided, it should be a key-value pair data set");
         }
 
-        Map<String, Object> variables = (Map<String, Object>) removeInternalStruct(value);
+        Map<String, Object> variables = (Map<String, Object>) ObjectMapper.removeStruct(value);
 
-        return variables.keySet().stream()
+        return variables.entrySet().stream()
                 .collect(Collectors.toMap(
-                        Function.identity(), key -> LHLibUtil.objToVarVal(variables.get(key))));
+                        Map.Entry::getKey, entry -> LHLibUtil.objToVarVal(entry.getValue())));
     }
 }

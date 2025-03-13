@@ -7,6 +7,7 @@ import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,18 +22,11 @@ public class Main {
     }
 
     private static void buildWf(WorkflowThread wf) {
-        wf.execute(
-            TASK_DEF_NAME,
-            wf.addVariable(VARIABLE_PLANET, VariableType.JSON_OBJ)
-        );
+        wf.execute(TASK_DEF_NAME, wf.addVariable(VARIABLE_PLANET, VariableType.JSON_OBJ));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
-        LHTaskWorker worker = new LHTaskWorker(
-            new PlanetWorker(),
-            TASK_DEF_NAME,
-            lhConfig
-        );
+        LHTaskWorker worker = new LHTaskWorker(new PlanetWorker(), TASK_DEF_NAME, lhConfig);
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
@@ -53,12 +47,8 @@ public class Main {
 
         @LHTaskMethod(TASK_DEF_NAME)
         public String describePlanet(Planet planet) {
-            String message =
-                "This is " +
-                planet.getName() +
-                ", " +
-                planet.getPopulation() +
-                " people live here";
+            String message = "This is " + planet.getName() + ", " + planet.getPopulation()
+                    + " people live here";
             log.info(message);
             return message;
         }

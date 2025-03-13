@@ -1,52 +1,42 @@
 package io.littlehorse.connect;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.kafka.connect.sink.SinkConnector;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.connector.Task;
-import org.apache.kafka.connect.sink.SinkConnector;
 
-@Getter
 @Slf4j
-public class LHSinkConnector extends SinkConnector {
+public abstract class LHSinkConnector extends SinkConnector {
 
     private Map<String, String> props;
 
     @Override
     public void start(Map<String, String> props) {
-        log.debug("Starting LHSinkConnector");
+        log.debug("Starting {}", getClass().getSimpleName());
         this.props = props;
     }
 
     @Override
-    public Class<? extends Task> taskClass() {
-        return LHSinkTask.class;
-    }
-
-    @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
-        return Stream
-            .generate(this::getProps)
-            .limit(maxTasks)
-            .collect(Collectors.toList());
+        return Stream.generate(this::getProps).limit(maxTasks).collect(Collectors.toList());
     }
 
     @Override
     public void stop() {
-        log.debug("Closing LHSinkConnector");
-    }
-
-    @Override
-    public ConfigDef config() {
-        return LHSinkConnectorConfig.CONFIG_DEF;
+        log.debug("Closing {}", getClass().getSimpleName());
     }
 
     @Override
     public String version() {
         return LHSinkConnectorVersion.version();
+    }
+
+    public Map<String, String> getProps() {
+        if (props == null) return Map.of();
+        return props;
     }
 }

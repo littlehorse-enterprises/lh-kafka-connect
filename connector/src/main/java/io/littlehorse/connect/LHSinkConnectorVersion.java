@@ -1,10 +1,11 @@
 package io.littlehorse.connect;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LHSinkConnectorVersion {
@@ -15,16 +16,13 @@ public class LHSinkConnectorVersion {
     private LHSinkConnectorVersion() {}
 
     public static String version() {
-        URL resource =
-            LHSinkConnectorVersion.class.getClassLoader()
-                .getResource(MANIFEST_FILENAME);
+        URL resource = LHSinkConnectorVersion.class.getClassLoader().getResource(MANIFEST_FILENAME);
 
         if (resource != null) {
             try {
                 Manifest manifest = new Manifest(resource.openStream());
-                return manifest
-                    .getMainAttributes()
-                    .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+                return manifest.getMainAttributes()
+                        .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
             } catch (IOException e) {
                 log.error("Error trying to reach {}", MANIFEST_FILENAME, e);
             }

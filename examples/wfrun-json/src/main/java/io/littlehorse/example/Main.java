@@ -7,6 +7,7 @@ import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,18 +24,13 @@ public class Main {
 
     private static void buildWf(WorkflowThread wf) {
         wf.execute(
-            TASK_DEF_NAME,
-            wf.addVariable(VARIABLE_NAME, VariableType.STR),
-            wf.addVariable(VARIABLE_VEHICLE, VariableType.JSON_OBJ)
-        );
+                TASK_DEF_NAME,
+                wf.addVariable(VARIABLE_NAME, VariableType.STR),
+                wf.addVariable(VARIABLE_VEHICLE, VariableType.JSON_OBJ));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
-        LHTaskWorker worker = new LHTaskWorker(
-            new GreetingsWorker(),
-            TASK_DEF_NAME,
-            lhConfig
-        );
+        LHTaskWorker worker = new LHTaskWorker(new GreetingsWorker(), TASK_DEF_NAME, lhConfig);
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
@@ -55,11 +51,7 @@ public class Main {
 
         @LHTaskMethod(TASK_DEF_NAME)
         public String greeting(String name, Vehicle vehicle) {
-            String message =
-                "Hello there! " +
-                name +
-                ", you're driving a " +
-                vehicle.getModel();
+            String message = "Hello there! " + name + ", you're driving a " + vehicle.getModel();
             log.info(message);
             return message;
         }

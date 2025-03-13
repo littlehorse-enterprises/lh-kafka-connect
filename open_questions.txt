@@ -1,0 +1,3 @@
+should "wf.run.parent.id" be a configuration?
+how to bundle without the shadow jar plugin?
+best structure for the kafka messages?

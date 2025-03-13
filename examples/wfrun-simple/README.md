@@ -4,7 +4,7 @@ In this example you will:
 
 - Register a workflow with variable types: `STR`.
 - Produce messages to a kafka topic without SchemaRegistry.
-- Create a LHSinkConnector with a simple transformation.
+- Create a WfRunSinkConnector with a simple transformation.
 
 > [!WARNING]
 > Run the commands in the root directory

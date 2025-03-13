@@ -2,9 +2,9 @@
 
 In this example you will:
 
-- Register a workflow with variable types: `JSON_OBJ`.
+- Register a workflow with variable types: `JSON_ARR`.
 - Produce avro messages to a kafka topic with SchemaRegistry.
-- Create a WfRunSinkConnector with a HoistField transformation.
+- Create a WfRunSinkConnector without transformation.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -38,7 +38,7 @@ docker compose exec kafka-connect \
 kafka-topics --create --bootstrap-server kafka1:9092 \
 --replication-factor 3 \
 --partitions 12 \
---topic example-wfrun-avro
+--topic example-wfrun-list
 ```
 
 Produce:
@@ -46,17 +46,17 @@ Produce:
 ```shell
 docker compose exec -T kafka-connect \
 kafka-avro-console-producer --bootstrap-server kafka1:9092 \
---topic example-wfrun-avro \
+--topic example-wfrun-list \
 --property schema.registry.url=http://schema-registry:8081 \
---property value.schema="$(< examples/wfrun-avro/planet.avsc)" \
-< examples/wfrun-avro/data.txt
+--property value.schema="$(< examples/wfrun-list/droids.avsc)" \
+< examples/wfrun-list/data.txt
 ```
 
 > [!NOTE]
 > If you need to generate new data run:
 
 ```shell
-./gradlew -q example-wfrun-avro:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-avro/data.txt
+./gradlew -q example-wfrun-list:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10 2" > examples/wfrun-list/data.txt
 ```
 
 ## Check Schema Registry
@@ -72,7 +72,7 @@ http :8081/schemas
 Run worker:
 
 ```shell
-./gradlew example-wfrun-avro:run
+./gradlew example-wfrun-list:run
 ```
 
 ## Create Connector
@@ -80,13 +80,13 @@ Run worker:
 Create connector:
 
 ```shell
-http PUT :8083/connectors/example-wfrun-avro/config < examples/wfrun-avro/connector.json
+http PUT :8083/connectors/example-wfrun-list/config < examples/wfrun-list/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-wfrun-avro
+http :8083/connectors/example-wfrun-list
 ```
 
 ## Check WfRuns
@@ -94,5 +94,5 @@ http :8083/connectors/example-wfrun-avro
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-avro
+lhctl search wfRun --wfSpecName example-wfrun-list
 ```

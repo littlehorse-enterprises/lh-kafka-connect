@@ -1,0 +1,22 @@
+{
+  "name": "Droids",
+  "type": "record",
+  "fields": [
+    {
+      "name": "droids",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Droid",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

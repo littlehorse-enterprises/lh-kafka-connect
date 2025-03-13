@@ -68,7 +68,6 @@ public class WfRunSinkTask extends LHSinkTask {
         }
 
         Map<String, Object> variables = (Map<String, Object>) ObjectMapper.removeStruct(value);
-
         return variables.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, entry -> LHLibUtil.objToVarVal(entry.getValue())));

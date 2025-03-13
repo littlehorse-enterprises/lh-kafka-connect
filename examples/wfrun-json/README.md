@@ -4,7 +4,7 @@ In this example you will:
 
 - Register a workflow with variable types: `STR` and `JSON_OBJ`.
 - Produce json messages to a kafka topic without SchemaRegistry.
-- Create a LHSinkConnector without transformations.
+- Create a WfRunSinkConnector without transformations.
 
 > [!WARNING]
 > Run the commands in the root directory

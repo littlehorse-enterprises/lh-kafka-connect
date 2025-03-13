@@ -1,0 +1,10 @@
+{"droids":[{"name":"FA-4"},{"name":"GH-7"}]}
+{"droids":[{"name":"LM-432"},{"name":"Droideka"}]}
+{"droids":[{"name":"R2-Q5"},{"name":"Buzz Droid"}]}
+{"droids":[{"name":"R2-D2"},{"name":"C-3PO"}]}
+{"droids":[{"name":"Interrogation Droid"},{"name":"ID9"}]}
+{"droids":[{"name":"LM-432"},{"name":"NR-N99"}]}
+{"droids":[{"name":"2-1B"},{"name":"C-3PO"}]}
+{"droids":[{"name":"BB-9E"},{"name":"Mouse Droid"}]}
+{"droids":[{"name":"C-3PO"},{"name":"B2-RP"}]}
+{"droids":[{"name":"327-T"},{"name":"BD-3000"}]}

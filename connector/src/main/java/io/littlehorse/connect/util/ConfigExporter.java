@@ -13,7 +13,7 @@ public class ConfigExporter {
 
     public static String toEnrichedRst() {
         return "# lh-kafka-connect" + "\n\n"
-                + "LittleHorse Sink Connector for Kafka Connect"
+                + "LittleHorse Sink Connectors for Kafka Connect."
                 + "\n\n"
                 + "## WfRunSinkConnector Configurations"
                 + "\n\n"

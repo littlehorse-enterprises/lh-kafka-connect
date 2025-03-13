@@ -1,6 +1,6 @@
 {
   "tasks.max": 2,
-  "connector.class": "io.littlehorse.connect.LHSinkConnector",
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
   "topics": "example-wfrun-dlq",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "org.apache.kafka.connect.json.JsonConverter",

@@ -1,14 +1,14 @@
 {
-    "name": "Planet",
-    "type": "record",
-    "fields": [
-        {
-            "name": "name",
-            "type": "string"
-        },
-        {
-            "name": "population",
-            "type": "long"
-        }
-    ]
+  "name": "Planet",
+  "type": "record",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "population",
+      "type": "long"
+    }
+  ]
 }

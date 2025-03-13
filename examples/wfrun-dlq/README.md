@@ -4,7 +4,7 @@ In this example you will:
 
 - Register a workflow with variable types: `STR`.
 - Produce json messages to a kafka topic without SchemaRegistry.
-- Create a LHSinkConnector with DLQ and without transformations.
+- Create a WfRunSinkConnector with DLQ and without transformations.
 - Introduce deserialization errors and produce them to a DLQ.
 
 > [!WARNING]

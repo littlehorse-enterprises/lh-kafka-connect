@@ -1,6 +1,6 @@
 # lh-kafka-connect
 
-LittleHorse Sink Connector for Kafka Connect
+LittleHorse Sink Connectors for Kafka Connect.
 
 ## WfRunSinkConnector Configurations
 

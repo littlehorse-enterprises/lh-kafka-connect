@@ -1,12 +1,12 @@
 {
   "tasks.max": 2,
   "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
-  "topics": "example-wfrun-json",
+  "topics": "example-wfrun-list",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-  "value.converter.schemas.enable": false,
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
   "lhc.api.port": 2024,
   "lhc.api.host": "littlehorse",
   "lhc.tenant.id": "default",
-  "wf.spec.name": "example-wfrun-json"
+  "wf.spec.name": "example-wfrun-list"
 }

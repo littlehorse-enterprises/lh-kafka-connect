@@ -34,7 +34,7 @@ List connector plugins:
 http :8083/connector-plugins
 ```
 
-Create a sink connector:
+Create a connector:
 
 ```shell
 http :8083/connectors < my-connector.json
@@ -46,10 +46,15 @@ Create and update connector:
 http PUT :8083/connectors/my-connector/config < my-connector.json
 ```
 
-Get sink information:
+Get connector information:
 
 ```shell
 http :8083/connectors/my-connector
+```
+
+Get connector status:
+
+```shell
 http :8083/connectors/my-connector/status
 ```
 
@@ -111,7 +116,12 @@ Update logger level for the connector:
 
 ```shell
 http PUT :8083/admin/loggers/io.littlehorse.connect level=DEBUG
-http :8083/admin/loggers/
+```
+
+Get loggers:
+
+```shell
+http :8083/admin/loggers
 ```
 
 ## Schema Registry

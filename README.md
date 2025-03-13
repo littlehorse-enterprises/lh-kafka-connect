@@ -10,7 +10,7 @@ TBD
 
 ## Configurations
 
-- [LH Sink Connector](CONFIGURATIONS.md)
+- [LH Sink Connector Configurations](CONFIGURATIONS.md)
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html)
 
 ## Development

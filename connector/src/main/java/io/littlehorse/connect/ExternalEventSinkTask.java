@@ -4,6 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.WfRunId;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,16 +36,9 @@ public class ExternalEventSinkTask extends LHSinkTask {
     private PutExternalEventRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         PutExternalEventRequest.Builder requestBuilder = PutExternalEventRequest.newBuilder()
                 .setGuid(sinkRecord.getIdempotencyKey())
+                .setWfRunId(WfRunId.newBuilder().setId(sinkRecord.key().toString()))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()));
-
-        if (config.getThreadRunNumber() != null) {
-            requestBuilder.setThreadRunNumber(config.getThreadRunNumber());
-        }
-
-        if (config.getNodeRunPosition() != null) {
-            requestBuilder.setNodeRunPosition(config.getNodeRunPosition());
-        }
 
         // set content
         // set wf run id

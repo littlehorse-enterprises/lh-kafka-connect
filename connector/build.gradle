@@ -163,7 +163,7 @@ tasks.register("generateConfigurationDoc", JavaExec) {
         }
     }
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = "io.littlehorse.connect.util.ConfigurationExporter"
+    mainClass = "io.littlehorse.connect.util.ConfigExporter"
     args configurationsFile
 }
 

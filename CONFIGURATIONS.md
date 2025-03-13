@@ -204,17 +204,3 @@ LittleHorse Sink Connector for Kafka Connect
   * Type: password
   * Default: null
   * Importance: low
-
-``node.run.position``
-  Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun. In order for this to be set, you must also set "thread.run.number"
-
-  * Type: int
-  * Default: null
-  * Importance: low
-
-``thread.run.number``
-  Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun.
-
-  * Type: int
-  * Default: null
-  * Importance: low

@@ -58,6 +58,10 @@ kafka-console-producer --bootstrap-server kafka1:9092 \
 < examples/wfrun-dlq/data.txt
 ```
 
+> [!NOTE]
+> If you need to generate new data run: \
+> `./gradlew -q example-wfrun-dlq:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-dlq/data.txt`
+
 ## Run Worker
 
 Run worker:

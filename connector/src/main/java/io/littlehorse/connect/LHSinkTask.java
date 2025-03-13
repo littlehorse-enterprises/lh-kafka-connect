@@ -62,7 +62,7 @@ public abstract class LHSinkTask extends SinkTask {
                         new IdempotentSinkRecord(calculateIdempotencyKey(sinkRecord), sinkRecord));
                 updateSuccessfulOffsets(sinkRecord);
             } catch (Exception e) {
-                log.error("Error processing record {}", e.getMessage(), e);
+                log.error("Error processing record in task {}", getClass().getSimpleName(), e);
 
                 if (!doesTolerateErrors()) {
                     // full stop

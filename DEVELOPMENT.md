@@ -2,8 +2,7 @@
 
 ## Dependencies
 
-- node (for prettier)
-- httpie (for rest requests)
+- httpie
 - docker
 - java
 

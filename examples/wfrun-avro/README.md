@@ -53,8 +53,11 @@ kafka-avro-console-producer --bootstrap-server kafka1:9092 \
 ```
 
 > [!NOTE]
-> If you need to generate new data run: \
-> `./gradlew -q example-wfrun-avro:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-avro/data.txt`
+> If you need to generate new data run:
+
+```shell
+./gradlew -q example-wfrun-avro:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-avro/data.txt
+```
 
 ## Check Schema Registry
 

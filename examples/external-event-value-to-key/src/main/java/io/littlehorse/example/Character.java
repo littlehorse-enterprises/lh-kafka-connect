@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuoteKey {
-    private String wfSpecName;
-    private String id;
+public class Character {
+
+    private String name;
+    private String wfRunId;
 
     @Override
     public String toString() {

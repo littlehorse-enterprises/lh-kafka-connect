@@ -73,27 +73,16 @@ Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
 });
 ```
 
-There is a topic `names` with `String` values.
-
-Next connector configuration will execute `WfRuns` and will add a variable `name`.
-
-Data in the topic:
+There is a topic `names`, with this data in the topic:
 
 ```text
-Anakin Skywalker
-Luke Skywalker
-Leia Organa
-Padme Amidala
+key: null, value: {"name":"Anakin Skywalker"}
+key: null, value: {"name":"Luke Skywalker"}
+key: null, value: {"name":"Leia Organa"}
+key: null, value: {"name":"Padme Amidala"}
 ```
 
-After transformation:
-
-```json
-{"name":"Anakin Skywalker"}
-{"name":"Luke Skywalker"}
-{"name":"Leia Organa"}
-{"name":"Padme Amidala"}
-```
+Next connector configuration will execute `WfRuns` with the variable `name`.
 
 ```json
 {
@@ -101,10 +90,8 @@ After transformation:
   "topics": "names",
   "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-  "value.converter": "org.apache.kafka.connect.storage.StringConverter",
-  "transforms": "HoistField",
-  "transforms.HoistField.type": "org.apache.kafka.connect.transforms.HoistField$Value",
-  "transforms.HoistField.field": "name",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
   "lhc.api.port": 2023,
   "lhc.api.host": "localhost",
   "lhc.tenant.id": "default",
@@ -160,7 +147,7 @@ Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
 });
 ```
 
-There is a topic `name` with next data:
+There is a topic `name` with this data:
 
 ```text
 key: 64512de2a4b5470a9a8a2846b9a8a444, value: Anakin Skywalker

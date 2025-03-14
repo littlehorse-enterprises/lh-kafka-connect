@@ -2,9 +2,14 @@
 
 ## Dependencies
 
-- httpie
 - docker
 - java
+
+## Utilities
+
+- httpie
+- jq
+- pre-commit
 
 ## Getting Started
 
@@ -18,6 +23,20 @@ Run compose:
 
 ```shell
 docker compose up -d
+```
+
+## Tests
+
+Run unit tests:
+
+```shell
+./gradlew test
+```
+
+Run e2e tests:
+
+```shell
+./gradlew e2e
 ```
 
 ## Useful Commands

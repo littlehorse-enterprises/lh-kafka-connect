@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
     // utils
-    implementation "net.datafaker:datafaker:2.4.2"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.18.3"
+    implementation "net.datafaker:datafaker:${datafakerVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${lhVersion}"
@@ -19,7 +19,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    testImplementation platform("org.junit:junit-bom:5.10.0")
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
 }
 

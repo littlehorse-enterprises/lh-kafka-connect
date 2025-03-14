@@ -26,9 +26,9 @@ class FilterByFieldPredicateTest {
     @ParameterizedTest
     @CsvSource({
         OPERATION_EXCLUDE + "," + MY_WORKFLOW_NAME + ",true",
-        OPERATION_EXCLUDE + ",not-workflow,false",
+        OPERATION_EXCLUDE + ",not-a-workflow,false",
         OPERATION_INCLUDE + "," + MY_WORKFLOW_NAME + ",false",
-        OPERATION_INCLUDE + ",not-workflow,true"
+        OPERATION_INCLUDE + ",not-a-workflow,true"
     })
     void shouldRemoveItIfFieldMatch(String operation, String workflowName, boolean result) {
         FilterByFieldPredicate<SinkRecord> predicate = new FilterByFieldPredicate.Key<>();

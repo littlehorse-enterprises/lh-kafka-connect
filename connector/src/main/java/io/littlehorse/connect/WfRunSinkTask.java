@@ -23,7 +23,7 @@ public class WfRunSinkTask extends LHSinkTask {
     private WfRunSinkConnectorConfig config;
 
     @Override
-    public LHSinkConnectorConfig initializeConfig(Map<String, String> props) {
+    public LHSinkConnectorConfig configure(Map<String, String> props) {
         return config = new WfRunSinkConnectorConfig(props);
     }
 

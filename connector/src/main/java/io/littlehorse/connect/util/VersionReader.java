@@ -8,15 +8,15 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 @Slf4j
-public class VersionExtractor {
+public class VersionReader {
 
     private static final String MANIFEST_FILENAME = "META-INF/MANIFEST.MF";
     private static final String UNKNOWN_VERSION = "unknown";
 
-    private VersionExtractor() {}
+    private VersionReader() {}
 
     public static String version() {
-        URL resource = VersionExtractor.class.getClassLoader().getResource(MANIFEST_FILENAME);
+        URL resource = VersionReader.class.getClassLoader().getResource(MANIFEST_FILENAME);
 
         if (resource != null) {
             try {
@@ -24,7 +24,7 @@ public class VersionExtractor {
                 return manifest.getMainAttributes()
                         .getValue(Attributes.Name.IMPLEMENTATION_VERSION);
             } catch (IOException e) {
-                log.error("Error trying to reach {}", MANIFEST_FILENAME, e);
+                log.error("Error trying to read {}", MANIFEST_FILENAME, e);
             }
         }
 

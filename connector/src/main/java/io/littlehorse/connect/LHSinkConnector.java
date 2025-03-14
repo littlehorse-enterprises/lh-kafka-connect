@@ -1,6 +1,6 @@
 package io.littlehorse.connect;
 
-import io.littlehorse.connect.util.VersionExtractor;
+import io.littlehorse.connect.util.VersionReader;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +34,7 @@ public abstract class LHSinkConnector extends SinkConnector {
 
     @Override
     public String version() {
-        return VersionExtractor.version();
+        return VersionReader.version();
     }
 
     public Map<String, String> getProps() {

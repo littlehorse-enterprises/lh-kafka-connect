@@ -21,7 +21,7 @@ public class ExternalEventSinkTask extends LHSinkTask {
     private ExternalEventSinkConnectorConfig config;
 
     @Override
-    public LHSinkConnectorConfig initializeConfig(Map<String, String> props) {
+    public LHSinkConnectorConfig configure(Map<String, String> props) {
         return config = new ExternalEventSinkConnectorConfig(props);
     }
 

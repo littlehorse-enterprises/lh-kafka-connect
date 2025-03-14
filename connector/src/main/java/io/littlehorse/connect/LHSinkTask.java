@@ -1,7 +1,7 @@
 package io.littlehorse.connect;
 
 import io.littlehorse.connect.record.IdempotentSinkRecord;
-import io.littlehorse.connect.util.VersionExtractor;
+import io.littlehorse.connect.util.VersionReader;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 
@@ -28,14 +28,14 @@ public abstract class LHSinkTask extends SinkTask {
 
     @Override
     public String version() {
-        return VersionExtractor.version();
+        return VersionReader.version();
     }
 
-    public abstract LHSinkConnectorConfig initializeConfig(Map<String, String> props);
+    public abstract LHSinkConnectorConfig configure(Map<String, String> props);
 
     @Override
     public void start(Map<String, String> props) {
-        connectorConfig = initializeConfig(props);
+        connectorConfig = configure(props);
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();
         log.debug(

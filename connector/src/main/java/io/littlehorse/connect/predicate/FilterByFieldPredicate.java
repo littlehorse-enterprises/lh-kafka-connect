@@ -3,7 +3,7 @@ package io.littlehorse.connect.predicate;
 import static io.littlehorse.connect.predicate.FilterByFieldPredicateConfig.OPERATION_EXCLUDE;
 import static io.littlehorse.connect.predicate.FilterByFieldPredicateConfig.OPERATION_INCLUDE;
 
-import io.littlehorse.connect.util.VersionExtractor;
+import io.littlehorse.connect.util.VersionReader;
 
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.components.Versioned;
@@ -26,7 +26,24 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
 
     @Override
     public boolean test(R record) {
-        Object object = getObject(record);
+        String fieldValue = getFieldValue(getObject(record));
+
+        if (OPERATION_EXCLUDE.equals(config.getOperationType())) {
+            return fieldValue.matches(config.getPattern());
+        }
+
+        if (OPERATION_INCLUDE.equals(config.getOperationType())) {
+            return !fieldValue.matches(config.getPattern());
+        }
+
+        throw new DataException("Invalid operation");
+    }
+
+    private String getFieldValue(Object object) {
+        if (object == null) {
+            throw new DataException("Key or Value should be different to null");
+        }
+
         if (!(object instanceof Struct)) {
             throw new DataException(
                     "Expected schema structure not provided, it should be a Struct");
@@ -35,15 +52,10 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
         Struct structObject = (Struct) object;
         String fieldValue = structObject.getString(config.getField());
         if (fieldValue == null) {
-            throw new DataException("Field value was expected but not provided");
+            throw new DataException(String.format(
+                    "Field %s value was expected but not provided", config.getField()));
         }
-
-        if (OPERATION_EXCLUDE.equals(config.getOperationType())) {
-            return fieldValue.matches(config.getPattern());
-        }
-
-        return !fieldValue.matches(config.getPattern())
-                && OPERATION_INCLUDE.equals(config.getOperationType());
+        return fieldValue;
     }
 
     @Override
@@ -58,7 +70,7 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
 
     @Override
     public String version() {
-        return VersionExtractor.version();
+        return VersionReader.version();
     }
 
     public abstract Object getObject(R record);

@@ -21,7 +21,7 @@ In this example you will:
 Build plugin bundle:
 
 ```shell
-./gradlew connector:buildConfluentBundle
+./gradlew buildConfluentBundle
 ```
 
 Run environment:

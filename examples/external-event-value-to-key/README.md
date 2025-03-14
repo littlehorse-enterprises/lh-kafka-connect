@@ -22,7 +22,7 @@ In this example you will:
 Build plugin bundle:
 
 ```shell
-./gradlew connector:buildConfluentBundle
+./gradlew buildConfluentBundle
 ```
 
 Run environment:
@@ -97,7 +97,7 @@ http :8083/connectors/example-external-event-value-to-key
 List external events:
 
 ```shell
-lhctl search externalEvent add-character-name
+lhctl search externalEvent set-character-name
 ```
 
 > At this point all the external events are waiting for being claimed.

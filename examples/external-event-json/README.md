@@ -21,7 +21,7 @@ In this example you will:
 Build plugin bundle:
 
 ```shell
-./gradlew connector:buildConfluentBundle
+./gradlew buildConfluentBundle
 ```
 
 Run environment:
@@ -100,7 +100,7 @@ http :8083/connectors/example-external-event-json
 List external events:
 
 ```shell
-lhctl search externalEvent add-squadron-members
+lhctl search externalEvent set-squadron-members
 ```
 
 > At this point all the external events are waiting for being claimed.

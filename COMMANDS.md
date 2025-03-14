@@ -40,6 +40,12 @@ List all plugins:
 http :8083/connector-plugins connectorsOnly==false
 ```
 
+List LH classes:
+
+```shell
+http :8083/connector-plugins connectorsOnly==false | jq -r '.[].class|select(startswith("io.littlehorse"))'
+```
+
 Create a connector:
 
 ```shell

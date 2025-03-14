@@ -2,12 +2,8 @@ package io.littlehorse.example;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
@@ -24,19 +20,14 @@ public class Main {
     public static final String TASK_DEF_NAME = "example-external-event-json-squadron";
     public static final String WF_NAME = "example-external-event-json";
     public static final String VARIABLE_SQUADRON = "squadron";
-    public static final String EXTERNAL_EVENT_NAME = "add-squadron-members";
+    public static final String EXTERNAL_EVENT_NAME = "set-squadron-members";
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(WF_NAME, Main::buildWf);
-    }
-
-    private static void buildWf(WorkflowThread wf) {
-        WfRunVariable squadronMembers = wf.addVariable(VARIABLE_SQUADRON, VariableType.JSON_ARR);
-
-        wf.mutate(
-                squadronMembers, VariableMutationType.ASSIGN, wf.waitForEvent(EXTERNAL_EVENT_NAME));
-
-        wf.execute(TASK_DEF_NAME, squadronMembers);
+        return Workflow.newWorkflow(WF_NAME, wf -> {
+            WfRunVariable squadronMembers = wf.declareJsonArr(VARIABLE_SQUADRON);
+            squadronMembers.assign(wf.waitForEvent(EXTERNAL_EVENT_NAME));
+            wf.execute(TASK_DEF_NAME, squadronMembers);
+        });
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {

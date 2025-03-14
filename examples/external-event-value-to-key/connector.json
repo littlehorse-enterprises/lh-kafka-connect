@@ -15,5 +15,5 @@
   "lhc.api.port": 2024,
   "lhc.api.host": "littlehorse",
   "lhc.tenant.id": "default",
-  "external.event.name": "add-character-name"
+  "external.event.name": "set-character-name"
 }

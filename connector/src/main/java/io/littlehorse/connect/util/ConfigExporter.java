@@ -1,7 +1,10 @@
 package io.littlehorse.connect.util;
 
+import io.littlehorse.connect.ExternalEventSinkConnector;
 import io.littlehorse.connect.ExternalEventSinkConnectorConfig;
+import io.littlehorse.connect.WfRunSinkConnector;
 import io.littlehorse.connect.WfRunSinkConnectorConfig;
+import io.littlehorse.connect.predicate.FilterByFieldPredicate;
 import io.littlehorse.connect.predicate.FilterByFieldPredicateConfig;
 
 import lombok.AllArgsConstructor;
@@ -22,15 +25,15 @@ public class ConfigExporter {
 
     private static final List<Section> SECTIONS = List.of(
             Section.builder()
-                    .title("WfRunSinkConnector Configurations")
+                    .title(WfRunSinkConnector.class.getSimpleName())
                     .content(WfRunSinkConnectorConfig.CONFIG_DEF.toEnrichedRst())
                     .build(),
             Section.builder()
-                    .title("ExternalEventSinkConnector Configurations")
+                    .title(ExternalEventSinkConnector.class.getSimpleName())
                     .content(ExternalEventSinkConnectorConfig.CONFIG_DEF.toEnrichedRst())
                     .build(),
             Section.builder()
-                    .title("FilterByFieldPredicate Configurations")
+                    .title(FilterByFieldPredicate.class.getSimpleName())
                     .content(FilterByFieldPredicateConfig.CONFIG_DEF.toEnrichedRst())
                     .build());
 
@@ -45,12 +48,12 @@ public class ConfigExporter {
 
         @Override
         public String toString() {
-            return String.format("## %s\n\n%s", title.strip(), content.strip());
+            return String.format("## %s Configurations\n\n%s", title.strip(), content.strip());
         }
     }
 
     public static String toEnrichedRst() {
-        return "# lh-kafka-connect\n\nLittleHorse Connectors for Kafka Connect.\n\n"
+        return "# LittleHorse Connectors for Kafka Connect\n\n"
                 + SECTIONS.stream().map(Section::toString).collect(Collectors.joining("\n\n"))
                 + "\n";
     }

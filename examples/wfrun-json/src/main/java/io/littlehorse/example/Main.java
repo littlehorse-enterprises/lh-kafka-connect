@@ -1,10 +1,7 @@
 package io.littlehorse.example;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
@@ -19,14 +16,12 @@ public class Main {
     public static final String VARIABLE_NAME = "name";
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(WF_NAME, Main::buildWf);
-    }
-
-    private static void buildWf(WorkflowThread wf) {
-        wf.execute(
-                TASK_DEF_NAME,
-                wf.addVariable(VARIABLE_NAME, VariableType.STR),
-                wf.addVariable(VARIABLE_VEHICLE, VariableType.JSON_OBJ));
+        return Workflow.newWorkflow(
+                WF_NAME,
+                wf -> wf.execute(
+                        TASK_DEF_NAME,
+                        wf.declareStr(VARIABLE_NAME),
+                        wf.declareJsonObj(VARIABLE_VEHICLE)));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {

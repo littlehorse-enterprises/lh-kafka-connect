@@ -1,4 +1,4 @@
-# Developing LittleHorse Sink Connector for Kafka Connect
+# LittleHorse Connectors for Kafka Connect
 
 ## Dependencies
 
@@ -13,16 +13,28 @@
 
 ## Getting Started
 
+Install pre-commit hooks:
+
+```shell
+pre-commit install
+```
+
 Build plugin bundle:
 
 ```shell
-./gradlew connector:buildConfluentBundle
+./gradlew buildConfluentBundle
 ```
 
 Run compose:
 
 ```shell
 docker compose up -d
+```
+
+Check that LH plugin was installed:
+
+```shell
+http :8083/connector-plugins connectorsOnly==false | jq -r '.[].class|select(startswith("io.littlehorse"))'
 ```
 
 ## Tests
@@ -37,6 +49,14 @@ Run e2e tests:
 
 ```shell
 ./gradlew e2e
+```
+
+## Code Style
+
+Apply code style:
+
+```shell
+./gradlew spotlessApply
 ```
 
 ## Useful Commands

@@ -1,4 +1,4 @@
-# WfRn Simple Connector
+# WfRun Connector with List Variable
 
 In this example you will:
 
@@ -50,6 +50,18 @@ kafka-avro-console-producer --bootstrap-server kafka1:9092 \
 --property schema.registry.url=http://schema-registry:8081 \
 --property value.schema="$(< examples/wfrun-list/droids.avsc)" \
 < examples/wfrun-list/data.txt
+```
+
+Consume:
+
+> In case you need to verify the messages in the topic.
+
+```shell
+docker compose exec kafka-connect \
+kafka-avro-console-consumer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-list \
+--property schema.registry.url=http://schema-registry:8081 \
+--from-beginning
 ```
 
 > [!NOTE]

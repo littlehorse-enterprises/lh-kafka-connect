@@ -1,11 +1,11 @@
-# WfRn Simple Connector
+# WfRun Connector with Field Filter
 
 In this example you will:
 
 - Register a workflow with variable types: `STR`.
 - Produce json messages to a kafka topic with SchemaRegistry.
-- Create a WfRunSinkConnector filters transformation.
-- Drop a used field.
+- Create a WfRunSinkConnector with filters transformation by field.
+- Drop unused field.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -61,7 +61,7 @@ Consume:
 > In case you need to verify the messages in the topic.
 
 ```shell
-docker compose exec -T kafka-connect \
+docker compose exec kafka-connect \
 kafka-json-schema-console-consumer --bootstrap-server kafka1:9092 \
 --topic example-wfrun-filter \
 --property schema.registry.url=http://schema-registry:8081 \

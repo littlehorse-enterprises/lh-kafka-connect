@@ -1,4 +1,4 @@
-# WfRn Simple Connector
+# WfRun Connector with DLQ
 
 In this example you will:
 
@@ -58,6 +58,17 @@ kafka-console-producer --bootstrap-server kafka1:9092 \
 < examples/wfrun-dlq/data.txt
 ```
 
+Consume:
+
+> In case you need to verify the messages in the topic.
+
+```shell
+docker compose exec kafka-connect \
+kafka-console-consumer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-dlq \
+--from-beginning
+```
+
 > [!NOTE]
 > If you need to generate new data run:
 
@@ -100,7 +111,7 @@ lhctl search wfRun --wfSpecName example-wfrun-dlq
 Run consumer:
 
 ```shell
-docker compose exec -T kafka-connect \
+docker compose exec kafka-connect \
 kafka-console-consumer --bootstrap-server kafka1:9092 \
 --topic example-wfrun-dlq-errors \
 --from-beginning

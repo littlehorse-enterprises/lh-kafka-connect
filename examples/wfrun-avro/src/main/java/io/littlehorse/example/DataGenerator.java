@@ -9,9 +9,8 @@ public class DataGenerator {
     private static final Faker faker = new Faker();
 
     public static void main(String[] args) {
-        Stream.generate(DataGenerator::newPlanet)
-                .limit(args.length > 0 ? Integer.parseInt(args[0]) : 10)
-                .forEach(System.out::println);
+        int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
+        Stream.generate(DataGenerator::newPlanet).limit(datasetSize).forEach(System.out::println);
     }
 
     private static Planet newPlanet() {

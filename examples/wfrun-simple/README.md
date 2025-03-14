@@ -1,4 +1,4 @@
-# WfRn Simple Connector
+# WfRun Simple Connector
 
 In this example you will:
 
@@ -48,6 +48,17 @@ docker compose exec -T kafka-connect \
 kafka-console-producer --bootstrap-server kafka1:9092 \
 --topic example-wfrun-simple \
 < examples/wfrun-simple/data.txt
+```
+
+Consume:
+
+> In case you need to verify the messages in the topic.
+
+```shell
+docker compose exec kafka-connect \
+kafka-console-consumer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-simple \
+--from-beginning
 ```
 
 > [!NOTE]

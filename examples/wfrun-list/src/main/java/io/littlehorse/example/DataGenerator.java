@@ -11,15 +11,15 @@ public class DataGenerator {
     private static final Faker faker = new Faker();
 
     public static void main(String[] args) {
-        Stream.generate(() -> newDroidsWrapper(args))
-                .limit(args.length > 0 ? Integer.parseInt(args[0]) : 10)
+        int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
+        int droidsListSize = args.length > 1 ? Integer.parseInt(args[1]) : 3;
+        Stream.generate(() -> newDroidsWrapper(droidsListSize))
+                .limit(datasetSize)
                 .forEach(System.out::println);
     }
 
-    private static Droids newDroidsWrapper(String[] args) {
-        return Droids.builder()
-                .droids(newDroidsList(args.length > 1 ? Integer.parseInt(args[1]) : 3))
-                .build();
+    private static Droids newDroidsWrapper(int total) {
+        return Droids.builder().droids(newDroidsList(total)).build();
     }
 
     public static List<Droid> newDroidsList(int total) {

@@ -47,7 +47,7 @@ Specify the number of tasks in the `tasks.max` configuration parameter.
 #### Dead Letter Queue
 
 This connector supports the Dead Letter Queue (DLQ) functionality.
-More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue)
+More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
 #### Message Structure
 
@@ -60,7 +60,7 @@ More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/ser
 
 #### Configurations
 
-Configurations at [WfRunSinkConnector Configurations](CONFIGURATIONS.md#wfrunsinkconnector-configurations)
+Configurations at [WfRunSinkConnector Configurations](CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 
 ### Quick Example
 
@@ -133,7 +133,7 @@ Specify the number of tasks in the `tasks.max` configuration parameter.
 #### Dead Letter Queue
 
 This connector supports the Dead Letter Queue (DLQ) functionality.
-More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue)
+More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
 #### Message Structure
 
@@ -146,7 +146,7 @@ More about external event fields at [PutExternalEventRequest](https://littlehors
 
 #### Configurations
 
-Configurations at [ExternalEventSinkConnector Configurations](CONFIGURATIONS.md#externaleventsinkconnector-configurations)
+Configurations at [ExternalEventSinkConnector Configurations](CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
 ### Quick Example
 
@@ -188,9 +188,9 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 
 ## Configurations
 
-- [LittleHorse Sink Connector Configurations](CONFIGURATIONS.md)
-- [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html)
-- [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options)
+- [LittleHorse Sink Connector Configurations](CONFIGURATIONS.md).
+- [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
+- [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
 
 ## Examples
 
@@ -198,7 +198,7 @@ For more examples go to [examples](examples).
 
 ## Development
 
-For development instructions go to [DEVELOPMENT.md](DEVELOPMENT.md)
+For development instructions go to [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Licencing
 

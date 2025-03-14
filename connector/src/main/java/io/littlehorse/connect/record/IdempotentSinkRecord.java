@@ -1,4 +1,4 @@
-package io.littlehorse.connect;
+package io.littlehorse.connect.record;
 
 import lombok.Getter;
 

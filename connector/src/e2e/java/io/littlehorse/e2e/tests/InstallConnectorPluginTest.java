@@ -1,6 +1,6 @@
 package io.littlehorse.e2e.tests;
 
-import static io.restassured.RestAssured.when;
+import static io.restassured.RestAssured.given;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 
@@ -60,10 +60,32 @@ public class InstallConnectorPluginTest {
                 "sink",
                 "version",
                 "dev");
-        when().get(kafkaConnect.getUrl() + "/connector-plugins")
+        Map<Object, Object> predicateKey = Map.of(
+                "class",
+                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
+                "type",
+                "predicate",
+                "version",
+                "dev");
+        Map<Object, Object> predicateValue = Map.of(
+                "class",
+                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value",
+                "type",
+                "predicate",
+                "version",
+                "dev");
+        given().queryParams(Map.of("connectorsOnly", false))
+                .when()
+                .get(kafkaConnect.getUrl() + "/connector-plugins")
                 .then()
                 .statusCode(200)
                 .assertThat()
-                .body(".", hasItems(externalEventConnector, runWfConnector));
+                .body(
+                        ".",
+                        hasItems(
+                                externalEventConnector,
+                                runWfConnector,
+                                predicateKey,
+                                predicateValue));
     }
 }

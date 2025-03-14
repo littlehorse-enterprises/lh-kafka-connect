@@ -34,6 +34,12 @@ List connector plugins:
 http :8083/connector-plugins
 ```
 
+List all plugins:
+
+```shell
+http :8083/connector-plugins connectorsOnly==false
+```
+
 Create a connector:
 
 ```shell

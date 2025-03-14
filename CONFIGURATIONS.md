@@ -1,6 +1,6 @@
 # lh-kafka-connect
 
-LittleHorse Sink Connectors for Kafka Connect.
+LittleHorse Connectors for Kafka Connect.
 
 ## WfRunSinkConnector Configurations
 
@@ -204,3 +204,25 @@ LittleHorse Sink Connectors for Kafka Connect.
   * Type: password
   * Default: null
   * Importance: low
+
+## FilterByFieldPredicate Configurations
+
+``field``
+  Field name.
+
+  * Type: string
+  * Importance: high
+
+``pattern``
+  Java regex pattern.
+
+  * Type: string
+  * Importance: high
+
+``operation``
+  Operation type, include or exclude message.
+
+  * Type: string
+  * Default: exclude
+  * Valid Values: [include, exclude]
+  * Importance: high

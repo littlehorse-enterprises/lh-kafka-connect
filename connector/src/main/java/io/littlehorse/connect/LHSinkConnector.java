@@ -1,5 +1,7 @@
 package io.littlehorse.connect;
 
+import io.littlehorse.connect.util.VersionExtractor;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.connect.sink.SinkConnector;
@@ -32,7 +34,7 @@ public abstract class LHSinkConnector extends SinkConnector {
 
     @Override
     public String version() {
-        return LHSinkConnectorVersion.version();
+        return VersionExtractor.version();
     }
 
     public Map<String, String> getProps() {

@@ -2,6 +2,7 @@ package io.littlehorse.connect;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;

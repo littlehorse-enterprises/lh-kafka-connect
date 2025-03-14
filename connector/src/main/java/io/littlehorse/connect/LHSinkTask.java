@@ -1,5 +1,7 @@
 package io.littlehorse.connect;
 
+import io.littlehorse.connect.record.IdempotentSinkRecord;
+import io.littlehorse.connect.util.VersionExtractor;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 
@@ -26,7 +28,7 @@ public abstract class LHSinkTask extends SinkTask {
 
     @Override
     public String version() {
-        return LHSinkConnectorVersion.version();
+        return VersionExtractor.version();
     }
 
     public abstract LHSinkConnectorConfig initializeConfig(Map<String, String> props);
@@ -37,32 +39,39 @@ public abstract class LHSinkTask extends SinkTask {
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();
         log.debug(
-                "Starting tasks {} ({}) with DLQ {}",
-                connectorConfig.getConnectorName(),
+                "Starting tasks {}[{}] with DLQ {}",
                 getClass().getSimpleName(),
+                connectorConfig.getConnectorName(),
                 isDLQEnabled() ? "enabled" : "disabled");
     }
 
     @Override
     public void stop() {
-        log.debug("Stopping {}", getClass().getSimpleName());
+        log.debug(
+                "Stopping {}[{}]", getClass().getSimpleName(), connectorConfig.getConnectorName());
     }
 
     @Override
     public void put(Collection<SinkRecord> records) {
         records.forEach(sinkRecord -> {
             log.debug(
-                    "Processing record [topic={}, partition={}, offset={}]",
+                    "Processing record [topic={}, partition={}, offset={}] for task {}[{}]",
                     sinkRecord.topic(),
                     sinkRecord.kafkaPartition(),
-                    sinkRecord.kafkaOffset());
+                    sinkRecord.kafkaOffset(),
+                    getClass().getSimpleName(),
+                    connectorConfig.getConnectorName());
 
             try {
                 executeGrpcCall(
                         new IdempotentSinkRecord(calculateIdempotencyKey(sinkRecord), sinkRecord));
                 updateSuccessfulOffsets(sinkRecord);
             } catch (Exception e) {
-                log.error("Error processing record in task {}", getClass().getSimpleName(), e);
+                log.error(
+                        "Error processing record for task {}[{}]",
+                        getClass().getSimpleName(),
+                        connectorConfig.getConnectorName(),
+                        e);
 
                 if (!doesTolerateErrors()) {
                     // full stop
@@ -98,10 +107,12 @@ public abstract class LHSinkTask extends SinkTask {
         if (!isDLQEnabled()) return;
 
         log.warn(
-                "Reporting error [topic={}, partition={}, offset={}]",
+                "Reporting error [topic={}, partition={}, offset={}] for task {}[{}]",
                 sinkRecord.topic(),
                 sinkRecord.kafkaPartition(),
                 sinkRecord.kafkaOffset(),
+                getClass().getSimpleName(),
+                connectorConfig.getConnectorName(),
                 e);
 
         context.errantRecordReporter().report(sinkRecord, e);
@@ -124,18 +135,30 @@ public abstract class LHSinkTask extends SinkTask {
     @Override
     public Map<TopicPartition, OffsetAndMetadata> preCommit(
             Map<TopicPartition, OffsetAndMetadata> currentOffsets) {
-        log.debug("Commiting partitions {}", successfulOffsets);
+        log.debug(
+                "Commiting partitions {} for {}[{}]",
+                successfulOffsets,
+                getClass().getSimpleName(),
+                connectorConfig.getConnectorName());
         return successfulOffsets;
     }
 
     @Override
     public void open(Collection<TopicPartition> partitions) {
-        log.debug("Opening task {} with partitions {}", getClass().getSimpleName(), partitions);
+        log.debug(
+                "Opening task {}[{}] with partitions {}",
+                getClass().getSimpleName(),
+                connectorConfig.getConnectorName(),
+                partitions);
     }
 
     @Override
     public void close(Collection<TopicPartition> partitions) {
-        log.debug("Closing task {} with partitions {}", getClass().getSimpleName(), partitions);
+        log.debug(
+                "Closing task {}[{}] with partitions {}",
+                getClass().getSimpleName(),
+                connectorConfig.getConnectorName(),
+                partitions);
         // clean offset cache
         successfulOffsets.clear();
     }

@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Character {
 
     private String name;
+    private Vehicle vehicle;
 
     @Override
     public String toString() {

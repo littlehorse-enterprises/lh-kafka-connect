@@ -1,4 +1,4 @@
-package io.littlehorse.connect;
+package io.littlehorse.connect.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,15 +8,15 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 @Slf4j
-public class LHSinkConnectorVersion {
+public class VersionExtractor {
 
     private static final String MANIFEST_FILENAME = "META-INF/MANIFEST.MF";
     private static final String UNKNOWN_VERSION = "unknown";
 
-    private LHSinkConnectorVersion() {}
+    private VersionExtractor() {}
 
     public static String version() {
-        URL resource = LHSinkConnectorVersion.class.getClassLoader().getResource(MANIFEST_FILENAME);
+        URL resource = VersionExtractor.class.getClassLoader().getResource(MANIFEST_FILENAME);
 
         if (resource != null) {
             try {

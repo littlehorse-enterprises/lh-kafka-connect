@@ -5,6 +5,8 @@ import com.google.common.base.Strings;
 import lombok.Getter;
 
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigDef.Importance;
+import org.apache.kafka.common.config.ConfigDef.Type;
 import org.apache.kafka.common.config.ConfigException;
 
 import java.util.Map;
@@ -16,8 +18,8 @@ public class ExternalEventSinkConnectorConfig extends LHSinkConnectorConfig {
     public static final ConfigDef CONFIG_DEF = new ConfigDef(LHSinkConnectorConfig.BASE_CONFIG_DEF)
             .define(
                     EXTERNAL_EVENT_NAME_KEY,
-                    ConfigDef.Type.STRING,
-                    ConfigDef.Importance.HIGH,
+                    Type.STRING,
+                    Importance.HIGH,
                     "The name of the ExternalEventDef that this event implements.");
 
     private final String externalEventName;

@@ -1,0 +1,10 @@
+{"wfSpecName":"example-wfrun-filter","id":"1b7ad0da-1edd-441e-803e-a5fc0acdaba0"}|{"quote":"Hello there.","length":12}
+{"wfSpecName":"example-wfrun-filter","id":"73cf42ef-59b6-42ca-bc9c-f82e437a057b"}|{"quote":"Twice the pride, double the fall.","length":33}
+{"wfSpecName":"invalid-wf-spec-name","id":"6b4a637e-5186-43ca-86c8-20e77d2dc2b6"}|{"quote":"You're smarter than a tree, aren't you?","length":39}
+{"wfSpecName":"invalid-wf-spec-name","id":"5ba14881-69c9-40c7-b807-e00f7fa1bb54"}|{"quote":"If they follow standard Imperial procedure, they'll dump their garbage before they go to light-speed.","length":101}
+{"wfSpecName":"example-wfrun-filter","id":"93ed2efc-25de-49e0-9f56-7064655c720c"}|{"quote":"You can't stop change any more than you can stop the suns from setting.","length":71}
+{"wfSpecName":"invalid-wf-spec-name","id":"1d640e97-45bc-4ec6-bcff-d70702a1896b"}|{"quote":"Ooh mooey mooey I love you!","length":27}
+{"wfSpecName":"example-wfrun-filter","id":"47114450-941b-46ac-8b01-5003ceaa3c9b"}|{"quote":"Help me Obi-Wan. You're my only hope","length":36}
+{"wfSpecName":"invalid-wf-spec-name","id":"da122889-cc23-459e-9780-61aedea28ef7"}|{"quote":"Jedi business, go back to your drinks!","length":38}
+{"wfSpecName":"example-wfrun-filter","id":"aabfae15-44d9-413e-a527-8add0f02c242"}|{"quote":"Remember your focus determines your reality.","length":44}
+{"wfSpecName":"example-wfrun-filter","id":"4aa3ccb8-763e-4646-99d5-9501165285dd"}|{"quote":"You know, that little droid is going to cause me a lot of trouble.","length":66}

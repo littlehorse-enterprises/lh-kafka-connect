@@ -11,14 +11,18 @@ public class DataGenerator {
     private static final Faker faker = new Faker();
 
     public static void main(String[] args) {
-        Stream.generate(() -> Droids.builder()
-                        .droids(generateDroids(args.length > 1 ? Integer.parseInt(args[1]) : 3))
-                        .build())
+        Stream.generate(() -> newDroidsWrapper(args))
                 .limit(args.length > 0 ? Integer.parseInt(args[0]) : 10)
                 .forEach(System.out::println);
     }
 
-    public static List<Droid> generateDroids(int total) {
+    private static Droids newDroidsWrapper(String[] args) {
+        return Droids.builder()
+                .droids(newDroidsList(args.length > 1 ? Integer.parseInt(args[1]) : 3))
+                .build();
+    }
+
+    public static List<Droid> newDroidsList(int total) {
         return Stream.generate(
                         () -> Droid.builder().name(faker.starWars().droids()).build())
                 .limit(total)

@@ -36,7 +36,7 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 
 #### Idempotent Writes
 
-To ensure idempotency this connector generates unique [WfRunIds](https://littlehorse.io/docs/server/developer-guide/grpc/running-workflows#passing-the-id)
+To ensure idempotency, this connector generates unique [WfRunIds](https://littlehorse.io/docs/server/developer-guide/grpc/running-workflows#passing-the-id)
 with the format: `{connector name}-{topic name}-{partition}-{offset}`.
 
 #### Multiple Tasks
@@ -64,7 +64,7 @@ Configurations at [WfRunSinkConnector Configurations](CONFIGURATIONS.md#wfrunsin
 
 ### Quick Example
 
-Next workflow executes a task the receives a `String` as parameter called `name`:
+Next workflow executes a task that receives a `String` as parameter called `name`:
 
 ```java
 Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
@@ -109,7 +109,7 @@ More about running external events at [LittleHorse External Events](https://litt
 
 #### Idempotent Writes
 
-To ensure idempotency this connector generates unique [GUID](https://littlehorse.io/docs/server/concepts/external-events#posting-externalevents)
+To ensure idempotency, this connector generates unique [GUID](https://littlehorse.io/docs/server/concepts/external-events#posting-externalevents)
 for external events with the format: `{connector name}-{topic name}-{partition}-{offset}`.
 
 #### Multiple Tasks

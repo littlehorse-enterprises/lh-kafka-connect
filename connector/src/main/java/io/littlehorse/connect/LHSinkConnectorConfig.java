@@ -129,6 +129,17 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
         errorsTolerance = extractErrorsTolerance(originalsStrings());
     }
 
+    public LHConfig toLHConfig() {
+        return new LHConfig(toLHConfigMap());
+    }
+
+    public Map<String, Object> toLHConfigMap() {
+        return nonInternalValues().keySet().stream()
+                .filter(key -> LHConfig.configNames().contains(parseLHConfig(key)))
+                .filter(key -> get(key) != null)
+                .collect(Collectors.toMap(LHSinkConnectorConfig::parseLHConfig, this::get));
+    }
+
     private static String extractErrorsTolerance(Map<String, String> props) {
         String errorsTolerance = props.get(ERRORS_TOLERANCE_KEY);
         return Strings.isNullOrEmpty(errorsTolerance) ? ERRORS_TOLERANCE_NONE : errorsTolerance;
@@ -150,16 +161,5 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     private static String parseLHConfig(String key) {
         // transform kafka connect config (ex: lhc.api.host) into LH config (ex: LHC_API_HOST)
         return key.replace(".", "_").toUpperCase();
-    }
-
-    public LHConfig toLHConfig() {
-        return new LHConfig(toLHConfigMap());
-    }
-
-    public Map<String, Object> toLHConfigMap() {
-        return nonInternalValues().keySet().stream()
-                .filter(key -> LHConfig.configNames().contains(parseLHConfig(key)))
-                .filter(key -> get(key) != null)
-                .collect(Collectors.toMap(LHSinkConnectorConfig::parseLHConfig, this::get));
     }
 }

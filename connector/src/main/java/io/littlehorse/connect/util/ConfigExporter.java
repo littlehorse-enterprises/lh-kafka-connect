@@ -7,11 +7,7 @@ import io.littlehorse.connect.WfRunSinkConnectorConfig;
 import io.littlehorse.connect.predicate.FilterByFieldPredicate;
 import io.littlehorse.connect.predicate.FilterByFieldPredicateConfig;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,10 +34,6 @@ public class ConfigExporter {
                     .build());
 
     @Builder
-    @Getter
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Section {
         private String title;
         private String content;

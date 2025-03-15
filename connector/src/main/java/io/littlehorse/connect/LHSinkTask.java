@@ -143,8 +143,7 @@ public abstract class LHSinkTask extends SinkTask {
                 sinkRecord.kafkaPartition(),
                 sinkRecord.kafkaOffset(),
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName(),
-                e);
+                connectorConfig.getConnectorName());
 
         context.errantRecordReporter().report(sinkRecord, e);
     }

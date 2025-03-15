@@ -5,7 +5,7 @@ In this example you will:
 - Register a workflow with variable types: `STR`.
 - Produce json messages to a kafka topic without SchemaRegistry.
 - Create a WfRunSinkConnector with DLQ and without transformations.
-- Introduce deserialization errors and produce them to a DLQ.
+- Introduce errors, this error will be redirected to a DLQ topic.
 
 > [!WARNING]
 > Run the commands in the root directory

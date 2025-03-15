@@ -1,10 +1,10 @@
-ERROR{"name":"Darth Sidious"}
-ERROR{"name":"Rey"}
-{"name":"Anakin Skywalker"}
-{"name":"Han Solo"}
-{"name":"Supreme Leader Snoke"}
-{"name":"Ahsoka Tano"}
-{"name":"Galen Erso"}
-{"name":"Ezra Bridger"}
-ERROR{"name":"Padme Amidala"}
-{"name":"Boba Fett"}
+{"name":"Sebulba","description":"This description will throw an error in the connector"}
+{"name":"Obi-Wan Kenobi"}
+{"name":"Greedo"}
+{"name":"Darth Vader"}
+{"name":"Jar Jar Binks"}
+{"name":"Lando Calrissian"}
+{"name":"Sabine Wren"}
+{"name":"Rey","description":"This description will throw an error in the connector"}
+{"name":"Darth Sidious","description":"This description will throw an error in the connector"}
+{"name":"Kanan Jarrus"}

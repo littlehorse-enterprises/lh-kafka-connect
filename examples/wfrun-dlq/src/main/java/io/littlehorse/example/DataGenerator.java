@@ -12,14 +12,17 @@ public class DataGenerator {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
         Stream.generate(DataGenerator::newCharacter)
                 .limit(datasetSize)
-                .forEach(person -> System.out.println(maybeAddError() + person));
+                .forEach(System.out::println);
     }
 
     private static String maybeAddError() {
-        return Math.random() < 0.1 ? "ERROR" : "";
+        return Math.random() < 0.2 ? "This description will throw an error in the connector" : null;
     }
 
     private static Character newCharacter() {
-        return Character.builder().name(faker.starWars().character()).build();
+        return Character.builder()
+                .name(faker.starWars().character())
+                .description(maybeAddError())
+                .build();
     }
 }

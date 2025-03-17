@@ -7,7 +7,6 @@ import io.littlehorse.connect.util.ObjectMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.WfRunId;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +46,7 @@ public class WfRunSinkTask extends LHSinkTask {
                 .putAllVariables(extractVariables(sinkRecord.value()));
 
         if (config.getWfRunParentId() != null) {
-            requestBuilder.setParentWfRunId(WfRunId.newBuilder().setId(config.getWfRunParentId()));
+            requestBuilder.setParentWfRunId(LHLibUtil.wfRunIdFromString(config.getWfRunParentId()));
         }
 
         if (config.getWfSpecMajorVersion() != null) {

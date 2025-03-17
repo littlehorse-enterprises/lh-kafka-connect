@@ -1,10 +1,10 @@
-{"name":"Sebulba","description":"This description will throw an error in the connector"}
+{"name":"Sebulba","description":"This description will cause the connector to fail"}
 {"name":"Obi-Wan Kenobi"}
 {"name":"Greedo"}
 {"name":"Darth Vader"}
 {"name":"Jar Jar Binks"}
 {"name":"Lando Calrissian"}
 {"name":"Sabine Wren"}
-{"name":"Rey","description":"This description will throw an error in the connector"}
-{"name":"Darth Sidious","description":"This description will throw an error in the connector"}
+{"name":"Rey","description":"This description will cause the connector to fail"}
+{"name":"Darth Sidious","description":"This description will cause the connector to fail"}
 {"name":"Kanan Jarrus"}

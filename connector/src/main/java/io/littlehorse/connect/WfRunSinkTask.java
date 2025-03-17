@@ -44,7 +44,7 @@ public class WfRunSinkTask extends LHSinkTask {
         RunWfRequest.Builder requestBuilder = RunWfRequest.newBuilder()
                 .setWfSpecName(config.getWfSpecName())
                 .setId(sinkRecord.getIdempotencyKey())
-                .putAllVariables(extractVariable(sinkRecord.value()));
+                .putAllVariables(extractVariables(sinkRecord.value()));
 
         if (config.getWfRunParentId() != null) {
             requestBuilder.setParentWfRunId(WfRunId.newBuilder().setId(config.getWfRunParentId()));
@@ -62,7 +62,7 @@ public class WfRunSinkTask extends LHSinkTask {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, VariableValue> extractVariable(Object value) {
+    private Map<String, VariableValue> extractVariables(Object value) {
         if (!(value instanceof Map) && !(value instanceof Struct)) {
             throw new DataException(
                     "Expected schema structure not provided, it should be a key-value pair data set");

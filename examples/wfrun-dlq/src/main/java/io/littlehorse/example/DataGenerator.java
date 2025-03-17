@@ -16,7 +16,7 @@ public class DataGenerator {
     }
 
     private static String maybeAddError() {
-        return Math.random() < 0.2 ? "This description will throw an error in the connector" : null;
+        return Math.random() < 0.2 ? "This description will cause the connector to fail" : null;
     }
 
     private static Character newCharacter() {

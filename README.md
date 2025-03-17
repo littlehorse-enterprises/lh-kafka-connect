@@ -187,7 +187,7 @@ For more examples go to [examples](examples).
 
 For development instructions go to [DEVELOPMENT.md](DEVELOPMENT.md).
 
-## Licencing
+## License
 
 <a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>
 

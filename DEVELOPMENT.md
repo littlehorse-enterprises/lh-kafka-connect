@@ -1,122 +1,69 @@
-# Developing LittleHorse Sink Connector for Kafka Connect
+# LittleHorse Connectors for Kafka Connect
 
 ## Dependencies
 
-- node (for prettier)
-- httpie (for rest requests)
 - docker
 - java
 
+## Utilities
+
+- httpie
+- jq
+- pre-commit
+
 ## Getting Started
+
+Install pre-commit hooks:
+
+```shell
+pre-commit install
+```
 
 Build plugin bundle:
 
 ```shell
-./gradlew connector:buildConfluentBundle
+./gradlew buildConfluentBundle
 ```
 
-Run kafka connect:
+Run compose:
 
 ```shell
 docker compose up -d
 ```
 
-## Other Commands
-
-### Docker
-
-Restart kafka connect:
+Check that LH plugin was installed:
 
 ```shell
-docker compose restart kafka-connect
+http :8083/connector-plugins connectorsOnly==false | jq -r '.[].class|select(startswith("io.littlehorse"))'
 ```
 
-Stop containers:
+## Tests
+
+Run unit tests:
 
 ```shell
-docker compose down
+./gradlew test
 ```
 
-### Rest API
-
-List connector plugins:
+Run e2e tests:
 
 ```shell
-http :8083/connector-plugins
+./gradlew e2e
 ```
 
-Modify/Create a sink connector:
+## Code Style
+
+Apply code style:
 
 ```shell
-http :8083/connectors < examples/basic.json
+./gradlew spotlessApply
 ```
 
-Get sink information:
+## Useful Commands
 
-```shell
-http :8083/connectors/littlehorse-sink
-http :8083/connectors/littlehorse-sink/status
-```
-
-List connectors:
-
-```shell
-http :8083/connectors expand==status expand==info
-```
-
-Restart connector:
-
-```shell
-http POST :8083/connectors/littlehorse-sink/restart
-```
-
-> Including tasks: `
-http POST :8083/connectors/littlehorse-sink/restart includeTasks==true`
-
-Pause connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/pause
-```
-
-Resume connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/resume
-```
-
-Stop connector:
-
-```shell
-http PUT :8083/connectors/littlehorse-sink/stop
-```
-
-Delete connector:
-
-```shell
-http DELETE :8083/connectors/littlehorse-sink
-```
-
-List tasks:
-
-```shell
-http :8083/connectors/littlehorse-sink/tasks
-```
-
-Restart task:
-
-```shell
-http POST :8083/connectors/littlehorse-sink/tasks/0/restart
-```
-
-Update logger level for the connector:
-
-```shell
-http PUT :8083/admin/loggers/io.littlehorse.kafka.connect.LHSinkTask level=DEBUG
-http :8083/admin/loggers/
-```
+For more useful commands go to [COMMANDS.md](COMMANDS.md).
 
 ## Links
 
-- [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html)
+- [Confluent Schema Registry REST Interface](https://docs.confluent.io/platform/current/schema-registry/develop/api.html)
 - [Kafka Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html)

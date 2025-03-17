@@ -1,0 +1,15 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-dlq",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "errors.tolerance": "all",
+  "errors.deadletterqueue.topic.name": "example-wfrun-dlq-errors",
+  "errors.deadletterqueue.context.headers.enable": true,
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-dlq"
+}

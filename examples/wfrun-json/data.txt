@@ -1,0 +1,10 @@
+{"name":"Anakin Skywalker","vehicle":{"model":"TIE Interceptor"}}
+{"name":"Mace Windu","vehicle":{"model":"Resistance Ski Speeder"}}
+{"name":"Kylo Ren","vehicle":{"model":"First Order Dreadnought"}}
+{"name":"Shmi Skywalker","vehicle":{"model":"Sandcrawler"}}
+{"name":"Captain Phasma","vehicle":{"model":"ATT Battle Tank"}}
+{"name":"Watto","vehicle":{"model":"TIE Bomber"}}
+{"name":"Jango Fett","vehicle":{"model":"Republic Attack Gunship"}}
+{"name":"Chewbacca","vehicle":{"model":"TIE Silencer"}}
+{"name":"Sheev Palpatine","vehicle":{"model":"Speeder Bike"}}
+{"name":"Rose Tico","vehicle":{"model":"MTT"}}

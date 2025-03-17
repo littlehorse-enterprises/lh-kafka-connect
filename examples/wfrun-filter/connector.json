@@ -1,0 +1,23 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-filter",
+  "key.converter": "io.confluent.connect.json.JsonSchemaConverter",
+  "key.converter.schema.registry.url": "http://schema-registry:8081",
+  "value.converter": "io.confluent.connect.json.JsonSchemaConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+  "transforms": "ReplaceField,FilterMessage",
+  "transforms.ReplaceField.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+  "transforms.ReplaceField.exclude": "length",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "FilterByField",
+  "predicates": "FilterByField",
+  "predicates.FilterByField.type": "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
+  "predicates.FilterByField.operation": "include",
+  "predicates.FilterByField.pattern": "example-wfrun-filter",
+  "predicates.FilterByField.field": "wfSpecName",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-filter"
+}

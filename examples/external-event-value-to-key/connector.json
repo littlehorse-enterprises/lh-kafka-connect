@@ -1,0 +1,19 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.ExternalEventSinkConnector",
+  "topics": "example-external-event-value-to-key",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "ValueToKey,ExtractWfRunId,ExtractName",
+  "transforms.ValueToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+  "transforms.ValueToKey.fields": "wfRunId",
+  "transforms.ExtractWfRunId.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+  "transforms.ExtractWfRunId.field": "wfRunId",
+  "transforms.ExtractName.type": "org.apache.kafka.connect.transforms.ExtractField$Value",
+  "transforms.ExtractName.field": "name",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "external.event.name": "set-character-name"
+}

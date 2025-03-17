@@ -29,14 +29,14 @@ dependencies {
     testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
     testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
-    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-    testImplementation "org.assertj:assertj-core:3.27.3"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-    testImplementation "net.datafaker:datafaker:2.4.2"
-    testImplementation "io.rest-assured:rest-assured:5.5.0"
+    testImplementation "net.datafaker:datafaker:${datafakerVersion}"
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
 }
 
 test {
@@ -124,8 +124,8 @@ tasks.register("generateManifest", Task) {
             release_date     : "${new Date().format("yyyy-MM-dd")}",
             license          : [
                     [
-                            name: "Apache License, Version 2.0",
-                            url : "http://www.apache.org/licenses/LICENSE-2.0"
+                            name: "Server Side Public License, Version 1",
+                            url : "https://spdx.org/licenses/SSPL-1.0.html"
                     ]
             ]
     ]
@@ -156,8 +156,14 @@ tasks.register("generateConfigurationDoc", JavaExec) {
         configurationsFile.parentFile.mkdirs()
         configurationsFile.createNewFile()
     }
+    doLast {
+        copy {
+            from configurationsFile
+            into "../"
+        }
+    }
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = "io.littlehorse.kafka.connect.LHSinkConnectorConfig"
+    mainClass = "io.littlehorse.connect.util.ConfigExporter"
     args configurationsFile
 }
 

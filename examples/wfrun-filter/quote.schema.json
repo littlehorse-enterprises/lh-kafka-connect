@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Quote",
+  "type": "object",
+  "properties": {
+    "quote": {
+      "type": "string"
+    },
+    "length": {
+      "type": "integer"
+    }
+  }
+}

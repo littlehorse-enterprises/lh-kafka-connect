@@ -70,4 +70,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/dist/lh-kafka-connect*.zip
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/build/dist/lh-kafka-connect*.zip

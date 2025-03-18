@@ -31,11 +31,13 @@ jobs:
           java-version: "11"
       - name: Dump Version
         env:
-          TAG: ${{ needs.prepare.outputs.tag }}
+          TAG: ${{ needs.prepare-tag.outputs.tag }}
         run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
       - name: Unit Tests
         run: ./gradlew connector:test
       - name: E2E Tests
+        env:
+          BUNDLE_VERSION: ${{ needs.prepare-tag.outputs.tag }}
         run: ./gradlew connector:e2e
       - name: Build Bundle
         run: ./gradlew connector:buildConfluentBundle

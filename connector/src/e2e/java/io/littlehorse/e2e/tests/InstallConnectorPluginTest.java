@@ -28,6 +28,7 @@ public class InstallConnectorPluginTest {
     public static final String KAFKA_HOSTNAME = "kafka";
     public static final String BOOTSTRAP_SERVER = KAFKA_HOSTNAME + ":19092";
     public static final Network NETWORK = Network.newNetwork();
+    public static final String BUNDLE_VERSION = "BUNDLE_VERSION";
 
     @Container
     ConfluentKafkaContainer kafka = new ConfluentKafkaContainer(KAFKA_IMAGE)
@@ -44,36 +45,26 @@ public class InstallConnectorPluginTest {
                     MountableFile.forHostPath("build/bundle/lh-kafka-connect"),
                     "/usr/share/java/lh-kafka-connect");
 
+    private static Map<Object, Object> buildEntry(String className, String type) {
+        return Map.of(
+                "class",
+                className,
+                "type",
+                type,
+                "version",
+                System.getenv().getOrDefault(BUNDLE_VERSION, "dev"));
+    }
+
     @Test
     public void shouldInstallLHKafkaConnectPlugin() throws MalformedURLException {
-        Map<Object, Object> externalEventConnector = Map.of(
-                "class",
-                "io.littlehorse.connect.ExternalEventSinkConnector",
-                "type",
-                "sink",
-                "version",
-                "dev");
-        Map<Object, Object> runWfConnector = Map.of(
-                "class",
-                "io.littlehorse.connect.WfRunSinkConnector",
-                "type",
-                "sink",
-                "version",
-                "dev");
-        Map<Object, Object> predicateKey = Map.of(
-                "class",
-                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
-                "type",
-                "predicate",
-                "version",
-                "dev");
-        Map<Object, Object> predicateValue = Map.of(
-                "class",
-                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value",
-                "type",
-                "predicate",
-                "version",
-                "dev");
+        Map<Object, Object> externalEventConnector =
+                buildEntry("io.littlehorse.connect.ExternalEventSinkConnector", "sink");
+        Map<Object, Object> runWfConnector =
+                buildEntry("io.littlehorse.connect.WfRunSinkConnector", "sink");
+        Map<Object, Object> predicateKey = buildEntry(
+                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key", "predicate");
+        Map<Object, Object> predicateValue = buildEntry(
+                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value", "predicate");
         given().queryParams(Map.of("connectorsOnly", false))
                 .when()
                 .get(kafkaConnect.getUrl() + "/connector-plugins")

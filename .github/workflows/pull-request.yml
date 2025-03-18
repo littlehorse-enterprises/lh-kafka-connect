@@ -17,7 +17,17 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Unit Tests
         run: ./gradlew connector:test
-      - name: E2E Tests
-        run: ./gradlew connector:e2e
       - name: Build Bundle
         run: ./gradlew connector:buildConfluentBundle
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "11"
+      - name: E2E Tests
+        run: ./gradlew connector:e2e

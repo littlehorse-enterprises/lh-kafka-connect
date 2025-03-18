@@ -15,5 +15,9 @@ jobs:
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
-      - name: Tests
+      - name: Unit Tests
+        run: ./gradlew test
+      - name: E2E Tests
+        run: ./gradlew e2e
+      - name: Build
         run: ./gradlew buildConfluentBundle

@@ -1,4 +1,5 @@
-name: Test Connector
+name: tests
+run-name: Test Connector
 on:
   pull_request:
 jobs:

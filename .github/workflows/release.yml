@@ -1,0 +1,72 @@
+name: release
+run-name: Release ${{ github.ref_name }}
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+permissions:
+      packages: write
+      contents: write
+jobs:
+  prepare-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set_tag.outputs.tag }}
+    steps:
+      - name: Set Tag
+        id: set_tag
+        run: |
+          echo "tag=$(echo $GITHUB_REF | sed -n 's/refs\/tags\/v//p')" >> $GITHUB_OUTPUT
+  prepare-bundle:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-tag
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "11"
+      - name: Dump Version
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
+      - name: Unit Tests
+        run: ./gradlew connector:test
+      - name: E2E Tests
+        run: ./gradlew connector:e2e
+      - name: Build Bundle
+        run: ./gradlew connector:buildConfluentBundle
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: lh-kafka-connect
+          path: connector/dist/lh-kafka-connect*.zip
+
+  create-release:
+    needs:
+      - prepare-bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v3
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --verbose --current
+        env:
+          OUTPUT: CHANGELOG.md
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: lh-kafka-connect
+          path: connector/dist/
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/dist/lh-kafka-connect*.zip

@@ -82,7 +82,7 @@ def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").ge
 
 shadowJar {
     mergeServiceFiles()
-    destinationDirectory = bundleDirectory
+    destinationDirectory = bundleDirectory.dir("lib")
     archiveBaseName = rootProject.name
     archiveClassifier = ""
     relocate "io.grpc", "shadow.io.grpc"
@@ -113,8 +113,8 @@ tasks.register("generateManifest", Task) {
             ],
             features         : [
                     supported_encodings                 : ["any"],
-                    confluent_control_center_integration: true,
-                    delivery_guarantee                  : ["exactly_once"],
+                    confluent_control_center_integration: false,
+                    delivery_guarantee                  : ["at_least_once"],
                     single_message_transforms           : true,
                     kafka_connect_api                   : true
             ],
@@ -145,6 +145,9 @@ tasks.register("copyAssets", Copy) {
         into("./assets")
     }
     from("../README.md") {
+        into("./doc")
+    }
+    from("../LICENSE.md") {
         into("./doc")
     }
 }

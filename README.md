@@ -2,29 +2,27 @@
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
-<!-- TOC -->
-* [LittleHorse Connectors for Kafka Connect](#littlehorse-connectors-for-kafka-connect)
-  * [WfRunSinkConnector](#wfrunsinkconnector)
-    * [Features](#features)
-      * [Idempotent Writes](#idempotent-writes)
-      * [Multiple Tasks](#multiple-tasks)
-      * [Dead Letter Queue](#dead-letter-queue)
-      * [Message Structure](#message-structure)
-      * [Configurations](#configurations)
-    * [Quick Example](#quick-example)
-  * [ExternalEventSinkConnector](#externaleventsinkconnector)
-    * [Features](#features-1)
-      * [Idempotent Writes](#idempotent-writes-1)
-      * [Multiple Tasks](#multiple-tasks-1)
-      * [Dead Letter Queue](#dead-letter-queue-1)
-      * [Message Structure](#message-structure-1)
-      * [Configurations](#configurations-1)
-    * [Quick Example](#quick-example-1)
-  * [Configurations](#configurations-2)
-  * [Examples](#examples)
-  * [Development](#development)
-  * [Licencing](#licencing)
-<!-- TOC -->
+* [WfRunSinkConnector](#wfrunsinkconnector)
+  * [Features](#features)
+    * [Idempotent Writes](#idempotent-writes)
+    * [Multiple Tasks](#multiple-tasks)
+    * [Dead Letter Queue](#dead-letter-queue)
+    * [Message Structure](#message-structure)
+    * [Configurations](#configurations)
+  * [Quick Example](#quick-example)
+* [ExternalEventSinkConnector](#externaleventsinkconnector)
+  * [Features](#features-1)
+    * [Idempotent Writes](#idempotent-writes-1)
+    * [Multiple Tasks](#multiple-tasks-1)
+    * [Dead Letter Queue](#dead-letter-queue-1)
+    * [Message Structure](#message-structure-1)
+    * [Configurations](#configurations-1)
+  * [Quick Example](#quick-example-1)
+* [Configurations](#configurations-2)
+* [Versioning](#versioning)
+* [Examples](#examples)
+* [Development](#development)
+* [License](#license)
 
 ## WfRunSinkConnector
 
@@ -178,6 +176,15 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 - [LittleHorse Sink Connector Configurations](CONFIGURATIONS.md).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
+
+## Versioning
+
+We use [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+where `major.minor` numbers indicate littlehorse version compatibility, and the `patch` digit indicates the `lh-kafka-connect` bundle version.
+
+- `major` LittleHorse server `major` version compatibility.
+- `minor` LittleHorse server `minor` version compatibility.
+- `patch` LittleHorse Connectors bundle version.
 
 ## Examples
 

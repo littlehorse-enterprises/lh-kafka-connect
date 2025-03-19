@@ -85,7 +85,7 @@ shadowJar {
     destinationDirectory = bundleDirectory.dir("lib")
     archiveBaseName = rootProject.name
     archiveClassifier = ""
-    relocate "io.grpc", "shadow.io.grpc"
+    relocate "io.grpc", "io.littlehorse.grpc"
     manifest {
         attributes "Implementation-Version": version
     }

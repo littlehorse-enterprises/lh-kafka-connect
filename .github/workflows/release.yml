@@ -49,6 +49,7 @@ jobs:
   create-release:
     needs:
       - prepare-bundle
+      - prepare-tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

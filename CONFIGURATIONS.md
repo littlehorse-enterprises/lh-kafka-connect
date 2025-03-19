@@ -115,7 +115,7 @@
 ## ExternalEventSinkConnector Configurations
 
 ``external.event.name``
-  The name of the ExternalEventDef that this event implements.
+  The name of the ExternalEventDef.
 
   * Type: string
   * Importance: high

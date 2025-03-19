@@ -1,11 +1,10 @@
-# WfRun Connector with Field Filter
+# WfRun Connector with Protobuf
 
 In this example you will:
 
 - Register a workflow with variable types: `STR`.
-- Produce json messages to a kafka topic with SchemaRegistry.
-- Create a WfRunSinkConnector with filters transformation by field.
-- Drop unused field.
+- Produce protobuf messages to a kafka topic with SchemaRegistry.
+- Create a WfRunSinkConnector without transformation.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -39,21 +38,18 @@ docker compose exec kafka-connect \
 kafka-topics --create --bootstrap-server kafka1:9092 \
 --replication-factor 3 \
 --partitions 12 \
---topic example-wfrun-filter
+--topic example-wfrun-protobuf
 ```
 
 Produce:
 
 ```shell
 docker compose exec -T kafka-connect \
-kafka-json-schema-console-producer --bootstrap-server kafka1:9092 \
---topic example-wfrun-filter \
+kafka-protobuf-console-producer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-protobuf \
 --property schema.registry.url=http://schema-registry:8081 \
---property key.schema="$(< examples/wfrun-filter/quote_key.schema.json)" \
---property value.schema="$(< examples/wfrun-filter/quote.schema.json)" \
---property "parse.key=true" \
---property "key.separator=|" \
-< examples/wfrun-filter/data.txt
+--property value.schema="$(< examples/wfrun-protobuf/species.proto)" \
+< examples/wfrun-protobuf/data.txt
 ```
 
 Consume:
@@ -63,11 +59,9 @@ Consume:
 
 ```shell
 docker compose exec kafka-connect \
-kafka-json-schema-console-consumer --bootstrap-server kafka1:9092 \
---topic example-wfrun-filter \
+kafka-protobuf-console-consumer --bootstrap-server kafka1:9092 \
+--topic example-wfrun-protobuf \
 --property schema.registry.url=http://schema-registry:8081 \
---property "print.key=true" \
---property "key.separator=|" \
 --from-beginning
 ```
 
@@ -75,7 +69,14 @@ kafka-json-schema-console-consumer --bootstrap-server kafka1:9092 \
 > If you need to generate new data run:
 
 ```shell
-./gradlew -q example-wfrun-filter:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-filter/data.txt
+./gradlew -q example-wfrun-protobuf:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-protobuf/data.txt
+```
+
+> [!NOTE]
+> If you need to build the protobuf:
+
+```shell
+protoc --java_out=examples/wfrun-protobuf/src/main/java --proto_path=examples/wfrun-protobuf/ species.proto
 ```
 
 ## Check Schema Registry
@@ -91,7 +92,7 @@ http :8081/schemas
 Run worker:
 
 ```shell
-./gradlew example-wfrun-filter:run
+./gradlew example-wfrun-protobuf:run
 ```
 
 ## Create Connector
@@ -99,13 +100,13 @@ Run worker:
 Create connector:
 
 ```shell
-http PUT :8083/connectors/example-wfrun-filter/config < examples/wfrun-filter/connector.json
+http PUT :8083/connectors/example-wfrun-protobuf/config < examples/wfrun-protobuf/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-wfrun-filter
+http :8083/connectors/example-wfrun-protobuf
 ```
 
 ## Check WfRuns
@@ -113,5 +114,5 @@ http :8083/connectors/example-wfrun-filter
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-filter
+lhctl search wfRun --wfSpecName example-wfrun-protobuf
 ```

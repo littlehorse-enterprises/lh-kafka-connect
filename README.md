@@ -2,27 +2,32 @@
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
-* [WfRunSinkConnector](#wfrunsinkconnector)
-  * [Features](#features)
-    * [Idempotent Writes](#idempotent-writes)
-    * [Multiple Tasks](#multiple-tasks)
-    * [Dead Letter Queue](#dead-letter-queue)
-    * [Message Structure](#message-structure)
-    * [Configurations](#configurations)
-  * [Quick Example](#quick-example)
-* [ExternalEventSinkConnector](#externaleventsinkconnector)
-  * [Features](#features-1)
-    * [Idempotent Writes](#idempotent-writes-1)
-    * [Multiple Tasks](#multiple-tasks-1)
-    * [Dead Letter Queue](#dead-letter-queue-1)
-    * [Message Structure](#message-structure-1)
-    * [Configurations](#configurations-1)
-  * [Quick Example](#quick-example-1)
-* [Configurations](#configurations-2)
-* [Versioning](#versioning)
-* [Examples](#examples)
-* [Development](#development)
-* [License](#license)
+<!-- TOC -->
+* [LittleHorse Connectors for Kafka Connect](#littlehorse-connectors-for-kafka-connect)
+  * [WfRunSinkConnector](#wfrunsinkconnector)
+    * [Features](#features)
+      * [Idempotent Writes](#idempotent-writes)
+      * [Multiple Tasks](#multiple-tasks)
+      * [Dead Letter Queue](#dead-letter-queue)
+      * [Expected Message Structure](#expected-message-structure)
+      * [Converters](#converters)
+      * [Configurations](#configurations)
+    * [Quick Example](#quick-example)
+  * [ExternalEventSinkConnector](#externaleventsinkconnector)
+    * [Features](#features-1)
+      * [Idempotent Writes](#idempotent-writes-1)
+      * [Multiple Tasks](#multiple-tasks-1)
+      * [Dead Letter Queue](#dead-letter-queue-1)
+      * [Expected Message Structure](#expected-message-structure-1)
+      * [Converters](#converters-1)
+      * [Configurations](#configurations-1)
+    * [Quick Example](#quick-example-1)
+  * [Configurations](#configurations-2)
+  * [Versioning](#versioning)
+  * [Examples](#examples)
+  * [Development](#development)
+  * [License](#license)
+<!-- TOC -->
 
 ## WfRunSinkConnector
 
@@ -47,7 +52,7 @@ Specify the number of tasks in the `tasks.max` configuration parameter.
 This connector supports the Dead Letter Queue (DLQ) functionality.
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
-#### Message Structure
+#### Expected Message Structure
 
 | Message Part | Description                                  | Type | Valid Values       |
 |--------------|----------------------------------------------|------|--------------------|
@@ -55,6 +60,14 @@ More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/p
 | `value`      | Define the `variables` field of the workflow | map  | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
+
+You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+#### Converters
+
+This connector supports `Protobuf`, `Json` and `Avro` through converters.
+
+More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
 
 #### Configurations
 
@@ -120,7 +133,7 @@ Specify the number of tasks in the `tasks.max` configuration parameter.
 This connector supports the Dead Letter Queue (DLQ) functionality.
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
-#### Message Structure
+#### Expected Message Structure
 
 | Message Part | Description                                | Type   | Valid Values     |
 |--------------|--------------------------------------------|--------|------------------|
@@ -128,6 +141,14 @@ More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/p
 | `value`      | Define the `content` of the external event | any    | any not null     |
 
 More about external event fields at [PutExternalEventRequest](https://littlehorse.io/docs/server/api#putexternaleventrequest).
+
+You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+#### Converters
+
+This connector supports `Protobuf`, `Json` and `Avro` through converters.
+
+More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
 
 #### Configurations
 

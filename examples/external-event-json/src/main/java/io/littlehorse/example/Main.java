@@ -31,7 +31,7 @@ public class Main {
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
-        LHTaskWorker worker = new LHTaskWorker(new GreetingsWorker(), TASK_DEF_NAME, lhConfig);
+        LHTaskWorker worker = new LHTaskWorker(new SquadronWorker(), TASK_DEF_NAME, lhConfig);
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
@@ -55,7 +55,7 @@ public class Main {
         worker.start();
     }
 
-    public static class GreetingsWorker {
+    public static class SquadronWorker {
 
         @LHTaskMethod(TASK_DEF_NAME)
         public String squadron(List<Map<String, Object>> squadron) {

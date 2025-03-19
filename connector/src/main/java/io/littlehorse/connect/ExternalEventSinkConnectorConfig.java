@@ -20,7 +20,7 @@ public class ExternalEventSinkConnectorConfig extends LHSinkConnectorConfig {
                     EXTERNAL_EVENT_NAME_KEY,
                     Type.STRING,
                     Importance.HIGH,
-                    "The name of the ExternalEventDef that this event implements.");
+                    "The name of the ExternalEventDef.");
 
     private final String externalEventName;
 

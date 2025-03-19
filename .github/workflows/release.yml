@@ -54,7 +54,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Generate a changelog
+        with:
+          fetch-depth: 0
+      - name: Generate a Changelog
         uses: orhun/git-cliff-action@v3
         id: git-cliff
         with:

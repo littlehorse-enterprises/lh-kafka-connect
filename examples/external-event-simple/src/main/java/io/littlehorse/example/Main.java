@@ -56,7 +56,7 @@ public class Main {
 
         @LHTaskMethod(TASK_DEF_NAME)
         public String character(String characterName) {
-            String message = "Hello %s!".formatted(characterName);
+            String message = "Hello " + characterName;
             log.info(message);
             return message;
         }

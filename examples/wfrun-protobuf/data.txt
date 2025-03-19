@@ -1,0 +1,10 @@
+{"name":"Neimoidian"}
+{"name":"Dathomirian"}
+{"name":"Jawa"}
+{"name":"Wookiee"}
+{"name":"Porg"}
+{"name":"Bith"}
+{"name":"Kaminoan"}
+{"name":"Porg"}
+{"name":"Gamorreans"}
+{"name":"Dathomirian"}

@@ -54,6 +54,7 @@ kafka-avro-console-producer --bootstrap-server kafka1:9092 \
 
 Consume:
 
+> [!NOTE]
 > In case you need to verify the messages in the topic.
 
 ```shell

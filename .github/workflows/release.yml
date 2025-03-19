@@ -31,8 +31,8 @@ jobs:
           java-version: "11"
       - name: Dump Version
         env:
-          TAG: ${{ needs.prepare-tag.outputs.tag }}
-        run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
+          BUNDLE_VERSION: ${{ needs.prepare-tag.outputs.tag }}
+        run: sed -i "s/version=.*/version=${BUNDLE_VERSION}/g" gradle.properties
       - name: Unit Tests
         run: ./gradlew connector:test
       - name: E2E Tests
@@ -66,8 +66,14 @@ jobs:
         with:
           name: lh-kafka-connect
           path: connector/build/dist/
+      - name: Add sha256
+        env:
+          BUNDLE_VERSION: ${{ needs.prepare-tag.outputs.tag }}
+        run:
+          sha256sum connector/build/dist/lh-kafka-connect-${BUNDLE_VERSION}.zip > lh-kafka-connect-${BUNDLE_VERSION}.sha256
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUNDLE_VERSION: ${{ needs.prepare-tag.outputs.tag }}
         run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/build/dist/lh-kafka-connect*.zip
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/build/dist/lh-kafka-connect-${BUNDLE_VERSION}.zip lh-kafka-connect-${BUNDLE_VERSION}.sha256

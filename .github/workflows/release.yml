@@ -74,8 +74,7 @@ jobs:
         run:
           sha256sum lh-kafka-connect-${BUNDLE_VERSION}.zip > lh-kafka-connect-${BUNDLE_VERSION}.sha256
       - name: Create Release
-        working-directory: connector/build/dist/
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md lh-kafka-connect-*
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md connector/build/dist/lh-kafka-connect-*

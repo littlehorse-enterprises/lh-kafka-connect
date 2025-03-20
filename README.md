@@ -1,5 +1,8 @@
 # LittleHorse Connectors for Kafka Connect
 
+<a href="https://github.com/littlehorse-enterprises/littlehorse"><img alt="github" src="https://img.shields.io/badge/GitHub-blue?logo=github&logoColor=white"></a>
+<a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/lh-kafka-connect/refs/heads/main/assets/badge.svg"/></a>
+
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
 <!-- TOC -->
@@ -23,6 +26,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
       * [Configurations](#configurations-1)
     * [Quick Example](#quick-example-1)
   * [Configurations](#configurations-2)
+  * [Download](#download)
   * [Versioning](#versioning)
   * [Examples](#examples)
   * [Development](#development)
@@ -71,7 +75,7 @@ More about converters at [Kafka Connect Converters](https://docs.confluent.io/pl
 
 #### Configurations
 
-Configurations at [WfRunSinkConnector Configurations](CONFIGURATIONS.md#wfrunsinkconnector-configurations).
+Configurations at [WfRunSinkConnector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 
 ### Quick Example
 
@@ -152,7 +156,7 @@ More about converters at [Kafka Connect Converters](https://docs.confluent.io/pl
 
 #### Configurations
 
-Configurations at [ExternalEventSinkConnector Configurations](CONFIGURATIONS.md#externaleventsinkconnector-configurations).
+Configurations at [ExternalEventSinkConnector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
 ### Quick Example
 
@@ -194,9 +198,16 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 
 ## Configurations
 
-- [LittleHorse Sink Connector Configurations](CONFIGURATIONS.md).
+- [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
+- [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
+
+## Download
+
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
+
+For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).
 
 ## Versioning
 
@@ -209,11 +220,11 @@ where `major.minor` numbers indicate littlehorse version compatibility, and the 
 
 ## Examples
 
-For more examples go to [examples](examples).
+For more examples go to [examples](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples).
 
 ## Development
 
-For development instructions go to [DEVELOPMENT.md](DEVELOPMENT.md).
+For development instructions go to [DEVELOPMENT.md](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/DEVELOPMENT.md).
 
 ## License
 

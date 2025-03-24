@@ -215,6 +215,13 @@ For more examples go to [examples](examples).
 
 For development instructions go to [DEVELOPMENT.md](DEVELOPMENT.md).
 
+Java version 11 or greater is required.
+
+Developed and tested against Apache Kafka version 3.9 and 4.0.  Confluent platform 7.8 & 7.9.
+
+Developed and tested against LittleHorse version 0.12.1 
+
+
 ## License
 
 <a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>

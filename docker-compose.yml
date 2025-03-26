@@ -116,6 +116,7 @@ services:
       CONNECT_CONFIG_STORAGE_TOPIC: __connect_config
       CONNECT_OFFSET_STORAGE_TOPIC: __connect_offsets
       CONNECT_STATUS_STORAGE_TOPIC: __connect_status
+      WF_SPEC_NAME: example-wfrun-secrets
     ports:
       - "8083:8083"
     restart: on-failure
@@ -132,6 +133,7 @@ services:
       start_period: 30s
     volumes:
       - ./connector/build/bundle:/usr/local/share/kafka/plugins
+      - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties
 
   lhctl:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}

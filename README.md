@@ -8,28 +8,22 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
 <!-- TOC -->
 * [LittleHorse Connectors for Kafka Connect](#littlehorse-connectors-for-kafka-connect)
   * [WfRunSinkConnector](#wfrunsinkconnector)
-    * [Features](#features)
-      * [Idempotent Writes](#idempotent-writes)
-      * [Multiple Tasks](#multiple-tasks)
-      * [Dead Letter Queue](#dead-letter-queue)
-      * [Expected Message Structure](#expected-message-structure)
-      * [Converters](#converters)
-      * [Configurations](#configurations)
+    * [Expected Message Structure](#expected-message-structure)
     * [Quick Example](#quick-example)
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
-    * [Features](#features-1)
-      * [Idempotent Writes](#idempotent-writes-1)
-      * [Multiple Tasks](#multiple-tasks-1)
-      * [Dead Letter Queue](#dead-letter-queue-1)
-      * [Expected Message Structure](#expected-message-structure-1)
-      * [Converters](#converters-1)
-      * [Configurations](#configurations-1)
+    * [Expected Message Structure](#expected-message-structure-1)
     * [Quick Example](#quick-example-1)
-  * [Configurations](#configurations-2)
+  * [Idempotent Writes](#idempotent-writes)
+  * [Multiple Tasks](#multiple-tasks)
+  * [Dead Letter Queue](#dead-letter-queue)
+  * [Converters](#converters)
+  * [External Secrets](#external-secrets)
+  * [Configurations](#configurations)
   * [Download](#download)
   * [Versioning](#versioning)
   * [Examples](#examples)
   * [Development](#development)
+  * [Dependencies](#dependencies)
   * [License](#license)
 <!-- TOC -->
 
@@ -37,26 +31,10 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
 
 This connector allows you to execute [WfRuns](https://littlehorse.io/docs/server/concepts/workflows#the-wfrun) into LittleHorse.
 It supports all the [Variable Types](https://littlehorse.io/docs/server/concepts/variables) provided by LittleHorse.
+
 More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/docs/server/getting-started/quickstart).
 
-### Features
-
-#### Idempotent Writes
-
-To ensure idempotency, this connector generates unique [WfRunIds](https://littlehorse.io/docs/server/developer-guide/grpc/running-workflows#passing-the-id)
-with the format: `{connector name}-{topic name}-{partition}-{offset}`.
-
-#### Multiple Tasks
-
-The `WfRunSinkConnector` supports running one or more tasks.
-Specify the number of tasks in the `tasks.max` configuration parameter.
-
-#### Dead Letter Queue
-
-This connector supports the Dead Letter Queue (DLQ) functionality.
-More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
-
-#### Expected Message Structure
+### Expected Message Structure
 
 | Message Part | Description                                  | Type | Valid Values       |
 |--------------|----------------------------------------------|------|--------------------|
@@ -66,16 +44,6 @@ More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/p
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
-
-#### Converters
-
-This connector supports `Protobuf`, `Json` and `Avro` through converters.
-
-More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
-
-#### Configurations
-
-Configurations at [WfRunSinkConnector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 
 ### Quick Example
 
@@ -114,30 +82,15 @@ Next connector configuration will execute `WfRuns` with the variable `name`.
 }
 ```
 
+More configurations at [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
+
 ## ExternalEventSinkConnector
 
 This connector allows you to execute [External Events](https://littlehorse.io/docs/server/concepts/external-events) into LittleHorse.
 
 More about running external events at [LittleHorse External Events](https://littlehorse.io/docs/server/concepts/external-events).
 
-### Features
-
-#### Idempotent Writes
-
-To ensure idempotency, this connector generates unique [GUID](https://littlehorse.io/docs/server/concepts/external-events#posting-externalevents)
-for external events with the format: `{connector name}-{topic name}-{partition}-{offset}`.
-
-#### Multiple Tasks
-
-The `ExternalEventSinkConnector` supports running one or more tasks.
-Specify the number of tasks in the `tasks.max` configuration parameter.
-
-#### Dead Letter Queue
-
-This connector supports the Dead Letter Queue (DLQ) functionality.
-More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
-
-#### Expected Message Structure
+###  Expected Message Structure
 
 | Message Part | Description                                | Type   | Valid Values     |
 |--------------|--------------------------------------------|--------|------------------|
@@ -147,16 +100,6 @@ More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/p
 More about external event fields at [PutExternalEventRequest](https://littlehorse.io/docs/server/api#putexternaleventrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
-
-#### Converters
-
-This connector supports `Protobuf`, `Json` and `Avro` through converters.
-
-More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
-
-#### Configurations
-
-Configurations at [ExternalEventSinkConnector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
 ### Quick Example
 
@@ -196,6 +139,38 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 }
 ```
 
+More configurations at [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
+
+## Idempotent Writes
+
+To ensure idempotency, we generate a [GUID](https://littlehorse.io/docs/server/concepts/external-events#posting-externalevents)
+for each request to LH with the format: `{connector name}-{topic name}-{partition}-{offset}`.
+
+## Multiple Tasks
+
+These connectors support parallelism by running one or more tasks.
+Specify the number of tasks in the `tasks.max` configuration parameter.
+
+More configurations at [Configure Sink Connector](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
+
+## Dead Letter Queue
+
+These connectors support Dead Letter Queue (DLQ).
+
+More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
+
+## Converters
+
+These connectors support `Protobuf`, `Json` and `Avro` through converters.
+
+More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
+
+## External Secrets
+
+Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interfaces, so these connector support external secrets by default.
+
+More about securest at [Externalize Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets).
+
 ## Configurations
 
 - [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
@@ -226,12 +201,11 @@ For more examples go to [examples](https://github.com/littlehorse-enterprises/lh
 
 For development instructions go to [DEVELOPMENT.md](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/DEVELOPMENT.md).
 
-Java version 11 or greater is required.
+## Dependencies
 
-Developed and tested against Apache Kafka version 3.9 and 4.0.  Confluent platform 7.8 & 7.9.
-
-Developed and tested against LittleHorse version 0.12.1 
-
+- Java version 11 or greater is required.
+- Developed and tested against Apache Kafka version 3.8 and 3.9, equivalents to Confluent Platform 7.8 and 7.9.
+- Developed and tested against LittleHorse version 0.12 and 0.13.
 
 ## License
 

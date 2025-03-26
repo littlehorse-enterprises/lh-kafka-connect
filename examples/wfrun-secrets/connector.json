@@ -1,0 +1,17 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-secrets",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "transforms": "HoistField",
+  "transforms.HoistField.type": "org.apache.kafka.connect.transforms.HoistField$Value",
+  "transforms.HoistField.field": "name",
+  "config.providers": "file,env",
+  "config.providers.file.class": "org.apache.kafka.common.config.provider.FileConfigProvider",
+  "config.providers.env.class": "org.apache.kafka.common.config.provider.EnvVarConfigProvider",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "${file:/home/appuser/secrets.properties:lhc.tenant.id}",
+  "wf.spec.name": "${env:WF_SPEC_NAME}"
+}

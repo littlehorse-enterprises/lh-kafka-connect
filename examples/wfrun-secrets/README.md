@@ -114,7 +114,7 @@ Check the configurations:
 }
 ```
 
-We added two configs providers: `"config.providers": "file,env"`.
+We added two config providers: `"config.providers": "file,env"`.
 The `FileConfigProvider` will extract the `lhc.tenant.id` config from `/home/appuser/secrets.properties`.
 `EnvVarConfigProvider` will do the same with the variable `WF_SPEC_NAME` for `wf.spec.name`.
 

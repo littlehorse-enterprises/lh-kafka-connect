@@ -143,12 +143,12 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 
 ## Idempotent Writes
 
-To ensure idempotency, we generate a [GUID](https://littlehorse.io/docs/server/concepts/external-events#posting-externalevents)
-for each request to LH with the format: `{connector name}-{topic name}-{partition}-{offset}`.
+To ensure idempotency, we generate a unique id
+for each request to LH with the next format: `{connector name}-{topic name}-{partition}-{offset}`.
 
 ## Multiple Tasks
 
-These connectors support parallelism by running one or more tasks.
+These connectors support parallelism by running more than one task.
 Specify the number of tasks in the `tasks.max` configuration parameter.
 
 More configurations at [Configure Sink Connector](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
@@ -167,9 +167,9 @@ More about converters at [Kafka Connect Converters](https://docs.confluent.io/pl
 
 ## External Secrets
 
-Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interfaces, so these connector support external secrets by default.
+Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interfaces, so these connectors support external secrets by default.
 
-More about securest at [Externalize Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets).
+More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets).
 
 ## Configurations
 

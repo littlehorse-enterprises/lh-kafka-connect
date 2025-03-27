@@ -31,12 +31,13 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
             "CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR";
     private static final String CONNECT_STATUS_STORAGE_REPLICATION_FACTOR =
             "CONNECT_STATUS_STORAGE_REPLICATION_FACTOR";
+    private static final String DEFAULT_KAFKA_BOOTSTRAP_SERVERS = "kafka:19092";
 
-    public KafkaConnectContainer(final DockerImageName image, final String bootstrapServers) {
+    public KafkaConnectContainer(final DockerImageName image) {
         super(image);
         image.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         this.withExposedPorts(DEFAULT_PORT)
-                .withEnv(CONNECT_BOOTSTRAP_SERVERS, bootstrapServers)
+                .withKafkaBootstrapServers(DEFAULT_KAFKA_BOOTSTRAP_SERVERS)
                 .withEnv(CONNECT_GROUP_ID, UUID.randomUUID().toString())
                 .withEnv(CONNECT_CONFIG_STORAGE_TOPIC, "__connect_config")
                 .withEnv(CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR, "1")
@@ -49,6 +50,10 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
                 .withEnv(CONNECT_REST_ADVERTISED_HOST_NAME, "localhost")
                 .withEnv(CONNECT_REST_PORT, String.valueOf(DEFAULT_PORT))
                 .waitingFor(Wait.forLogMessage(".*\"GET /connectors HTTP/1.1\" 200.*", 1));
+    }
+
+    public KafkaConnectContainer withKafkaBootstrapServers(final String bootstrapServers) {
+        return this.withEnv(CONNECT_BOOTSTRAP_SERVERS, bootstrapServers);
     }
 
     public URL getUrl() throws MalformedURLException {

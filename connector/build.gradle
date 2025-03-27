@@ -23,6 +23,8 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // tests
+    testImplementation "io.littlehorse:littlehorse-test-utils:${lhVersion}"
+    testImplementation "io.littlehorse:littlehorse-test-utils-container:${lhVersion}"
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation "org.testcontainers:kafka:${testcontainersVersion}"
     testImplementation "org.testcontainers:testcontainers:${testcontainersVersion}"

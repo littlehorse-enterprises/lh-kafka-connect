@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 
+import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.e2e.configs.KafkaConnectContainer;
 
 import org.junit.jupiter.api.Test;
@@ -20,30 +21,40 @@ import java.util.Map;
 @Testcontainers
 public class InstallConnectorPluginTest {
 
-    public static final String VERSION = "7.8.0";
+    public static final String CONFLUENT_VERSION = "7.8.0";
+    public static final String LH_VERSION = "0.13.0";
     public static final DockerImageName KAFKA_CONNECT_IMAGE =
-            DockerImageName.parse("confluentinc/cp-kafka-connect").withTag(VERSION);
+            DockerImageName.parse("confluentinc/cp-kafka-connect").withTag(CONFLUENT_VERSION);
     public static final DockerImageName KAFKA_IMAGE =
-            DockerImageName.parse("confluentinc/cp-kafka").withTag(VERSION);
+            DockerImageName.parse("confluentinc/cp-kafka").withTag(CONFLUENT_VERSION);
+    public static final DockerImageName LH_IMAGE = DockerImageName.parse(
+                    "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
+            .withTag(LH_VERSION);
     public static final String KAFKA_HOSTNAME = "kafka";
-    public static final String BOOTSTRAP_SERVER = KAFKA_HOSTNAME + ":19092";
+    public static final String KAFKA_BOOTSTRAP_SERVER = KAFKA_HOSTNAME + ":19092";
     public static final Network NETWORK = Network.newNetwork();
     public static final String BUNDLE_VERSION = "BUNDLE_VERSION";
 
     @Container
-    ConfluentKafkaContainer kafka = new ConfluentKafkaContainer(KAFKA_IMAGE)
+    ConfluentKafkaContainer KAFKA = new ConfluentKafkaContainer(KAFKA_IMAGE)
             .withNetworkAliases(KAFKA_HOSTNAME)
-            .withListener(BOOTSTRAP_SERVER)
+            .withListener(KAFKA_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
 
     @Container
-    KafkaConnectContainer kafkaConnect = new KafkaConnectContainer(
-                    KAFKA_CONNECT_IMAGE, BOOTSTRAP_SERVER)
-            .dependsOn(kafka)
+    KafkaConnectContainer KAFKA_CONNECT = new KafkaConnectContainer(KAFKA_CONNECT_IMAGE)
+            .dependsOn(KAFKA)
+            .withKafkaBootstrapServers(KAFKA_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK)
             .withCopyFileToContainer(
                     MountableFile.forHostPath("build/bundle/lh-kafka-connect"),
                     "/usr/share/java/lh-kafka-connect");
+
+    @Container
+    LittleHorseContainer LITTLEHORSE = new LittleHorseContainer(LH_IMAGE)
+            .dependsOn(KAFKA)
+            .withKafkaBootstrapServers(KAFKA_BOOTSTRAP_SERVER)
+            .withNetwork(NETWORK);
 
     private static Map<Object, Object> buildEntry(String className, String type) {
         return Map.of(
@@ -67,7 +78,7 @@ public class InstallConnectorPluginTest {
                 "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value", "predicate");
         given().queryParams(Map.of("connectorsOnly", false))
                 .when()
-                .get(kafkaConnect.getUrl() + "/connector-plugins")
+                .get(KAFKA_CONNECT.getUrl() + "/connector-plugins")
                 .then()
                 .statusCode(200)
                 .assertThat()

@@ -167,7 +167,7 @@ More about converters at [Kafka Connect Converters](https://docs.confluent.io/pl
 
 ## External Secrets
 
-Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interfaces, so these connectors support external secrets by default.
+Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interface, so these connectors support external secrets by default.
 
 More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets).
 

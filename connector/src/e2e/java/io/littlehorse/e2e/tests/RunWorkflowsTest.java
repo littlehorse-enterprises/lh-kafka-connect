@@ -49,12 +49,6 @@ public class RunWorkflowsTest extends E2ETest {
         produceValues(TOPIC_NAME, inputNames);
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
-        WfRunId wfRunId1 =
-                WfRunId.newBuilder().setId("my-connector-my-input-topic-0-1").build();
-
-        WfRunId wfRunId0 =
-                WfRunId.newBuilder().setId("my-connector-my-input-topic-0-0").build();
-
         await(() -> {
             SearchWfRunRequest criteria = SearchWfRunRequest.newBuilder()
                     .setStatus(LHStatus.COMPLETED)
@@ -63,8 +57,12 @@ public class RunWorkflowsTest extends E2ETest {
             WfRunIdList result = lhClient.searchWfRun(criteria);
 
             WfRunIdList expected = WfRunIdList.newBuilder()
-                    .addResults(wfRunId1)
-                    .addResults(wfRunId0)
+                    .addResults(WfRunId.newBuilder()
+                            .setId("my-connector-my-input-topic-0-1")
+                            .build())
+                    .addResults(WfRunId.newBuilder()
+                            .setId("my-connector-my-input-topic-0-0")
+                            .build())
                     .build();
             assertThat(result).isEqualTo(expected);
         });

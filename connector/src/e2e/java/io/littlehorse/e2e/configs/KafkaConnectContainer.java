@@ -7,9 +7,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -64,9 +61,8 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
         return this.withEnv(CONNECT_BOOTSTRAP_SERVERS, bootstrapServers);
     }
 
-    public URL getUrl() throws MalformedURLException {
-        return URI.create(String.format("http://%s:%s", getHost(), getMappedPort(DEFAULT_PORT)))
-                .toURL();
+    public String getUrl() {
+        return String.format("http://%s:%s", getHost(), getMappedPort(DEFAULT_PORT));
     }
 
     public KafkaConnectContainer withPluginsFromHost(final String path) {

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class InstallPluginsTest extends E2ETest {
 
-    private static Map<Object, Object> buildPluginEntry(String className, String type) {
+    private static Map<Object, Object> buildEntry(String className, String type) {
         return Map.of(
                 "class",
                 className,
@@ -25,26 +25,24 @@ public class InstallPluginsTest extends E2ETest {
 
     @Test
     public void shouldInstallLHKafkaConnectPlugin() throws MalformedURLException {
-        Map<Object, Object> externalEventConnector =
-                buildPluginEntry("io.littlehorse.connect.ExternalEventSinkConnector", "sink");
-        Map<Object, Object> runWfConnector =
-                buildPluginEntry("io.littlehorse.connect.WfRunSinkConnector", "sink");
-        Map<Object, Object> predicateKey = buildPluginEntry(
-                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key", "predicate");
-        Map<Object, Object> predicateValue = buildPluginEntry(
-                "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value", "predicate");
         given().queryParams(Map.of("connectorsOnly", false))
                 .when()
                 .get(getKafkaConnectUrl("connector-plugins"))
                 .then()
-                .statusCode(200)
                 .assertThat()
+                .statusCode(200)
                 .body(
                         ".",
                         hasItems(
-                                externalEventConnector,
-                                runWfConnector,
-                                predicateKey,
-                                predicateValue));
+                                buildEntry(
+                                        "io.littlehorse.connect.ExternalEventSinkConnector",
+                                        "sink"),
+                                buildEntry("io.littlehorse.connect.WfRunSinkConnector", "sink"),
+                                buildEntry(
+                                        "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
+                                        "predicate"),
+                                buildEntry(
+                                        "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value",
+                                        "predicate")));
     }
 }

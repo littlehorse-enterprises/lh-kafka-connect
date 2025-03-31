@@ -29,6 +29,6 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: "21"
+          java-version: "11"
       - name: E2E Tests
         run: ./gradlew connector:e2e

@@ -25,7 +25,6 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,8 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public abstract class E2ETest {
-    protected static Logger log = LoggerFactory.getLogger(E2ETest.class);
-
+    public static final String LH_INTERNAL_BOOTSTRAP_SERVER = "littlehorse";
     private static final String KAFKA_INTERNAL_BOOTSTRAP_SERVER = "kafka:19092";
     private static final Network NETWORK = Network.newNetwork();
     private static final String CONFLUENT_VERSION = "7.8.0";
@@ -57,12 +55,12 @@ public abstract class E2ETest {
     private static final DockerImageName LH_IMAGE = DockerImageName.parse(
                     "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
             .withTag(LH_VERSION);
-    public static final String LH_INTERNAL_BOOTSTRAP_SERVER = "littlehorse";
     private static final LittleHorseContainer LITTLEHORSE = new LittleHorseContainer(LH_IMAGE)
             .dependsOn(KAFKA)
             .withInternalAdvertisedHost(LH_INTERNAL_BOOTSTRAP_SERVER)
             .withKafkaBootstrapServers(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
+    protected static Logger log = LoggerFactory.getLogger(E2ETest.class);
 
     static {
         KAFKA.start();
@@ -73,11 +71,11 @@ public abstract class E2ETest {
     private LHConfig lhConfig;
 
     public String getKafkaConnectUrl(String... paths) {
-        URI base = URI.create(KAFKA_CONNECT.getUrl());
         String path = Arrays.stream(paths)
-                .map(part -> part.replace("/", ""))
-                .collect(Collectors.joining("/"));
-        return base.resolve(path).toString();
+                .map(part -> "/" + part)
+                .map(part -> part.replaceAll("/+", "/"))
+                .collect(Collectors.joining());
+        return KAFKA_CONNECT.getUrl() + path;
     }
 
     public String getKafkaBootstrapServers() {

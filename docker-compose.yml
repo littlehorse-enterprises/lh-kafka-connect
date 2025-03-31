@@ -6,7 +6,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9092,EXTERNAL://localhost:19092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      KAFKA_LISTENERS: CONTROLLER://kafka1:9093,INTERNAL://kafka1:9092,EXTERNAL://kafka1:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
@@ -18,7 +18,7 @@ services:
       - "19092:19092"
     restart: on-failure
     healthcheck:
-      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      test: kafka-topics --bootstrap-server kafka1:9092 --list > /dev/null 2>&1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -31,7 +31,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:9092,EXTERNAL://localhost:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
+      KAFKA_LISTENERS: CONTROLLER://kafka2:9093,INTERNAL://kafka2:9092,EXTERNAL://kafka2:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
@@ -43,7 +43,7 @@ services:
       - "29092:29092"
     restart: on-failure
     healthcheck:
-      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      test: kafka-topics --bootstrap-server kafka2:9092 --list > /dev/null 2>&1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -56,7 +56,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:9092,EXTERNAL://localhost:39092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:39092
+      KAFKA_LISTENERS: CONTROLLER://kafka3:9093,INTERNAL://kafka3:9092,EXTERNAL://kafka3:39092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_PROCESS_ROLES: broker,controller
@@ -68,7 +68,7 @@ services:
       - "39092:39092"
     restart: on-failure
     healthcheck:
-      test: kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1
+      test: kafka-topics --bootstrap-server kafka3:9092 --list > /dev/null 2>&1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -106,7 +106,9 @@ services:
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
       CONNECT_REST_ADVERTISED_HOST_NAME: localhost
+      CONNECT_REST_ADVERTISED_PORT: 8083
       CONNECT_REST_PORT: 8083
+      CONNECT_LISTENERS: http://0.0.0.0:8083
       CONNECT_GROUP_ID: kafka-connect-sandbox
       CONNECT_PLUGIN_PATH: /usr/local/share/kafka/plugins
       CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter

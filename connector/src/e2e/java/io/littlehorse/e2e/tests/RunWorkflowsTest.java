@@ -13,12 +13,9 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
-import net.datafaker.Faker;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
 public class RunWorkflowsTest extends E2ETest {
 
@@ -27,7 +24,6 @@ public class RunWorkflowsTest extends E2ETest {
     private static final String TOPIC_NAME = "my-input-topic";
     private static final Workflow WORKFLOW = Workflow.newWorkflow(
             WORKFLOW_NAME, wf -> wf.execute(WORKFLOW_NAME, wf.declareStr("name")));
-    private static final Faker faker = new Faker();
     public static final String CONNECTOR_NAME = "my-connector";
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
 
@@ -40,8 +36,7 @@ public class RunWorkflowsTest extends E2ETest {
 
     @Test
     public void shouldExecuteWfRunAfterProducing() {
-        String[] inputNames =
-                Stream.generate(() -> faker.starWars().character()).limit(2).toArray(String[]::new);
+        String[] inputNames = {"Leia Organa", "Luke Skywalker"};
 
         startWorker(this);
         registerWorkflow(WORKFLOW);

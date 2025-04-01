@@ -1,0 +1,53 @@
+{
+    "name": "lh-kafka-connect",
+    "tags": [
+        "littlehorse",
+        "microservice",
+        "workflow",
+        "workflow engine",
+        "analytics",
+        "orchestrator"
+    ],
+    "version": "dev",
+    "title": "LittleHorse Connector for Apache Kafka",
+    "description": "The LittleHorse Server is a high-performance and developer-first platform for building Durable Workflows in code",
+    "documentation_url": "https://littlehorse.io/docs",
+    "owner": {
+        "username": "littlehorse",
+        "name": "LittleHorse Enterprises LLC",
+        "url": "https://littlehorse.io",
+        "logo": "assets/logo.svg"
+    },
+    "requirements": [
+        "LittleHorse 0.12.0 or greater"
+    ],
+    "support": {
+        "logo": "assets/logo.svg",
+        "summary": "Officially supported by LittleHorse Enterprises LLC",
+        "url": "https://littlehorse.io/contact",
+        "provider_name": "LittleHorse Enterprises LLC"
+    },
+    "features": {
+        "supported_encodings": [
+            "any"
+        ],
+        "confluent_control_center_integration": false,
+        "delivery_guarantee": [
+            "at_least_once"
+        ],
+        "single_message_transforms": true,
+        "kafka_connect_api": true
+    },
+    "logo": "assets/logo.svg",
+    "source_url": "https://github.com/littlehorse-enterprises/lh-kafka-connect",
+    "component_types": [
+        "sink"
+    ],
+    "release_date": "2025-04-01",
+    "license": [
+        {
+            "name": "Server Side Public License, Version 1",
+            "url": "https://spdx.org/licenses/SSPL-1.0.html"
+        }
+    ]
+}

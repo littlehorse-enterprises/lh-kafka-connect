@@ -96,7 +96,7 @@ shadowJar {
 tasks.register("generateManifest", Task) {
     def data = [
             name             : rootProject.name,
-            tags             : ["littlehorse", "microservice", "workflow", "workflow engine"],
+            tags             : ["littlehorse", "microservice", "workflow", "workflow engine", "analytics", "orchestrator"],
             version          : version,
             title            : "LittleHorse Connector for Apache Kafka",
             description      : "The LittleHorse Server is a high-performance and developer-first platform for building Durable Workflows in code",
@@ -107,6 +107,7 @@ tasks.register("generateManifest", Task) {
                     url     : "https://littlehorse.io",
                     logo    : "assets/logo.svg"
             ],
+            requirements     : ["LittleHorse 0.12.0 or greater"],
             support          : [
                     logo         : "assets/logo.svg",
                     summary      : "Officially supported by LittleHorse Enterprises LLC",
@@ -138,6 +139,10 @@ tasks.register("generateManifest", Task) {
     }
     doLast {
         file(manifestFile).write(JsonOutput.prettyPrint(JsonOutput.toJson(data)))
+        copy {
+            from manifestFile
+            into "../"
+        }
     }
 }
 

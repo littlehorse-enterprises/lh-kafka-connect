@@ -1,57 +1,53 @@
 {
-    "component_types": [
-      "sink"
-    ],
-  
-    "description": "These connectors allow data transfer between Apache Kafka and LittleHorse.",
-  
-    "documentation_url": "https://littlehorse.io/docs/server/integrations/littlehorse-for-kafka-connect",
-  
-    "features": {
-      "confluent_control_center_integration": false,
-      "delivery_guarantee": ["at_least_once"],
-      "kafka_connect_api": true,
-      "single_message_transforms": true,
-      "supported_encodings": ["any"]
-    },
-  
-    "license": [
-      {
-        "name": "Server Side Public License, Version 1",
-        "url": "https://spdx.org/licenses/SSPL-1.0.html"
-      }
-    ],
-  
-    "logo": "assets/logo.svg",
-  
-    "name": "littlehorse-kafka-connect",
-  
-    "owner": {
-      "logo": "assets/logo.svg",
-      "name": "LittleHorse Enterprises LLC",
-      "type": "organization",
-      "url": "https://littlehorse.io/",
-      "username": "littlehorse"
-    },
-  
-    "requirements": [
-      "LittleHorse 0.12.0 or greater"
-    ],
-  
-    "support": {
-      "logo": "assets/logo.jpg",
-      "provider_name": "LittleHorse Enterprises",
-      "summary": "We provide full support for this connector, alongside community members who contribute to it as an open-source project.",
-      "url": "https://littlehorse.io/"
-    },
-  
+    "name": "lh-kafka-connect",
     "tags": [
-      "analytics",
-      "workflow",
-      "orchestrator"
+        "littlehorse",
+        "microservice",
+        "workflow",
+        "workflow engine",
+        "analytics",
+        "orchestrator"
     ],
-  
-    "title": "LittleHorse Kafka Connect",
-  
-    "version": "0.13.0"
-  }
+    "version": "dev",
+    "title": "LittleHorse Connector for Apache Kafka",
+    "description": "The LittleHorse Server is a high-performance and developer-first platform for building Durable Workflows in code",
+    "documentation_url": "https://littlehorse.io/docs",
+    "owner": {
+        "username": "littlehorse",
+        "name": "LittleHorse Enterprises LLC",
+        "url": "https://littlehorse.io",
+        "logo": "assets/logo.svg"
+    },
+    "requirements": [
+        "LittleHorse 0.12.0 or greater"
+    ],
+    "support": {
+        "logo": "assets/logo.svg",
+        "summary": "Officially supported by LittleHorse Enterprises LLC",
+        "url": "https://littlehorse.io/contact",
+        "provider_name": "LittleHorse Enterprises LLC"
+    },
+    "features": {
+        "supported_encodings": [
+            "any"
+        ],
+        "confluent_control_center_integration": false,
+        "delivery_guarantee": [
+            "at_least_once"
+        ],
+        "single_message_transforms": true,
+        "kafka_connect_api": true
+    },
+    "logo": "assets/logo.svg",
+    "source_url": "https://github.com/littlehorse-enterprises/lh-kafka-connect",
+    "component_types": [
+        "sink"
+    ],
+    "release_date": "2025-04-01",
+    "license": [
+        {
+            "name": "Server Side Public License, Version 1",
+            "url": "https://spdx.org/licenses/SSPL-1.0.html"
+        }
+    ]
+}

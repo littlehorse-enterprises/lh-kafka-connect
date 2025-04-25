@@ -54,11 +54,11 @@ public abstract class LHSinkConnector extends SinkConnector {
         if (Strings.isNullOrEmpty(connectorName)) {
             throw new ConfigException(NAME_CONFIG, connectorName, "Empty name is not allowed");
         }
-        if (!connectorName.matches("[a-zA-Z0-9-]+")) {
+        if (!connectorName.matches("[a-z0-9-]+")) {
             throw new ConfigException(
                     NAME_CONFIG,
                     connectorName,
-                    "Connector name only supports alphanumeric characters and hyphens");
+                    "Connector name only supports lowercase alphanumeric characters and hyphens");
         }
         return super.validate(connectorConfigs);
     }

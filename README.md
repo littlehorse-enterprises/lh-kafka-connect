@@ -146,6 +146,9 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 To ensure idempotency, we generate a unique id
 for each request to LH with the next format: `{connector name}-{topic name}-{partition}-{offset}`.
 
+> A Connector name must be a valid hostname, meaning lowercase alphanumeric characters separated by a `-`, example `my-littlehorse-connector1`.
+> LH does not support special characters for defining WfRunIds. More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-guide/wfspec-development/basics#defining-a-wfrunvariable).
+
 ## Multiple Tasks
 
 These connectors support parallelism by running more than one task.

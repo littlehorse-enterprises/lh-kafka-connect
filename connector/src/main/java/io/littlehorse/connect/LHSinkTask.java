@@ -1,5 +1,8 @@
 package io.littlehorse.connect;
 
+import static org.apache.kafka.connect.runtime.ConnectorConfig.ERRORS_TOLERANCE_CONFIG;
+import static org.apache.kafka.connect.runtime.ConnectorConfig.NAME_CONFIG;
+
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.VersionReader;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -20,11 +23,13 @@ import java.util.Map;
 @Slf4j
 @Getter
 public abstract class LHSinkTask extends SinkTask {
-
     private final Map<TopicPartition, OffsetAndMetadata> successfulOffsets = new HashMap<>();
+
     private LHSinkConnectorConfig connectorConfig;
     private LittleHorseBlockingStub blockingStub;
     private LHConfig lhConfig;
+    private String connectorName;
+    private String errorsTolerance;
 
     public abstract void executeGrpcCall(IdempotentSinkRecord sinkRecord);
 
@@ -37,20 +42,21 @@ public abstract class LHSinkTask extends SinkTask {
 
     @Override
     public void start(Map<String, String> props) {
+        connectorName = props.get(NAME_CONFIG);
+        errorsTolerance = props.getOrDefault(ERRORS_TOLERANCE_CONFIG, "none");
         connectorConfig = configure(props);
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();
         log.debug(
                 "Starting tasks {}[{}] with DLQ {}",
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName(),
+                connectorName,
                 isDLQEnabled() ? "enabled" : "disabled");
     }
 
     @Override
     public void stop() {
-        log.debug(
-                "Stopping {}[{}]", getClass().getSimpleName(), connectorConfig.getConnectorName());
+        log.debug("Stopping {}[{}]", getClass().getSimpleName(), connectorName);
     }
 
     @Override
@@ -62,7 +68,7 @@ public abstract class LHSinkTask extends SinkTask {
                     sinkRecord.kafkaPartition(),
                     sinkRecord.kafkaOffset(),
                     getClass().getSimpleName(),
-                    connectorConfig.getConnectorName());
+                    connectorName);
 
             try {
                 executeGrpcCall(
@@ -72,7 +78,7 @@ public abstract class LHSinkTask extends SinkTask {
                 log.error(
                         "Error processing record for task {}[{}]",
                         getClass().getSimpleName(),
-                        connectorConfig.getConnectorName(),
+                        connectorName,
                         e);
 
                 if (!doesTolerateErrors()) {
@@ -94,7 +100,7 @@ public abstract class LHSinkTask extends SinkTask {
                 "Commiting partitions {} for {}[{}]",
                 successfulOffsets,
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName());
+                connectorName);
         return successfulOffsets;
     }
 
@@ -103,7 +109,7 @@ public abstract class LHSinkTask extends SinkTask {
         log.debug(
                 "Opening task {}[{}] with partitions {}",
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName(),
+                connectorName,
                 partitions);
     }
 
@@ -112,7 +118,7 @@ public abstract class LHSinkTask extends SinkTask {
         log.debug(
                 "Closing task {}[{}] with partitions {}",
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName(),
+                connectorName,
                 partitions);
         // clean offset cache
         successfulOffsets.clear();
@@ -128,7 +134,7 @@ public abstract class LHSinkTask extends SinkTask {
         // to ensure idempotency we use: connector name + topic + partition + offset
         return String.format(
                 "%s-%s-%d-%d",
-                connectorConfig.getConnectorName(),
+                connectorName,
                 sinkRecord.topic(),
                 sinkRecord.kafkaPartition(),
                 sinkRecord.kafkaOffset());
@@ -143,15 +149,13 @@ public abstract class LHSinkTask extends SinkTask {
                 sinkRecord.kafkaPartition(),
                 sinkRecord.kafkaOffset(),
                 getClass().getSimpleName(),
-                connectorConfig.getConnectorName());
+                connectorName);
 
         context.errantRecordReporter().report(sinkRecord, e);
     }
 
     private boolean doesTolerateErrors() {
-        return connectorConfig
-                .getErrorsTolerance()
-                .equals(LHSinkConnectorConfig.ERRORS_TOLERANCE_ALL);
+        return errorsTolerance.equals("all");
     }
 
     private boolean isDLQEnabled() {

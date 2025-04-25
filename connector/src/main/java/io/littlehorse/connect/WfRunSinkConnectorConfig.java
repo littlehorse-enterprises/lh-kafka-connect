@@ -1,13 +1,10 @@
 package io.littlehorse.connect;
 
-import com.google.common.base.Strings;
-
 import lombok.Getter;
 
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
-import org.apache.kafka.common.config.ConfigException;
 
 import java.util.Map;
 
@@ -50,17 +47,9 @@ public class WfRunSinkConnectorConfig extends LHSinkConnectorConfig {
 
     public WfRunSinkConnectorConfig(Map<?, ?> props) {
         super(CONFIG_DEF, props);
-        wfSpecName = extractWfSpecName();
+        wfSpecName = getString(WF_SPEC_NAME_KEY);
         wfSpecRevision = getInt(WF_SPEC_REVISION_KEY);
         wfSpecMajorVersion = getInt(WF_SPEC_MAJOR_VERSION_KEY);
         wfRunParentId = getString(WF_RUN_PARENT_ID_KEY);
-    }
-
-    private String extractWfSpecName() {
-        String wfSpecName = getString(WF_SPEC_NAME_KEY);
-        if (Strings.isNullOrEmpty(wfSpecName)) {
-            throw new ConfigException(WF_SPEC_NAME_KEY, wfSpecName);
-        }
-        return wfSpecName;
     }
 }

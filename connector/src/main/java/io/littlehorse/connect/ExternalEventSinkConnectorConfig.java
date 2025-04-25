@@ -1,13 +1,10 @@
 package io.littlehorse.connect;
 
-import com.google.common.base.Strings;
-
 import lombok.Getter;
 
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
-import org.apache.kafka.common.config.ConfigException;
 
 import java.util.Map;
 
@@ -26,14 +23,6 @@ public class ExternalEventSinkConnectorConfig extends LHSinkConnectorConfig {
 
     public ExternalEventSinkConnectorConfig(Map<?, ?> props) {
         super(CONFIG_DEF, props);
-        externalEventName = extractExternalEventName();
-    }
-
-    private String extractExternalEventName() {
-        String externalEventName = getString(EXTERNAL_EVENT_NAME_KEY);
-        if (Strings.isNullOrEmpty(externalEventName)) {
-            throw new ConfigException(EXTERNAL_EVENT_NAME_KEY, externalEventName);
-        }
-        return externalEventName;
+        externalEventName = getString(EXTERNAL_EVENT_NAME_KEY);
     }
 }

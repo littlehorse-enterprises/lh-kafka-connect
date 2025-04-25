@@ -1,7 +1,5 @@
 package io.littlehorse.connect;
 
-import com.google.common.base.Strings;
-
 import io.littlehorse.sdk.common.config.LHConfig;
 
 import lombok.Getter;
@@ -10,7 +8,6 @@ import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
-import org.apache.kafka.common.config.ConfigException;
 
 import java.time.Duration;
 import java.util.Map;
@@ -19,8 +16,6 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class LHSinkConnectorConfig extends AbstractConfig {
 
-    public static final String CONNECTOR_NAME_KEY = "name";
-    public static final String ERRORS_TOLERANCE_KEY = "errors.tolerance";
     public static final String LHC_API_HOST_KEY = parseKafkaConnectConfig(LHConfig.API_HOST_KEY);
     public static final String LHC_API_PORT_KEY = parseKafkaConnectConfig(LHConfig.API_PORT_KEY);
     public static final String LHC_TENANT_ID_KEY = parseKafkaConnectConfig(LHConfig.TENANT_ID_KEY);
@@ -44,8 +39,6 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
 
     public static final String LH_API_PROTOCOL_PLAINTEXT = "PLAINTEXT";
     public static final String LH_API_PROTOCOL_TLS = "TLS";
-    public static final String ERRORS_TOLERANCE_NONE = "none";
-    public static final String ERRORS_TOLERANCE_ALL = "all";
 
     public static final ConfigDef BASE_CONFIG_DEF = new ConfigDef()
             .define(
@@ -120,43 +113,8 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
                     Importance.LOW,
                     "Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.");
 
-    private final String connectorName;
-    private final String errorsTolerance;
-
     public LHSinkConnectorConfig(ConfigDef definition, Map<?, ?> props) {
         super(definition, props);
-        connectorName = extractConnectorName(originalsStrings());
-        errorsTolerance = extractErrorsTolerance(originalsStrings());
-    }
-
-    public LHConfig toLHConfig() {
-        return new LHConfig(toLHConfigMap());
-    }
-
-    public Map<String, Object> toLHConfigMap() {
-        return nonInternalValues().keySet().stream()
-                .filter(key -> LHConfig.configNames().contains(parseLHConfig(key)))
-                .filter(key -> get(key) != null)
-                .collect(Collectors.toMap(LHSinkConnectorConfig::parseLHConfig, this::get));
-    }
-
-    private static String extractErrorsTolerance(Map<String, String> props) {
-        String errorsTolerance = props.get(ERRORS_TOLERANCE_KEY);
-        return Strings.isNullOrEmpty(errorsTolerance) ? ERRORS_TOLERANCE_NONE : errorsTolerance;
-    }
-
-    private static String extractConnectorName(Map<String, String> props) {
-        String name = props.get(CONNECTOR_NAME_KEY);
-        if (Strings.isNullOrEmpty(name)) {
-            throw new ConfigException(CONNECTOR_NAME_KEY, name, "Empty name no allowed");
-        }
-        if (!name.matches("[a-zA-Z0-9-]+")) {
-            throw new ConfigException(
-                    CONNECTOR_NAME_KEY,
-                    name,
-                    "Connector name only supports alphanumeric characters and hyphens");
-        }
-        return name;
     }
 
     private static String parseKafkaConnectConfig(String key) {
@@ -167,5 +125,16 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     private static String parseLHConfig(String key) {
         // transform kafka connect config (ex: lhc.api.host) into LH config (ex: LHC_API_HOST)
         return key.replace(".", "_").toUpperCase();
+    }
+
+    public LHConfig toLHConfig() {
+        return LHConfig.newBuilder().loadFromMap(toLHConfigMap()).build();
+    }
+
+    public Map<String, Object> toLHConfigMap() {
+        return nonInternalValues().keySet().stream()
+                .filter(key -> LHConfig.configNames().contains(parseLHConfig(key)))
+                .filter(key -> get(key) != null)
+                .collect(Collectors.toMap(LHSinkConnectorConfig::parseLHConfig, this::get));
     }
 }

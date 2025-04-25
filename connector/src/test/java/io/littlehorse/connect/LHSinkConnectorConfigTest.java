@@ -1,6 +1,13 @@
 package io.littlehorse.connect;
 
 import static io.littlehorse.connect.LHSinkConnectorConfig.BASE_CONFIG_DEF;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_API_HOST_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_API_PORT_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_API_PROTOCOL_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_OAUTH_ACCESS_TOKEN_URL_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_OAUTH_CLIENT_ID_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_OAUTH_CLIENT_SECRET_KEY;
+import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_TENANT_ID_KEY;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -15,31 +22,15 @@ import java.util.Map;
 
 public class LHSinkConnectorConfigTest {
 
-    public static final String LHC_API_HOST = "lhc.api.host";
-    public static final String LHC_TENANT_ID = "lhc.tenant.id";
-    public static final String LHC_API_PORT = "lhc.api.port";
-    public static final String LHC_API_PROTOCOL = "lhc.api.protocol";
-    public static final String LHC_OAUTH_CLIENT_ID = "lhc.oauth.client.id";
-    public static final String LHC_OAUTH_CLIENT_SECRET = "lhc.oauth.client.secret";
-    public static final String LHC_OAUTH_ACCESS_TOKEN_URL = "lhc.oauth.access.token.url";
-    public static final String NAME = "name";
-
     public static final String EXPECTED_HOST = "localhost";
     public static final String EXPECTED_PORT = "2023";
     public static final String EXPECTED_TENANT = "my-tenant";
-    public static final String EXPECTED_NAME = "my-connector";
 
     @Test
     void shouldGenerateLHConfigObjectWithDefaultTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
-                Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
-                        EXPECTED_HOST,
-                        LHC_API_PORT,
-                        EXPECTED_PORT)) {};
+                Map.of(LHC_API_HOST_KEY, EXPECTED_HOST, LHC_API_PORT_KEY, EXPECTED_PORT)) {};
         LHConfig lhConfig = connectorConfig.toLHConfig();
         assertThat(lhConfig.getApiBootstrapHost()).isEqualTo(EXPECTED_HOST);
         assertThat(lhConfig.getApiBootstrapPort()).isEqualTo(Integer.valueOf(EXPECTED_PORT));
@@ -47,32 +38,15 @@ public class LHSinkConnectorConfigTest {
     }
 
     @Test
-    void shouldValidateConnectorName() {
-        assertThrows(
-                ConfigException.class,
-                () -> new LHSinkConnectorConfig(
-                        BASE_CONFIG_DEF,
-                        Map.of(
-                                NAME,
-                                "lh_1",
-                                LHC_API_HOST,
-                                EXPECTED_HOST,
-                                LHC_API_PORT,
-                                EXPECTED_PORT)) {});
-    }
-
-    @Test
     void shouldGenerateLHConfigObjectWithSpecificTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
+                        LHC_API_HOST_KEY,
                         EXPECTED_HOST,
-                        LHC_API_PORT,
+                        LHC_API_PORT_KEY,
                         EXPECTED_PORT,
-                        LHC_TENANT_ID,
+                        LHC_TENANT_ID_KEY,
                         EXPECTED_TENANT)) {};
         LHConfig lhConfig = connectorConfig.toLHConfig();
         assertThat(lhConfig.getTenantId().getId()).isEqualTo(EXPECTED_TENANT);
@@ -83,19 +57,17 @@ public class LHSinkConnectorConfigTest {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
+                        LHC_API_HOST_KEY,
                         EXPECTED_HOST,
-                        LHC_API_PORT,
+                        LHC_API_PORT_KEY,
                         EXPECTED_PORT,
-                        LHC_API_PROTOCOL,
+                        LHC_API_PROTOCOL_KEY,
                         "TLS",
-                        LHC_OAUTH_CLIENT_ID,
+                        LHC_OAUTH_CLIENT_ID_KEY,
                         "my-client",
-                        LHC_OAUTH_CLIENT_SECRET,
+                        LHC_OAUTH_CLIENT_SECRET_KEY,
                         "my-secret",
-                        LHC_OAUTH_ACCESS_TOKEN_URL,
+                        LHC_OAUTH_ACCESS_TOKEN_URL_KEY,
                         "https://my-url.com/my-realm/token")) {};
         LHConfig lhConfig = connectorConfig.toLHConfig();
         assertThat(lhConfig.isOauth()).isTrue();
@@ -108,33 +80,29 @@ public class LHSinkConnectorConfigTest {
                 () -> new LHSinkConnectorConfig(
                         BASE_CONFIG_DEF,
                         Map.of(
-                                LHC_API_HOST,
+                                LHC_API_HOST_KEY,
                                 EXPECTED_HOST,
-                                LHC_API_PORT,
+                                LHC_API_PORT_KEY,
                                 EXPECTED_PORT,
-                                LHC_API_PROTOCOL,
+                                LHC_API_PROTOCOL_KEY,
                                 "NOT_A_PROTOCOL")) {});
         assertDoesNotThrow(() -> new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
+                        LHC_API_HOST_KEY,
                         EXPECTED_HOST,
-                        LHC_API_PORT,
+                        LHC_API_PORT_KEY,
                         EXPECTED_PORT,
-                        LHC_API_PROTOCOL,
+                        LHC_API_PROTOCOL_KEY,
                         "TLS")) {});
         assertDoesNotThrow(() -> new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
+                        LHC_API_HOST_KEY,
                         EXPECTED_HOST,
-                        LHC_API_PORT,
+                        LHC_API_PORT_KEY,
                         EXPECTED_PORT,
-                        LHC_API_PROTOCOL,
+                        LHC_API_PROTOCOL_KEY,
                         "PLAINTEXT")) {});
     }
 
@@ -146,19 +114,13 @@ public class LHSinkConnectorConfigTest {
         assertThrows(
                 ConfigException.class,
                 () -> new LHSinkConnectorConfig(
-                        BASE_CONFIG_DEF, Map.of(LHC_API_HOST, EXPECTED_HOST)) {});
+                        BASE_CONFIG_DEF, Map.of(LHC_API_HOST_KEY, EXPECTED_HOST)) {});
         assertThrows(
                 ConfigException.class,
                 () -> new LHSinkConnectorConfig(
-                        BASE_CONFIG_DEF, Map.of(LHC_API_PORT, EXPECTED_PORT)) {});
+                        BASE_CONFIG_DEF, Map.of(LHC_API_PORT_KEY, EXPECTED_PORT)) {});
         assertDoesNotThrow(() -> new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
-                Map.of(
-                        NAME,
-                        EXPECTED_NAME,
-                        LHC_API_HOST,
-                        EXPECTED_HOST,
-                        LHC_API_PORT,
-                        EXPECTED_PORT)) {});
+                Map.of(LHC_API_HOST_KEY, EXPECTED_HOST, LHC_API_PORT_KEY, EXPECTED_PORT)) {});
     }
 }

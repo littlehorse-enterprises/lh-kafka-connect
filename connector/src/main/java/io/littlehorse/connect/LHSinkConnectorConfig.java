@@ -148,7 +148,13 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     private static String extractConnectorName(Map<String, String> props) {
         String name = props.get(CONNECTOR_NAME_KEY);
         if (Strings.isNullOrEmpty(name)) {
-            throw new ConfigException(CONNECTOR_NAME_KEY, name);
+            throw new ConfigException(CONNECTOR_NAME_KEY, name, "Empty name no allowed");
+        }
+        if (!name.matches("[a-zA-Z0-9-]+")) {
+            throw new ConfigException(
+                    CONNECTOR_NAME_KEY,
+                    name,
+                    "Connector name only supports alphanumeric characters and hyphens");
         }
         return name;
     }

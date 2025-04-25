@@ -30,7 +30,7 @@ public class LHSinkConnectorConfigTest {
     public static final String EXPECTED_NAME = "my-connector";
 
     @Test
-    void shouldGenerateALHConfigObjectWithDefaultTenant() {
+    void shouldGenerateLHConfigObjectWithDefaultTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(
@@ -47,7 +47,22 @@ public class LHSinkConnectorConfigTest {
     }
 
     @Test
-    void shouldGenerateALHConfigObjectWithSpecificTenant() {
+    void shouldValidateConnectorName() {
+        assertThrows(
+                ConfigException.class,
+                () -> new LHSinkConnectorConfig(
+                        BASE_CONFIG_DEF,
+                        Map.of(
+                                NAME,
+                                "lh_1",
+                                LHC_API_HOST,
+                                EXPECTED_HOST,
+                                LHC_API_PORT,
+                                EXPECTED_PORT)) {});
+    }
+
+    @Test
+    void shouldGenerateLHConfigObjectWithSpecificTenant() {
         LHSinkConnectorConfig connectorConfig = new LHSinkConnectorConfig(
                 BASE_CONFIG_DEF,
                 Map.of(

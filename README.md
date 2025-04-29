@@ -192,6 +192,10 @@ Example:
 
 Note the lines that begin with "transforms", with those we are casting the String data type sent by `kafka-console-producer.sh` to the primitive Boolean.
 
+For more information:
+* https://docs.confluent.io/kafka-connectors/transforms/current/cast.html
+* https://docs.confluent.io/kafka-connectors/transforms/current/overview.html
+
 ## Converters
 
 These connectors support `Protobuf`, `Json` and `Avro` through converters.

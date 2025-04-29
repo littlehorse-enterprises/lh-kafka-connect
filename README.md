@@ -162,6 +162,36 @@ These connectors support Dead Letter Queue (DLQ).
 
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
+## Data Types
+Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.
+
+A common issue is with the Boolean data type.  If LittleHorse kernel expects a Boolean type "True" or "False", this must match Boolean data type in the schema of the topic.  
+
+For testing it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values.  In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.  
+
+Example:
+```json 
+{
+  "name": "external-identity-verified",
+  "config": {
+    "tasks.max": 2,
+    "topics": "names",
+    "connector.class": "io.littlehorse.connect.ExternalEventSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "lhc.api.port": 2023,
+    "lhc.api.host": "localhost",
+    "lhc.tenant.id": "default",
+    "transforms": "Cast",
+    "transforms.Cast.type": "org.apache.kafka.connect.transforms.Cast$Value",
+    "transforms.Cast.spec": "boolean",
+    "external.event.name": "identity-verified"
+  }
+}
+```
+
+Note the lines that begin with "transforms", with those we are casting the String data type sent by `kafka-console-producer.sh` to the primitive Boolean.
+
 ## Converters
 
 These connectors support `Protobuf`, `Json` and `Avro` through converters.

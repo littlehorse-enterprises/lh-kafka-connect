@@ -16,6 +16,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
   * [Dead Letter Queue](#dead-letter-queue)
+  * [Data Types](#data-types)
   * [Converters](#converters)
   * [External Secrets](#external-secrets)
   * [Configurations](#configurations)
@@ -163,14 +164,15 @@ These connectors support Dead Letter Queue (DLQ).
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
 ## Data Types
+
 Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.
 
-A common issue is with the Boolean data type.  If LittleHorse kernel expects a Boolean type "True" or "False", this must match Boolean data type in the schema of the topic.  
+A common issue is with the Boolean data type.  If LittleHorse kernel expects a Boolean type "True" or "False", this must match Boolean data type in the schema of the topic.
 
-For testing it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values.  In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.  
+For testing it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values.  In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.
 
 Example:
-```json 
+```json
 {
   "name": "external-identity-verified",
   "config": {
@@ -193,8 +195,9 @@ Example:
 Note the lines that begin with "transforms", with those we are casting the String data type sent by `kafka-console-producer.sh` to the primitive Boolean.
 
 For more information:
-* https://docs.confluent.io/kafka-connectors/transforms/current/cast.html
-* https://docs.confluent.io/kafka-connectors/transforms/current/overview.html
+
+- [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+- [Cast SMT](https://docs.confluent.io/kafka-connectors/transforms/current/cast.html).
 
 ## Converters
 

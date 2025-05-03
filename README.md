@@ -1,6 +1,7 @@
 # LittleHorse Connectors for Kafka Connect
 
 <a href="https://github.com/littlehorse-enterprises/lh-kafka-connect"><img alt="github" src="https://img.shields.io/badge/GitHub-blue?logo=github&logoColor=white"></a>
+<a href="https://docs.confluent.io/platform/current/connect/index.html"><img alt="kafka connect" src="https://raw.githubusercontent.com/littlehorse-enterprises/lh-kafka-connect/refs/heads/main/images/confluent-badge.svg"/></a>
 <a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/refs/heads/master/img/badges/gray.svg"/></a>
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.

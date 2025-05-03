@@ -6,8 +6,11 @@
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
+## Table Of Content
+
 <!-- TOC -->
 * [LittleHorse Connectors for Kafka Connect](#littlehorse-connectors-for-kafka-connect)
+  * [Table Of Content](#table-of-content)
   * [WfRunSinkConnector](#wfrunsinkconnector)
     * [Expected Message Structure](#expected-message-structure)
     * [Quick Example](#quick-example)

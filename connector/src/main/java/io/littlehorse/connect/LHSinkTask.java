@@ -99,7 +99,7 @@ public abstract class LHSinkTask extends SinkTask {
     public Map<TopicPartition, OffsetAndMetadata> preCommit(
             Map<TopicPartition, OffsetAndMetadata> currentOffsets) {
         log.debug(
-                "Commiting {} partitions ({})  for {}[{}]",
+                "Commiting {} partitions ({}) for {}[{}]",
                 successfulOffsets.size(),
                 successfulOffsets.keySet(),
                 getClass().getSimpleName(),
@@ -124,7 +124,7 @@ public abstract class LHSinkTask extends SinkTask {
                 getClass().getSimpleName(),
                 connectorName,
                 partitions);
-        // clean offset cache
+        // clean offset cache when closing or scaling out the task
         successfulOffsets.clear();
     }
 

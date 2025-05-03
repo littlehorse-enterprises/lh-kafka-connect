@@ -73,6 +73,7 @@ public abstract class LHSinkTask extends SinkTask {
             try {
                 executeGrpcCall(
                         new IdempotentSinkRecord(calculateIdempotencyKey(sinkRecord), sinkRecord));
+                // do not commit if it failed
                 updateSuccessfulOffsets(sinkRecord);
             } catch (Exception e) {
                 log.error(
@@ -88,6 +89,7 @@ public abstract class LHSinkTask extends SinkTask {
 
                 // send error to the dlq
                 report(sinkRecord, e);
+                // commit if it tolerates errors
                 updateSuccessfulOffsets(sinkRecord);
             }
         });
@@ -97,10 +99,12 @@ public abstract class LHSinkTask extends SinkTask {
     public Map<TopicPartition, OffsetAndMetadata> preCommit(
             Map<TopicPartition, OffsetAndMetadata> currentOffsets) {
         log.debug(
-                "Commiting partitions {} for {}[{}]",
-                successfulOffsets,
+                "Commiting {} partitions ({})  for {}[{}]",
+                successfulOffsets.size(),
+                successfulOffsets.keySet(),
                 getClass().getSimpleName(),
                 connectorName);
+        // it does not clean the map (successfulOffsets.clear()) because the keys are the partitions
         return successfulOffsets;
     }
 

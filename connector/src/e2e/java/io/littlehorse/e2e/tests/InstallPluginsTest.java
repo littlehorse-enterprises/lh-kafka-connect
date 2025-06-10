@@ -8,7 +8,6 @@ import io.littlehorse.e2e.configs.E2ETest;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.Map;
 
 public class InstallPluginsTest extends E2ETest {
@@ -24,7 +23,7 @@ public class InstallPluginsTest extends E2ETest {
     }
 
     @Test
-    public void shouldInstallLHKafkaConnectPlugin() throws MalformedURLException {
+    public void shouldInstallLHKafkaConnectPlugin() {
         given().queryParams(Map.of("connectorsOnly", false))
                 .when()
                 .get(getKafkaConnectUrl("connector-plugins"))

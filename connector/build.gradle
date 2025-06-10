@@ -2,7 +2,7 @@ import groovy.json.JsonOutput
 
 plugins {
     id "java-library"
-    id "com.gradleup.shadow" version "9.0.0-beta6"
+    id "com.gradleup.shadow" version "9.0.0-beta15"
 }
 
 dependencies {
@@ -73,11 +73,8 @@ tasks.register("e2e", Test) {
     }
     testClassesDirs = sourceSets.e2e.output.classesDirs
     classpath = sourceSets.e2e.runtimeClasspath
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    systemProperty "lhVersion", "${lhVersion}"
+    systemProperty "confluentVersion", "${confluentVersion}"
 }
 
 def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").get()

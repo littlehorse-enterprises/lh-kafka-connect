@@ -2,12 +2,14 @@ package io.littlehorse.e2e.configs;
 
 import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -91,7 +93,14 @@ public abstract class E2ETest {
     }
 
     public void registerWorkflow(Workflow workflow) {
-        await(() -> workflow.registerWfSpec(getLittleHorseConfig().getBlockingStub()));
+        await(() -> {
+            workflow.getRequiredExternalEventDefNames().forEach(name -> {
+                PutExternalEventDefRequest request =
+                        PutExternalEventDefRequest.newBuilder().setName(name).build();
+                getLittleHorseConfig().getBlockingStub().putExternalEventDef(request);
+            });
+            workflow.registerWfSpec(getLittleHorseConfig().getBlockingStub());
+        });
     }
 
     public void registerConnector(String connectorName, Map<String, Object> config) {
@@ -158,15 +167,16 @@ public abstract class E2ETest {
         }
     }
 
-    public void produceValues(String topic, String... values) {
+    public void produceValues(String topic, Pair<String, String>... keyValues) {
         try {
             Map<String, Object> kafkaConfig = new HashMap<>(getKafkaConfig());
             kafkaConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             kafkaConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
             try (Producer<String, String> producer = new KafkaProducer<>(kafkaConfig)) {
-                Arrays.stream(values)
-                        .map(value -> new ProducerRecord<String, String>(topic, value))
+                Arrays.stream(keyValues)
+                        .map(keyValue ->
+                                new ProducerRecord<>(topic, keyValue.getKey(), keyValue.getValue()))
                         .forEach(record -> {
                             try {
                                 producer.send(record).get(1, TimeUnit.SECONDS);

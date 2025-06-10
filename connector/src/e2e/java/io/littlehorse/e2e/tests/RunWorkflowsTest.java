@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -21,10 +22,10 @@ public class RunWorkflowsTest extends E2ETest {
 
     public static final String WORKFLOW_NAME = "greetings";
     public static final String TASK_NAME = "greetings";
-    private static final String TOPIC_NAME = "my-input-topic";
+    private static final String TOPIC_NAME = "greetings";
     private static final Workflow WORKFLOW = Workflow.newWorkflow(
             WORKFLOW_NAME, wf -> wf.execute(WORKFLOW_NAME, wf.declareStr("name")));
-    public static final String CONNECTOR_NAME = "my-connector";
+    public static final String CONNECTOR_NAME = "greetings";
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
 
     @LHTaskMethod(TASK_NAME)
@@ -36,12 +37,10 @@ public class RunWorkflowsTest extends E2ETest {
 
     @Test
     public void shouldExecuteWfRunAfterProducing() {
-        String[] inputNames = {"Leia Organa", "Luke Skywalker"};
-
         startWorker(this);
         registerWorkflow(WORKFLOW);
         createTopics(TOPIC_NAME);
-        produceValues(TOPIC_NAME, inputNames);
+        produceValues(TOPIC_NAME, Pair.of(null, "Leia Organa"), Pair.of(null, "Luke Skywalker"));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {
@@ -53,10 +52,10 @@ public class RunWorkflowsTest extends E2ETest {
 
             WfRunIdList expected = WfRunIdList.newBuilder()
                     .addResults(WfRunId.newBuilder()
-                            .setId("my-connector-my-input-topic-0-1")
+                            .setId("%s-%s-0-1".formatted(CONNECTOR_NAME, TOPIC_NAME))
                             .build())
                     .addResults(WfRunId.newBuilder()
-                            .setId("my-connector-my-input-topic-0-0")
+                            .setId("%s-%s-0-0".formatted(CONNECTOR_NAME, TOPIC_NAME))
                             .build())
                     .build();
             assertThat(result).isEqualTo(expected);

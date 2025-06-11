@@ -2,6 +2,7 @@ package io.littlehorse.e2e.configs;
 
 import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -94,12 +95,26 @@ public abstract class E2ETest {
 
     public void registerWorkflow(Workflow workflow) {
         await(() -> {
-            workflow.getRequiredExternalEventDefNames().forEach(name -> {
-                PutExternalEventDefRequest request =
-                        PutExternalEventDefRequest.newBuilder().setName(name).build();
-                getLittleHorseConfig().getBlockingStub().putExternalEventDef(request);
-            });
             workflow.registerWfSpec(getLittleHorseConfig().getBlockingStub());
+        });
+    }
+
+    public void registerExternalEvent(String name) {
+        await(() -> {
+            PutExternalEventDefRequest request =
+                    PutExternalEventDefRequest.newBuilder().setName(name).build();
+            getLittleHorseConfig().getBlockingStub().putExternalEventDef(request);
+        });
+    }
+
+    public void registerCorrelatedEvent(String name) {
+        await(() -> {
+            PutExternalEventDefRequest request = PutExternalEventDefRequest.newBuilder()
+                    .setName(name)
+                    .setCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
+                            .setDeleteAfterFirstCorrelation(false))
+                    .build();
+            getLittleHorseConfig().getBlockingStub().putExternalEventDef(request);
         });
     }
 

@@ -1,2 +1,3 @@
 io.littlehorse.connect.WfRunSinkConnector
 io.littlehorse.connect.ExternalEventSinkConnector
+io.littlehorse.connect.CorrelatedEventSinkConnector

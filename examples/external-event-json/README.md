@@ -121,7 +121,7 @@ done < examples/external-event-json/data.txt
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-external-event-json
+lhctl search wfRun example-external-event-json
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

@@ -16,30 +16,34 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ExternalEventsTest extends E2ETest {
+public class CorrelatedEventsTest extends E2ETest {
 
-    public static final String WORKFLOW_NAME = "external-events";
-    private static final String TOPIC_NAME = "external-events";
-    public static final String EXTERNAL_EVENT = "external-events";
+    public static final String WORKFLOW_NAME = "correlated-events";
+    private static final String TOPIC_NAME = "correlated-events";
+    public static final String EXTERNAL_EVENT = "correlated-events";
+    public static final String VAR_ID = "id";
     private static final Workflow WORKFLOW =
-            Workflow.newWorkflow(WORKFLOW_NAME, wf -> wf.waitForEvent(EXTERNAL_EVENT));
-    public static final String CONNECTOR_NAME = "external-events";
+            Workflow.newWorkflow(WORKFLOW_NAME, wf -> wf.waitForEvent(EXTERNAL_EVENT)
+                    .withCorrelationId(wf.declareStr(VAR_ID)));
+    public static final String CONNECTOR_NAME = "correlated-events";
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
 
     @Test
-    public void shouldSendExternalEventsAfterProducing() {
+    public void shouldSendCorrelatedEventsAfterProducing() {
         String wfRunId = UUID.randomUUID().toString();
+        String correlatedId = "MyUniqueID." + UUID.randomUUID();
 
         startWorker(this);
-        registerExternalEvent(EXTERNAL_EVENT);
+        registerCorrelatedEvent(EXTERNAL_EVENT);
         registerWorkflow(WORKFLOW);
         createTopics(TOPIC_NAME);
-        produceValues(TOPIC_NAME, Pair.of(wfRunId, null));
+        produceValues(TOPIC_NAME, Pair.of(correlatedId, null));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         lhClient.runWf(RunWfRequest.newBuilder()
                 .setId(wfRunId)
                 .setWfSpecName(WORKFLOW_NAME)
+                .putVariables(VAR_ID, LHLibUtil.objToVarVal(correlatedId))
                 .build());
 
         await(() -> {
@@ -51,7 +55,8 @@ public class ExternalEventsTest extends E2ETest {
     private static HashMap<String, Object> getConnectorConfig() {
         HashMap<String, Object> connectorConfig = new HashMap<>();
         connectorConfig.put("tasks.max", 1);
-        connectorConfig.put("connector.class", "io.littlehorse.connect.ExternalEventSinkConnector");
+        connectorConfig.put(
+                "connector.class", "io.littlehorse.connect.CorrelatedEventSinkConnector");
         connectorConfig.put("topics", TOPIC_NAME);
         connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
         connectorConfig.put("value.converter", "org.apache.kafka.connect.storage.StringConverter");

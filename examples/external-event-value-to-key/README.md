@@ -118,7 +118,7 @@ done < examples/external-event-value-to-key/data.txt
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-external-event-value-to-key
+lhctl search wfRun example-external-event-value-to-key
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

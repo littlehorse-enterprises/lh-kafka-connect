@@ -137,11 +137,15 @@ public abstract class LHSinkTask extends SinkTask {
     private String calculateIdempotencyKey(SinkRecord sinkRecord) {
         // to ensure idempotency we use: connector name + topic + partition + offset
         return String.format(
-                "%s-%s-%d-%d",
-                connectorName,
-                sinkRecord.topic(),
-                sinkRecord.kafkaPartition(),
-                sinkRecord.kafkaOffset());
+                        "%s-%s-%d-%d",
+                        connectorName,
+                        sinkRecord.topic(),
+                        sinkRecord.kafkaPartition(),
+                        sinkRecord.kafkaOffset())
+                // a topic supports ".", "_" and upper case
+                .toLowerCase()
+                .replace("_", "-")
+                .replace(".", "-");
     }
 
     private void report(SinkRecord sinkRecord, Exception e) {

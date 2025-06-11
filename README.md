@@ -149,10 +149,18 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 ## Idempotent Writes
 
 To ensure idempotency, we generate a unique id
-for each request to LH with the next format: `{connector name}-{topic name}-{partition}-{offset}`.
+for each request to LH in **lowercase** and with the next format:
 
-> A Connector name must be a valid hostname, meaning lowercase alphanumeric characters separated by a `-`, example `my-littlehorse-connector1`.
-> LH does not support special characters for defining WfRunIds. More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-guide/wfspec-development/basics#defining-a-wfrunvariable).
+`{connector name}-{topic name}-{partition}-{offset}`
+
+The **connector name** must be a valid hostname format, example `my-littlehorse-connector1`.
+The **topic name** will be changed to a valid hostname format, example: `My_Topic` to `my-topic`.
+A **hostname** is a lowercase alphanumeric string separated by a `-`.
+
+LH does not support special characters for defining WfRunIds.  More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-guide/wfspec-development/basics#defining-a-wfrunvariable).
+
+> If two topics generate the same unique id (example: `My_Topic` and `My.Topic` generate `my-topic`)
+> it is recommended to create two different connectors.
 
 ## Multiple Tasks
 
@@ -173,7 +181,7 @@ Note that LittleHorse kernel is data type aware.  When reading data from the Kaf
 
 A common issue is with the Boolean data type.  If LittleHorse kernel expects a Boolean type "True" or "False", this must match Boolean data type in the schema of the topic.
 
-For testing it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values.  In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.
+For testing, it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values. In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.
 
 Example:
 ```json

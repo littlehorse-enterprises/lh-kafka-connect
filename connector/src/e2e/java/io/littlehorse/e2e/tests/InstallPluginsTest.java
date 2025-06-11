@@ -36,6 +36,9 @@ public class InstallPluginsTest extends E2ETest {
                                 buildEntry(
                                         "io.littlehorse.connect.ExternalEventSinkConnector",
                                         "sink"),
+                                buildEntry(
+                                        "io.littlehorse.connect.CorrelatedEventSinkConnector",
+                                        "sink"),
                                 buildEntry("io.littlehorse.connect.WfRunSinkConnector", "sink"),
                                 buildEntry(
                                         "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",

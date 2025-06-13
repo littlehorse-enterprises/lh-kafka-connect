@@ -21,8 +21,8 @@ public class ExternalEventsTest extends E2ETest {
     public static final String WORKFLOW_NAME = "external-events";
     private static final String TOPIC_NAME = "external-events";
     public static final String EXTERNAL_EVENT = "external-events";
-    private static final Workflow WORKFLOW =
-            Workflow.newWorkflow(WORKFLOW_NAME, wf -> wf.waitForEvent(EXTERNAL_EVENT));
+    private static final Workflow WORKFLOW = Workflow.newWorkflow(
+            WORKFLOW_NAME, wf -> wf.waitForEvent(EXTERNAL_EVENT).registeredAs(String.class));
     public static final String CONNECTOR_NAME = "external-events";
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
 
@@ -30,11 +30,9 @@ public class ExternalEventsTest extends E2ETest {
     public void shouldSendExternalEventsAfterProducing() {
         String wfRunId = UUID.randomUUID().toString();
 
-        startWorker(this);
-        registerExternalEvent(EXTERNAL_EVENT);
         registerWorkflow(WORKFLOW);
         createTopics(TOPIC_NAME);
-        produceValues(TOPIC_NAME, Pair.of(wfRunId, null));
+        produceValues(TOPIC_NAME, Pair.of(wfRunId, "my-event-for: " + wfRunId));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         lhClient.runWf(RunWfRequest.newBuilder()

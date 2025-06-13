@@ -24,6 +24,7 @@ public class CorrelatedEventsTest extends E2ETest {
     public static final String VAR_ID = "id";
     private static final Workflow WORKFLOW =
             Workflow.newWorkflow(WORKFLOW_NAME, wf -> wf.waitForEvent(EXTERNAL_EVENT)
+                    .registeredAs(String.class)
                     .withCorrelationId(wf.declareStr(VAR_ID)));
     public static final String CONNECTOR_NAME = "correlated-events";
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
@@ -33,11 +34,9 @@ public class CorrelatedEventsTest extends E2ETest {
         String wfRunId = UUID.randomUUID().toString();
         String correlatedId = "MyUniqueID." + UUID.randomUUID();
 
-        startWorker(this);
-        registerCorrelatedEvent(EXTERNAL_EVENT);
         registerWorkflow(WORKFLOW);
         createTopics(TOPIC_NAME);
-        produceValues(TOPIC_NAME, Pair.of(correlatedId, null));
+        produceValues(TOPIC_NAME, Pair.of(correlatedId, "my-event-for: " + wfRunId));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         lhClient.runWf(RunWfRequest.newBuilder()

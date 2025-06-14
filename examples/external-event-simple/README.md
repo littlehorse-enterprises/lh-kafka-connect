@@ -101,7 +101,7 @@ http :8083/connectors/example-external-event-simple
 List external events:
 
 ```shell
-lhctl search externalEvent set-character-name
+lhctl search externalEvent example-external-event-simple
 ```
 
 > At this point all the external events are waiting for being claimed.

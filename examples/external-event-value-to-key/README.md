@@ -98,7 +98,7 @@ http :8083/connectors/example-external-event-value-to-key
 List external events:
 
 ```shell
-lhctl search externalEvent set-character-name
+lhctl search externalEvent example-external-event-value-to-key
 ```
 
 > At this point all the external events are waiting for being claimed.

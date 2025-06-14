@@ -157,7 +157,7 @@ The **connector name** must be a valid hostname format, example `my-littlehorse-
 The **topic name** will be changed to a valid hostname format, example: `My_Topic` to `my-topic`.
 A **hostname** is a lowercase alphanumeric string separated by a `-`.
 
-LH does not support special characters for defining WfRunIds.  More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-guide/wfspec-development/basics#defining-a-wfrunvariable).
+LH does not support special characters for defining WfRunIds. More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-guide/wfspec-development/basics#defining-a-wfrunvariable).
 
 > If two topics generate the same unique id (example: `My_Topic` and `My.Topic` generate `my-topic`)
 > it is recommended to create two different connectors.

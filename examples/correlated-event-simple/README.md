@@ -1,19 +1,18 @@
-# ExternalEvent Connector with Transformation ValueToKey
+# CorrelatedEvent Simple Connector
 
 In this example you will:
 
 - Register a task with a `STR` variable.
 - Register a workflow that waits for an external event.
 - Produce string messages to a kafka topic without SchemaRegistry.
-- Create an ExternalEventSinkConnector with transformations.
-- The ExternalEventSinkConnector executes external events with the content of the topic.
+- Create an CorrelatedEventSinkConnector without transformations.
+- The CorrelatedEventSinkConnector executes external events with the content of the topic.
 
 > [!WARNING]
 > Run the commands in the root directory
 
 ## Dependencies
 
-- jq
 - httpie
 - docker
 - java
@@ -41,7 +40,7 @@ docker compose exec kafka-connect \
 kafka-topics --create --bootstrap-server kafka1:9092 \
 --replication-factor 3 \
 --partitions 12 \
---topic example-external-event-value-to-key
+--topic example-correlated-event-simple
 ```
 
 Produce:
@@ -49,8 +48,10 @@ Produce:
 ```shell
 docker compose exec -T kafka-connect \
 kafka-console-producer --bootstrap-server kafka1:9092 \
---topic example-external-event-value-to-key \
-< examples/external-event-value-to-key/data.txt
+--topic example-correlated-event-simple \
+--property "parse.key=true" \
+--property "key.separator=|" \
+< examples/correlated-event-simple/data.txt
 ```
 
 Consume:
@@ -61,7 +62,9 @@ Consume:
 ```shell
 docker compose exec kafka-connect \
 kafka-console-consumer --bootstrap-server kafka1:9092 \
---topic example-external-event-value-to-key \
+--topic example-correlated-event-simple \
+--property "print.key=true" \
+--property "key.separator=|" \
 --from-beginning
 ```
 
@@ -69,7 +72,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 > If you need to generate new data run:
 
 ```shell
-./gradlew -q example-external-event-value-to-key:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/external-event-value-to-key/data.txt
+./gradlew -q example-correlated-event-simple:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/correlated-event-simple/data.txt
 ```
 
 ## Run Worker
@@ -77,7 +80,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 Run worker:
 
 ```shell
-./gradlew example-external-event-value-to-key:run
+./gradlew example-correlated-event-simple:run
 ```
 
 ## Create Connector
@@ -85,21 +88,21 @@ Run worker:
 Create connector:
 
 ```shell
-http PUT :8083/connectors/example-external-event-value-to-key/config < examples/external-event-value-to-key/connector.json
+http PUT :8083/connectors/example-correlated-event-simple/config < examples/correlated-event-simple/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-external-event-value-to-key
+http :8083/connectors/example-correlated-event-simple
 ```
 
-## Check ExternalEvents
+## Check CorrelatedEvents
 
 List external events:
 
 ```shell
-lhctl search externalEvent example-external-event-value-to-key
+lhctl search externalEvent example-correlated-event-simple
 ```
 
 > At this point all the external events are waiting for being claimed.
@@ -110,8 +113,8 @@ Run workflows with the same id for every external event:
 
 ```shell
 while read line; do \
-  lhctl run example-external-event-value-to-key --wfRunId "$(jq -r .wfRunId <<< "$line")"; \
-done < examples/external-event-value-to-key/data.txt
+  lhctl run example-correlated-event-simple id "${line%|*}"; \
+done < examples/correlated-event-simple/data.txt
 ```
 
 ## Check WfRuns
@@ -119,7 +122,7 @@ done < examples/external-event-value-to-key/data.txt
 List WfRuns:
 
 ```shell
-lhctl search wfRun example-external-event-value-to-key
+lhctl search wfRun example-correlated-event-simple
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

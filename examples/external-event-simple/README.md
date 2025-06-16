@@ -2,10 +2,11 @@
 
 In this example you will:
 
-- Register a workflow with a `STR` variable.
-- This workflow waits for an external event.
+- Register a task with a `STR` variable.
+- Register a workflow that waits for an external event.
 - Produce string messages to a kafka topic without SchemaRegistry.
 - Create an ExternalEventSinkConnector without transformations.
+- The ExternalEventSinkConnector executes external events with the content of the topic.
 
 > [!WARNING]
 > Run the commands in the root directory

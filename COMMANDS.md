@@ -12,6 +12,7 @@ Check kafka connect logs:
 
 ```shell
 docker compose logs -f kafka-connect
+docker compose logs -f kafka-connect --no-log-prefix
 ```
 
 Restart kafka connect:

@@ -124,7 +124,7 @@ The `FileConfigProvider` will extract the `lhc.tenant.id` config from `/home/app
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-secrets
+lhctl search wfRun example-wfrun-secrets
 ```
 
 ## Produce in Interactive Shell

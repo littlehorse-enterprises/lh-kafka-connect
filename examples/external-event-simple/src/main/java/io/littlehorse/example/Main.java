@@ -1,30 +1,27 @@
 package io.littlehorse.example;
 
+import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.*;
+
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
-
 @Slf4j
 public class Main {
 
     public static final String TASK_DEF_NAME = "example-external-event-simple-character-name";
     public static final String WF_NAME = "example-external-event-simple";
-    public static final String VARIABLE_NAME = "name";
-    public static final String EXTERNAL_EVENT_NAME = "set-character-name";
+    public static final String EXTERNAL_EVENT_NAME = "example-external-event-simple";
 
     public static Workflow getWorkflow() {
-        return Workflow.newWorkflow(WF_NAME, wf -> {
-            WfRunVariable name = wf.declareStr(VARIABLE_NAME);
-            name.assign(wf.waitForEvent(EXTERNAL_EVENT_NAME));
-            wf.execute(TASK_DEF_NAME, name);
-        });
+        return Workflow.newWorkflow(
+                WF_NAME,
+                wf -> wf.execute(
+                        TASK_DEF_NAME,
+                        wf.waitForEvent(EXTERNAL_EVENT_NAME).registeredAs(String.class)));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
@@ -35,19 +32,13 @@ public class Main {
 
     public static void main(String[] args) {
         LHConfig lhConfig = new LHConfig();
+        LittleHorseBlockingStub stub = lhConfig.getBlockingStub();
 
         LHTaskWorker worker = getTaskWorker(lhConfig);
         worker.registerTaskDef();
 
         Workflow workflow = getWorkflow();
-        Set<String> externalEventNames = workflow.getRequiredExternalEventDefNames();
-        for (String externalEventName : externalEventNames) {
-            lhConfig.getBlockingStub()
-                    .putExternalEventDef(PutExternalEventDefRequest.newBuilder()
-                            .setName(externalEventName)
-                            .build());
-        }
-        workflow.registerWfSpec(lhConfig.getBlockingStub());
+        workflow.registerWfSpec(stub);
 
         worker.start();
     }

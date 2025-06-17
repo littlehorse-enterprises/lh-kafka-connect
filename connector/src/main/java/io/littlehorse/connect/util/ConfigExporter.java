@@ -1,5 +1,7 @@
 package io.littlehorse.connect.util;
 
+import io.littlehorse.connect.CorrelatedEventSinkConnector;
+import io.littlehorse.connect.CorrelatedEventSinkConnectorConfig;
 import io.littlehorse.connect.ExternalEventSinkConnector;
 import io.littlehorse.connect.ExternalEventSinkConnectorConfig;
 import io.littlehorse.connect.WfRunSinkConnector;
@@ -27,6 +29,10 @@ public class ConfigExporter {
             Section.builder()
                     .title(ExternalEventSinkConnector.class.getSimpleName())
                     .content(ExternalEventSinkConnectorConfig.CONFIG_DEF.toEnrichedRst())
+                    .build(),
+            Section.builder()
+                    .title(CorrelatedEventSinkConnector.class.getSimpleName())
+                    .content(CorrelatedEventSinkConnectorConfig.CONFIG_DEF.toEnrichedRst())
                     .build(),
             Section.builder()
                     .title(FilterByFieldPredicate.class.getSimpleName())

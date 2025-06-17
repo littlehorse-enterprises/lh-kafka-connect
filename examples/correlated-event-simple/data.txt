@@ -1,0 +1,10 @@
+f009ced6f0a84d19a0636ed205ac9e8e|Boba Fett
+7ad38643eb464681a532800d289cc2f8|Kylo Ren
+4f954af8597949aaaade05d70c3bd8f3|Han Solo
+f8d7bce8bf364a4aae1e3362fd129daa|Saw Gerrera
+b74fcbb8aca84e98b10c3eb0c0d69f22|Rose Tico
+8207c275fc3c4dfe91f998472a0d28d8|Grand Admiral Thrawn
+b8c97846334f4bfd81be0f437550ccef|Kanan Jarrus
+e2289e40098948f4a84194976965ef27|Grand Moff Tarkin
+eefc373feb2a4cc584b2e29282c4aeb4|Darth Caedus
+65a21ed93e404cd697dadfa44229097c|Leia Organa

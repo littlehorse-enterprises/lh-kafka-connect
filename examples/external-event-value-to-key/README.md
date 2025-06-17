@@ -2,10 +2,11 @@
 
 In this example you will:
 
-- Register a workflow with a `STR` variable.
-- This workflow waits for an external event.
+- Register a task with a `STR` variable.
+- Register a workflow that waits for an external event.
 - Produce string messages to a kafka topic without SchemaRegistry.
 - Create an ExternalEventSinkConnector with transformations.
+- The ExternalEventSinkConnector executes external events with the content of the topic.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -98,7 +99,7 @@ http :8083/connectors/example-external-event-value-to-key
 List external events:
 
 ```shell
-lhctl search externalEvent set-character-name
+lhctl search externalEvent example-external-event-value-to-key
 ```
 
 > At this point all the external events are waiting for being claimed.
@@ -118,7 +119,7 @@ done < examples/external-event-value-to-key/data.txt
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-external-event-value-to-key
+lhctl search wfRun example-external-event-value-to-key
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

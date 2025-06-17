@@ -113,5 +113,5 @@ http :8083/connectors/example-wfrun-filter
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-filter
+lhctl search wfRun example-wfrun-filter
 ```

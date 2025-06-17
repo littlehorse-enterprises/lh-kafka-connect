@@ -2,10 +2,11 @@
 
 In this example you will:
 
-- Register a workflow with a `STR` variable.
-- This workflow waits for an external event.
+- Register a task with a `JSON_ARR` variable.
+- Register a workflow that waits for an external event.
 - Produce json messages to a kafka topic without SchemaRegistry.
 - Create an ExternalEventSinkConnector without transformations.
+- The ExternalEventSinkConnector executes external events with the content of the topic.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -121,7 +122,7 @@ done < examples/external-event-json/data.txt
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-external-event-json
+lhctl search wfRun example-external-event-json
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

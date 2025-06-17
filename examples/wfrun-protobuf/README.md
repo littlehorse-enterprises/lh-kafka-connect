@@ -114,5 +114,5 @@ http :8083/connectors/example-wfrun-protobuf
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-protobuf
+lhctl search wfRun example-wfrun-protobuf
 ```

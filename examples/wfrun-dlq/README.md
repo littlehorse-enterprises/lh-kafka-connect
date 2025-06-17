@@ -104,7 +104,7 @@ http :8083/connectors/example-wfrun-dlq
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-dlq
+lhctl search wfRun example-wfrun-dlq
 ```
 
 ## Consume from Errors Topic

@@ -96,5 +96,5 @@ http :8083/connectors/example-wfrun-json
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-json
+lhctl search wfRun example-wfrun-json
 ```

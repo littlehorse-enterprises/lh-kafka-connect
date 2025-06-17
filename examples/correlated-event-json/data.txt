@@ -1,0 +1,10 @@
+d1e912b0cffe40138e452d413dc8ab53|{"name":"R2-D2","credits":6279.0}
+8f8e36ef6cb7476fafcd95493d5a183d|{"name":"C-3PO","credits":6286.0}
+b31289d3b1484ef4945b31baf6df58f3|{"name":"BB-8","credits":5047.0}
+9aa240b59cd74590a01939fa4c87ebea|{"name":"Super Battle Droid","credits":9607.0}
+f54327dd9221445bb90e43119ae5a04e|{"name":"ASP","credits":1384.0}
+fd78dd0cc4044c87acda9f8c36a8049f|{"name":"GNK","credits":9658.0}
+d2672b77c5e944448c01cc2506a19bba|{"name":"Mouse Droid","credits":3458.0}
+b01b9e6649a7450a8ac50e28d076786b|{"name":"Droideka","credits":6769.0}
+e5760a9233924bb1a916a3009efa9ab7|{"name":"C1-10P","credits":1385.0}
+f2710dd97a4b4c20a7e2205c939c5f8c|{"name":"11-4D","credits":8550.0}

@@ -13,7 +13,8 @@ include "connector"
         "external-event-json",
         "external-event-value-to-key",
         "external-event-simple",
-        "correlated-event-simple"
+        "correlated-event-simple",
+        "correlated-event-json"
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

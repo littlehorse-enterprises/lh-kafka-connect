@@ -17,6 +17,9 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-1)
     * [Quick Example](#quick-example-1)
+  * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
+    * [Expected Message Structure](#expected-message-structure-2)
+    * [Quick Example](#quick-example-2)
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
   * [Dead Letter Queue](#dead-letter-queue)
@@ -93,9 +96,9 @@ More configurations at [WfRun Sink Connector Configurations](https://github.com/
 
 This connector allows you to execute [External Events](https://littlehorse.io/docs/server/concepts/external-events) into LittleHorse.
 
-More about running external events at [LittleHorse External Events](https://littlehorse.io/docs/server/concepts/external-events).
+More about running external events at [LittleHorse External Events](https://littlehorse.io/docs/server/concepts/external-events#in-practice).
 
-###  Expected Message Structure
+### Expected Message Structure
 
 | Message Part | Description                                | Type   | Valid Values     |
 |--------------|--------------------------------------------|--------|------------------|
@@ -118,7 +121,7 @@ Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
 });
 ```
 
-There is a topic `name` with this data:
+There is a topic `names` with this data:
 
 ```text
 key: 64512de2a4b5470a9a8a2846b9a8a444, value: Anakin Skywalker
@@ -145,6 +148,65 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 ```
 
 More configurations at [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
+
+## CorrelatedEventSinkConnector
+
+This connector allows you to execute [Correlated Events](PENDING) into LittleHorse.
+
+More about running correlated events at [LittleHorse Correlated Events](PENDING).
+
+###  Expected Message Structure
+
+| Message Part | Description                                | Type   | Valid Values     |
+|--------------|--------------------------------------------|--------|------------------|
+| `key`        | Define the associated `correlation_id`     | string | non-empty string |
+| `value`      | Define the `content` of the external event | any    | any not null     |
+
+More about correlated event fields at [PutCorrelatedEventRequest](PENDING).
+
+You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+### Quick Example
+
+Next workflow waits for the event `payment-id` with a specific id (CorrelationId),
+when the correlated event is trigger with the same id the workflow is allowed to continue.
+
+```java
+Workflow workflow = Workflow.newWorkflow("process-payment", wf -> {
+    WfRunVariable paymentId = wf.declareStr("payment-id");
+    wf.execute("process-payment", wf.waitForEvent("payment-id").withCorrelationId(paymentId));
+});
+```
+
+There is a topic `payments` with this data:
+
+```text
+key: d1e912b0cffe40138e452d413dc8ab53, value: {"name":"R2-D2","credits":6279.0}
+key: 8f8e36ef6cb7476fafcd95493d5a183d, value: {"name":"C-3PO","credits":6286.0}
+key: b31289d3b1484ef4945b31baf6df58f3, value: {"name":"BB-8","credits":5047.0}
+key: 9aa240b59cd74590a01939fa4c87ebea, value: {"name":"Super Battle Droid","credits":9607.0}
+```
+
+Next configuration will execute external events where the message key will be the `CorrelationId` and
+the message value will be the `Content` (more at [PutCorrelatedEventRequest](PENDING)):
+
+```json
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.CorrelatedEventSinkConnector",
+  "topics": "payments",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "external.event.name": "payment-id"
+}
+
+```
+
+More configurations at [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
 
 ## Idempotent Writes
 

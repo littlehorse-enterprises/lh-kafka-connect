@@ -318,9 +318,9 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 
 ## Dependencies
 
-- Java version 11 or greater is required.
-- Developed and tested against Apache Kafka version 3.8 and 3.9, equivalents to Confluent Platform 7.8 and 7.9.
-- Developed and tested against LittleHorse version 0.12 and 0.13.
+- Java version 17 or greater.
+- Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater.
+- LittleHorse version 0.14 or greater.
 
 ## License
 

@@ -301,12 +301,7 @@ For all available versions go to [GitHub Releases](https://github.com/littlehors
 
 ## Versioning
 
-We use [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-where `major.minor` numbers indicate littlehorse version compatibility, and the `patch` digit indicates the `lh-kafka-connect` bundle version.
-
-- `major` LittleHorse server `major` version compatibility.
-- `minor` LittleHorse server `minor` version compatibility.
-- `patch` LittleHorse Connectors bundle version.
+These connectors keep the same versioning as [LittleHorse](https://github.com/littlehorse-enterprises/littlehorse/releases).
 
 ## Examples
 

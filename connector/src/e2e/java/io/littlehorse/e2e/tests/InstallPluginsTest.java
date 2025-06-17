@@ -13,13 +13,7 @@ import java.util.Map;
 public class InstallPluginsTest extends E2ETest {
 
     private static Map<Object, Object> buildEntry(String className, String type) {
-        return Map.of(
-                "class",
-                className,
-                "type",
-                type,
-                "version",
-                System.getenv().getOrDefault("BUNDLE_VERSION", "dev"));
+        return Map.of("class", className, "type", type, "version", System.getProperty("lhVersion"));
     }
 
     @Test

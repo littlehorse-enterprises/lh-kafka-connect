@@ -38,7 +38,7 @@ public abstract class E2ETest {
     private static final String KAFKA_INTERNAL_BOOTSTRAP_SERVER = "kafka:19092";
     private static final Network NETWORK = Network.newNetwork();
     private static final String CONFLUENT_VERSION = "7.8.0";
-    private static final String LH_VERSION = "0.13.1";
+    private static final String LH_VERSION = "0.14.1";
     private static final DockerImageName KAFKA_CONNECT_IMAGE =
             DockerImageName.parse("confluentinc/cp-kafka-connect").withTag(CONFLUENT_VERSION);
     private static final DockerImageName KAFKA_IMAGE =

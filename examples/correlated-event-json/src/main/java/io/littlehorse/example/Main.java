@@ -3,16 +3,15 @@ package io.littlehorse.example;
 import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
-import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.ReturnType;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.ExternalEventNodeOutput;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
 
 @Slf4j
 public class Main {
@@ -23,12 +22,13 @@ public class Main {
     public static final String ID_VARIABLE = "payment-id";
 
     public static Workflow getWorkflow() {
-        return Workflow.newWorkflow(
-                WF_NAME,
-                wf -> wf.execute(
-                        TASK_DEF_NAME,
-                        wf.waitForEvent(EXTERNAL_EVENT_NAME)
-                                .withCorrelationId(wf.declareStr(ID_VARIABLE))));
+        return Workflow.newWorkflow(WF_NAME, wf -> {
+            WfRunVariable variable = wf.declareStr(ID_VARIABLE);
+            ExternalEventNodeOutput event = wf.waitForEvent(EXTERNAL_EVENT_NAME)
+                    .withCorrelationId(variable)
+                    .registeredAs(Map.class);
+            wf.execute(TASK_DEF_NAME, event);
+        });
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
@@ -43,15 +43,6 @@ public class Main {
 
         LHTaskWorker worker = getTaskWorker(lhConfig);
         worker.registerTaskDef();
-
-        // TODO: remove this
-        stub.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
-                .setName(EXTERNAL_EVENT_NAME)
-                .setContentType(ReturnType.newBuilder()
-                        .setReturnType(TypeDefinition.newBuilder().setType(VariableType.JSON_OBJ)))
-                .setCorrelatedEventConfig(
-                        CorrelatedEventConfig.newBuilder().setDeleteAfterFirstCorrelation(false))
-                .build());
 
         Workflow workflow = getWorkflow();
         workflow.registerWfSpec(stub);

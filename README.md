@@ -157,18 +157,18 @@ More about running correlated events at [LittleHorse Correlated Events](PENDING)
 
 ###  Expected Message Structure
 
-| Message Part | Description                                | Type   | Valid Values     |
-|--------------|--------------------------------------------|--------|------------------|
-| `key`        | Define the associated `correlation_id`     | string | non-empty string |
-| `value`      | Define the `content` of the external event | any    | any not null     |
+| Message Part | Description                                  | Type   | Valid Values     |
+|--------------|----------------------------------------------|--------|------------------|
+| `key`        | Define the associated `CorrelationId`        | string | non-empty string |
+| `value`      | Define the `Content` of the correlated event | any    | any not null     |
 
-More about correlated event fields at [PutCorrelatedEventRequest](PENDING).
+More about correlated event fields at [PutCorrelatedEventRequest](https://littlehorse.io/docs/server/api#putcorrelatedeventrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
 
 ### Quick Example
 
-Next workflow waits for the event `payment-id` with a specific id (CorrelationId),
+Next workflow waits for the event `payment-id` with a specific id (`CorrelationId`),
 when the correlated event is trigger with the same id the workflow is allowed to continue.
 
 ```java
@@ -187,8 +187,8 @@ key: b31289d3b1484ef4945b31baf6df58f3, value: {"name":"BB-8","credits":5047.0}
 key: 9aa240b59cd74590a01939fa4c87ebea, value: {"name":"Super Battle Droid","credits":9607.0}
 ```
 
-Next configuration will execute external events where the message key will be the `CorrelationId` and
-the message value will be the `Content` (more at [PutCorrelatedEventRequest](PENDING)):
+Next configuration will execute external events where the message `key` will be the `CorrelationId` and
+the message `value` will be the `Content` (more at [PutCorrelatedEventRequest](https://littlehorse.io/docs/server/api#putcorrelatedeventrequest)):
 
 ```json
 {
@@ -203,7 +203,6 @@ the message value will be the `Content` (more at [PutCorrelatedEventRequest](PEN
   "lhc.tenant.id": "default",
   "external.event.name": "payment-id"
 }
-
 ```
 
 More configurations at [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).

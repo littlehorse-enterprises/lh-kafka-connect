@@ -102,7 +102,7 @@ http :8083/connectors/example-external-event-json
 List external events:
 
 ```shell
-lhctl search externalEvent set-squadron-members
+lhctl search externalEvent example-external-event-json
 ```
 
 > At this point all the external events are waiting for being claimed.

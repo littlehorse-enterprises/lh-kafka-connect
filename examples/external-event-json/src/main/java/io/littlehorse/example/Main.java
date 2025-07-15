@@ -18,7 +18,7 @@ public class Main {
 
     public static final String TASK_DEF_NAME = "example-external-event-json-squadron";
     public static final String WF_NAME = "example-external-event-json";
-    public static final String EXTERNAL_EVENT_NAME = "set-squadron-members";
+    public static final String EXTERNAL_EVENT_NAME = "example-external-event-json";
 
     public static Workflow getWorkflow() {
         return Workflow.newWorkflow(WF_NAME, wf -> {

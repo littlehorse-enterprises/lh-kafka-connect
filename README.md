@@ -151,10 +151,6 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 
 ## CorrelatedEventSinkConnector
 
-This connector allows you to execute [Correlated Events](PENDING) into LittleHorse.
-
-More about running correlated events at [LittleHorse Correlated Events](PENDING).
-
 ###  Expected Message Structure
 
 | Message Part | Description                                  | Type   | Valid Values     |
@@ -313,7 +309,7 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 ## Dependencies
 
 - Java version 17 or greater.
-- Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater.
+- Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater ([Interoperability for Confluent Platform](https://docs.confluent.io/platform/current/installation/versions-interoperability.html#cp-and-apache-ak-compatibility)).
 - LittleHorse version 0.14 or greater.
 
 ## License

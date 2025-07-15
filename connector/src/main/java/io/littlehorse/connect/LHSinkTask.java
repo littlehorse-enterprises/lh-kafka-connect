@@ -3,6 +3,7 @@ package io.littlehorse.connect;
 import static org.apache.kafka.connect.runtime.ConnectorConfig.ERRORS_TOLERANCE_CONFIG;
 import static org.apache.kafka.connect.runtime.ConnectorConfig.NAME_CONFIG;
 
+import io.grpc.ManagedChannel;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.VersionReader;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -19,6 +20,7 @@ import org.apache.kafka.connect.sink.SinkTask;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Getter
@@ -57,6 +59,22 @@ public abstract class LHSinkTask extends SinkTask {
     @Override
     public void stop() {
         log.debug("Stopping {}[{}]", getClass().getSimpleName(), connectorName);
+        if (blockingStub.getChannel() instanceof ManagedChannel channel) {
+            channel.shutdown();
+            try {
+                log.debug(
+                        "Awaiting channel termination in {}[{}]",
+                        getClass().getSimpleName(),
+                        connectorName);
+                channel.awaitTermination(1, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.warn(
+                        "InterruptedException was ignored closing {}[{}]",
+                        getClass().getSimpleName(),
+                        connectorName,
+                        e);
+            }
+        }
     }
 
     @Override
@@ -137,11 +155,15 @@ public abstract class LHSinkTask extends SinkTask {
     private String calculateIdempotencyKey(SinkRecord sinkRecord) {
         // to ensure idempotency we use: connector name + topic + partition + offset
         return String.format(
-                "%s-%s-%d-%d",
-                connectorName,
-                sinkRecord.topic(),
-                sinkRecord.kafkaPartition(),
-                sinkRecord.kafkaOffset());
+                        "%s-%s-%d-%d",
+                        connectorName,
+                        sinkRecord.topic(),
+                        sinkRecord.kafkaPartition(),
+                        sinkRecord.kafkaOffset())
+                // a topic supports ".", "_" and upper case
+                .toLowerCase()
+                .replace("_", "-")
+                .replace(".", "-");
     }
 
     private void report(SinkRecord sinkRecord, Exception e) {

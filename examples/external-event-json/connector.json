@@ -8,5 +8,5 @@
   "lhc.api.port": 2024,
   "lhc.api.host": "littlehorse",
   "lhc.tenant.id": "default",
-  "external.event.name": "set-squadron-members"
+  "external.event.name": "example-external-event-json"
 }

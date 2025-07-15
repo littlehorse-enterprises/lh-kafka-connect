@@ -40,4 +40,4 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: ./gradlew test e2e
+        entry: ./gradlew clean test e2e

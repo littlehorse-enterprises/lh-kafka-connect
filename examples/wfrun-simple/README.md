@@ -96,7 +96,7 @@ http :8083/connectors/example-wfrun-simple
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-simple
+lhctl search wfRun example-wfrun-simple
 ```
 
 ## Produce in Interactive Shell

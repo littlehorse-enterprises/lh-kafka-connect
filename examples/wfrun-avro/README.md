@@ -107,5 +107,5 @@ http :8083/connectors/example-wfrun-avro
 List WfRuns:
 
 ```shell
-lhctl search wfRun --wfSpecName example-wfrun-avro
+lhctl search wfRun example-wfrun-avro
 ```

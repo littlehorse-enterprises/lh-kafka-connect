@@ -1,7 +1,21 @@
 rootProject.name = "lh-kafka-connect"
 include "connector"
 
-["wfrun-json", "wfrun-dlq", "wfrun-simple", "wfrun-avro", "wfrun-list", "wfrun-filter", "wfrun-protobuf", "wfrun-secrets", "external-event-json", "external-event-value-to-key", "external-event-simple"].each { example ->
+[
+        "wfrun-json",
+        "wfrun-dlq",
+        "wfrun-simple",
+        "wfrun-avro",
+        "wfrun-list",
+        "wfrun-filter",
+        "wfrun-protobuf",
+        "wfrun-secrets",
+        "external-event-json",
+        "external-event-value-to-key",
+        "external-event-simple",
+        "correlated-event-simple",
+        "correlated-event-json"
+].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")
 }

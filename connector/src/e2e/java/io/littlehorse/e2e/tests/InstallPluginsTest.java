@@ -8,23 +8,16 @@ import io.littlehorse.e2e.configs.E2ETest;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.Map;
 
 public class InstallPluginsTest extends E2ETest {
 
     private static Map<Object, Object> buildEntry(String className, String type) {
-        return Map.of(
-                "class",
-                className,
-                "type",
-                type,
-                "version",
-                System.getenv().getOrDefault("BUNDLE_VERSION", "dev"));
+        return Map.of("class", className, "type", type, "version", System.getProperty("lhVersion"));
     }
 
     @Test
-    public void shouldInstallLHKafkaConnectPlugin() throws MalformedURLException {
+    public void shouldInstallLHKafkaConnectPlugin() {
         given().queryParams(Map.of("connectorsOnly", false))
                 .when()
                 .get(getKafkaConnectUrl("connector-plugins"))
@@ -36,6 +29,9 @@ public class InstallPluginsTest extends E2ETest {
                         hasItems(
                                 buildEntry(
                                         "io.littlehorse.connect.ExternalEventSinkConnector",
+                                        "sink"),
+                                buildEntry(
+                                        "io.littlehorse.connect.CorrelatedEventSinkConnector",
                                         "sink"),
                                 buildEntry("io.littlehorse.connect.WfRunSinkConnector", "sink"),
                                 buildEntry(

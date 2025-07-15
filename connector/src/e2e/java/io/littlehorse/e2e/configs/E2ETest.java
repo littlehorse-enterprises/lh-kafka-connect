@@ -8,6 +8,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -37,8 +38,9 @@ public abstract class E2ETest {
     public static final String LH_INTERNAL_BOOTSTRAP_SERVER = "littlehorse";
     private static final String KAFKA_INTERNAL_BOOTSTRAP_SERVER = "kafka:19092";
     private static final Network NETWORK = Network.newNetwork();
-    private static final String CONFLUENT_VERSION = "7.8.0";
-    private static final String LH_VERSION = "0.14.1";
+    private static final String CONFLUENT_VERSION =
+            System.getProperty("confluentVersion", "latest");
+    private static final String LH_VERSION = System.getProperty("lhVersion", "latest");
     private static final DockerImageName KAFKA_CONNECT_IMAGE =
             DockerImageName.parse("confluentinc/cp-kafka-connect").withTag(CONFLUENT_VERSION);
     private static final DockerImageName KAFKA_IMAGE =
@@ -157,15 +159,16 @@ public abstract class E2ETest {
         }
     }
 
-    public void produceValues(String topic, String... values) {
+    public void produceValues(String topic, Pair<String, String>... keyValues) {
         try {
             Map<String, Object> kafkaConfig = new HashMap<>(getKafkaConfig());
             kafkaConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             kafkaConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
             try (Producer<String, String> producer = new KafkaProducer<>(kafkaConfig)) {
-                Arrays.stream(values)
-                        .map(value -> new ProducerRecord<String, String>(topic, value))
+                Arrays.stream(keyValues)
+                        .map(keyValue ->
+                                new ProducerRecord<>(topic, keyValue.getKey(), keyValue.getValue()))
                         .forEach(record -> {
                             try {
                                 producer.send(record).get(1, TimeUnit.SECONDS);

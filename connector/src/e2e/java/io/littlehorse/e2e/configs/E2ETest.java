@@ -45,23 +45,29 @@ public abstract class E2ETest {
             DockerImageName.parse("confluentinc/cp-kafka-connect").withTag(CONFLUENT_VERSION);
     private static final DockerImageName KAFKA_IMAGE =
             DockerImageName.parse("confluentinc/cp-kafka").withTag(CONFLUENT_VERSION);
+
+    private static final DockerImageName LH_IMAGE = DockerImageName.parse(
+                    "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
+            // TODO: use LH_VERSION constant here instead of master
+            .withTag("master");
+
     private static final ConfluentKafkaContainer KAFKA = new ConfluentKafkaContainer(KAFKA_IMAGE)
             .withListener(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
+
     private static final KafkaConnectContainer KAFKA_CONNECT = new KafkaConnectContainer(
                     KAFKA_CONNECT_IMAGE)
             .dependsOn(KAFKA)
             .withKafkaBootstrapServers(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK)
             .withPluginsFromHost("./build/bundle");
-    private static final DockerImageName LH_IMAGE = DockerImageName.parse(
-                    "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
-            .withTag(LH_VERSION);
+
     private static final LittleHorseContainer LITTLEHORSE = new LittleHorseContainer(LH_IMAGE)
             .dependsOn(KAFKA)
             .withInternalAdvertisedHost(LH_INTERNAL_BOOTSTRAP_SERVER)
             .withKafkaBootstrapServers(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
+
     protected static Logger log = LoggerFactory.getLogger(E2ETest.class);
 
     static {

@@ -51,10 +51,6 @@ jobs:
         with:
           name: lh-kafka-connect
           path: connector/build/dist/
-      - name: Add sha256
-        working-directory: connector/build/dist/
-        run:
-          for name in *.zip; do sha256sum ${name} > ${name%.*}.sha256; done
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

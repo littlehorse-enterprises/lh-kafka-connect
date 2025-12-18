@@ -48,7 +48,7 @@ test {
     useJUnitPlatform()
     filter {
         includeTestsMatching "io.littlehorse.**"
-        excludeTestsMatching "e2e.tests.**"
+        excludeTestsMatching "e2e.**"
     }
     testLogging {
         events "passed", "skipped", "failed"
@@ -64,7 +64,7 @@ tasks.register("e2e", Test) {
         exceptionFormat = "full"
     }
     filter {
-        includeTestsMatching "e2e.tests.**"
+        includeTestsMatching "e2e.**"
         excludeTestsMatching "io.littlehorse.**"
     }
     classpath = sourceSets.test.runtimeClasspath

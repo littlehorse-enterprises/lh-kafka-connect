@@ -19,7 +19,9 @@
         "logo": "assets/logo.svg"
     },
     "requirements": [
-        "LittleHorse 0.12.0 or greater"
+        "Java version 17 or greater",
+        "Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater",
+        "LittleHorse version 0.14 or greater"
     ],
     "support": {
         "logo": "assets/logo.svg",

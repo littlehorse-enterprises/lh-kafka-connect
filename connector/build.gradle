@@ -2,7 +2,7 @@ import groovy.json.JsonOutput
 
 plugins {
     id "java-library"
-    id "com.gradleup.shadow" version "9.0.0-beta15"
+    id "com.gradleup.shadow" version "9.3.0"
 }
 
 group = "io.littlehorse"
@@ -46,25 +46,14 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    filter {
+        includeTestsMatching "io.littlehorse.**"
+        excludeTestsMatching "e2e.tests.**"
+    }
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat = "full"
     }
-}
-
-sourceSets {
-    e2e {
-        java {
-            srcDirs("src/e2e")
-        }
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-    }
-}
-
-configurations {
-    e2eImplementation.extendsFrom testImplementation
-    e2eRuntime.extendsFrom testRuntime
 }
 
 tasks.register("e2e", Test) {
@@ -74,8 +63,12 @@ tasks.register("e2e", Test) {
         events "passed", "skipped", "failed"
         exceptionFormat = "full"
     }
-    testClassesDirs = sourceSets.e2e.output.classesDirs
-    classpath = sourceSets.e2e.runtimeClasspath
+    filter {
+        includeTestsMatching "e2e.tests.**"
+        excludeTestsMatching "io.littlehorse.**"
+    }
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = sourceSets.test.output.classesDirs
     systemProperty "lhVersion", "${lhVersion}"
     systemProperty "confluentVersion", "${confluentVersion}"
 }

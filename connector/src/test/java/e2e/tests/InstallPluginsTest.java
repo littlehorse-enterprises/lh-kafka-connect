@@ -1,10 +1,10 @@
-package io.littlehorse.e2e.tests;
+package e2e.tests;
 
 import static io.restassured.RestAssured.given;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 
-import io.littlehorse.e2e.configs.E2ETest;
+import e2e.configs.E2ETest;
 
 import org.junit.jupiter.api.Test;
 

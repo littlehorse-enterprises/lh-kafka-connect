@@ -1,9 +1,9 @@
 package io.littlehorse.connect.util;
 
 import org.apache.kafka.connect.data.Field;
-import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,12 +13,14 @@ public class ObjectMapper {
 
     @SuppressWarnings("unchecked")
     public static Object removeStruct(Object value) {
-        if (value instanceof Struct) {
-            Struct objectStruct = (Struct) value;
-            Schema schema = objectStruct.schema();
-            return schema.fields().stream()
-                    .collect(Collectors.toMap(
-                            Field::name, field -> removeStruct(objectStruct.get(field))));
+        if (value instanceof Struct objectStruct) {
+            Map<String, Object> result = new HashMap<>();
+
+            for (Field field : objectStruct.schema().fields()) {
+                result.put(field.name(), removeStruct(objectStruct.get(field)));
+            }
+
+            return result;
         }
 
         if (value instanceof List) {
@@ -27,10 +29,11 @@ public class ObjectMapper {
         }
 
         if (value instanceof Map) {
-            Map<String, Object> objectMap = (Map<String, Object>) value;
-            return objectMap.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey, entry -> removeStruct(entry.getValue())));
+            Map<String, Object> result = new HashMap<>();
+            for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
+                result.put(entry.getKey(), removeStruct(entry.getValue()));
+            }
+            return result;
         }
 
         return value;

@@ -1,4 +1,4 @@
-package io.littlehorse.e2e.configs;
+package e2e.configs;
 
 import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -48,8 +48,7 @@ public abstract class E2ETest {
 
     private static final DockerImageName LH_IMAGE = DockerImageName.parse(
                     "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
-            // TODO: use LH_VERSION constant here instead of master
-            .withTag("master");
+            .withTag(LH_VERSION);
 
     private static final ConfluentKafkaContainer KAFKA = new ConfluentKafkaContainer(KAFKA_IMAGE)
             .withListener(KAFKA_INTERNAL_BOOTSTRAP_SERVER)

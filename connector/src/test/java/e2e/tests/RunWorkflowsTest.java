@@ -1,8 +1,9 @@
-package io.littlehorse.e2e.tests;
+package e2e.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.e2e.configs.E2ETest;
+import e2e.configs.E2ETest;
+
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;

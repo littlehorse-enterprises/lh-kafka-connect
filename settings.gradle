@@ -1,3 +1,14 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        id "com.diffplug.spotless" version "${spotlessVersion}"
+        id "com.gradleup.shadow" version "${shadowJarVersion}"
+    }
+}
+
 rootProject.name = "lh-kafka-connect"
 include "connector"
 

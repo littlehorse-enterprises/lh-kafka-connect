@@ -1,4 +1,4 @@
-package io.littlehorse.e2e.configs;
+package e2e.configs;
 
 import com.github.dockerjava.api.model.PortBinding;
 

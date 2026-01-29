@@ -97,8 +97,10 @@ public abstract class E2ETest {
         return lhConfig;
     }
 
-    public void registerWorkflow(Workflow workflow) {
-        await(() -> workflow.registerWfSpec(getLittleHorseConfig().getBlockingStub()));
+    public void registerWorkflow(Workflow... workflows) {
+        Arrays.stream(workflows)
+                .forEach(workflow -> await(
+                        () -> workflow.registerWfSpec(getLittleHorseConfig().getBlockingStub())));
     }
 
     public void registerConnector(String connectorName, Map<String, Object> config) {

@@ -1,4 +1,4 @@
-# WfRun Connector with JSON value and Header
+# WfRun Connector with JSON Value and Header
 
 In this example you will:
 

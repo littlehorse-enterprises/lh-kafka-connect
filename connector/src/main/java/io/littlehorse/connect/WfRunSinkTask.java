@@ -42,8 +42,12 @@ public class WfRunSinkTask extends LHSinkTask {
     private RunWfRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         RunWfRequest.Builder requestBuilder = RunWfRequest.newBuilder()
                 .setWfSpecName(config.getWfSpecName())
-                .setId(sinkRecord.wfRunId())
-                .putAllVariables(extractVariables(sinkRecord.value()));
+                .setId(sinkRecord.wfRunId());
+
+        Object value = sinkRecord.value();
+        if (value != null) {
+            requestBuilder.putAllVariables(extractVariables(value));
+        }
 
         String parentWfRunId = sinkRecord.parentWfRunId() == null
                 ? config.getWfRunParentId()

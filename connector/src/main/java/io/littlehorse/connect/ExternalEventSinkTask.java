@@ -7,7 +7,6 @@ import io.littlehorse.connect.util.ObjectMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
-import io.littlehorse.sdk.common.proto.WfRunId;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +40,7 @@ public class ExternalEventSinkTask extends LHSinkTask {
     private PutExternalEventRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         return PutExternalEventRequest.newBuilder()
                 .setGuid(sinkRecord.idempotencyKey())
-                .setWfRunId(WfRunId.newBuilder().setId(extractWfRunId(sinkRecord.key())))
+                .setWfRunId(LHLibUtil.wfRunIdFromString(extractWfRunId(sinkRecord.key())))
                 .setContent(LHLibUtil.objToVarVal(ObjectMapper.removeStruct(sinkRecord.value())))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))

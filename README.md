@@ -13,6 +13,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [Table Of Content](#table-of-content)
   * [WfRunSinkConnector](#wfrunsinkconnector)
     * [Expected Message Structure](#expected-message-structure)
+    * [Additional Metadata](#additional-metadata)
     * [Quick Example](#quick-example)
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-1)
@@ -52,6 +53,15 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+### Additional Metadata
+
+Optionally this sink connector uses the record headers to configure the wf runs:
+
+| Header Key      | Description                                                                                                              | Type   | Valid Values    |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
+| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | Hostname format |
+| `parentWfRunId` | Optional, sets a parent wf run.                                                                                          | string | Hostname format |
 
 ### Quick Example
 

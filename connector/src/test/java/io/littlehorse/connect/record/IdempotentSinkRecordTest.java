@@ -1,5 +1,6 @@
 package io.littlehorse.connect.record;
 
+import static io.littlehorse.connect.record.IdempotentSinkRecord.GUID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.PARENT_WF_RUN_ID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.WF_RUN_ID;
 
@@ -24,7 +25,7 @@ class IdempotentSinkRecordTest {
     Faker faker = new Faker();
 
     @Test
-    void shouldReturnIdempotencyKeyIfWfRunIdHeaderDoesNotExist() {
+    void shouldCalculateTheIdempotencyKey() {
         String topic = "my-topic";
         int partition = faker.number().positive();
         long offset = faker.number().positive();
@@ -34,8 +35,16 @@ class IdempotentSinkRecordTest {
         when(base.kafkaOffset()).thenReturn(offset);
         IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
 
-        assertThat(record.wfRunId())
+        assertThat(record.idempotencyKey())
                 .isEqualTo(CONNECTOR_NAME + "-" + topic + "-" + partition + "-" + offset);
+    }
+
+    @Test
+    void shouldReturnNullIfWfRunIdHeaderDoesNotExist() {
+        SinkRecord base = mock();
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThat(record.wfRunId()).isNull();
     }
 
     @Test
@@ -132,5 +141,57 @@ class IdempotentSinkRecordTest {
         IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
 
         assertThrows(DataException.class, record::parentWfRunId);
+    }
+
+    @Test
+    void shouldReturnNullIfGuidIdHeaderDoesNotExist() {
+        SinkRecord base = mock();
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThat(record.guid()).isNull();
+    }
+
+    @Test
+    void shouldReturnHeaderIfGuidIdHeaderExists() {
+        String guidfRunId = UUID.randomUUID().toString();
+
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(GUID)).thenReturn(header);
+        when(header.value()).thenReturn(guidfRunId);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThat(record.guid()).isEqualTo(guidfRunId);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfGuidIdHeaderIsNull() {
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(GUID)).thenReturn(header);
+        when(header.value()).thenReturn(null);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThrows(DataException.class, record::guid);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfGuidIdHeaderIsNotString() {
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(GUID)).thenReturn(header);
+        when(header.value()).thenReturn(faker.number().positive());
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThrows(DataException.class, record::guid);
     }
 }

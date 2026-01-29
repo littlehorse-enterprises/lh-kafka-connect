@@ -7,6 +7,7 @@ import org.apache.kafka.connect.sink.SinkRecord;
 public class IdempotentSinkRecord extends SinkRecord {
     public static final String WF_RUN_ID = "wfRunId";
     public static final String PARENT_WF_RUN_ID = "parentWfRunId";
+    public static final String GUID = "guid";
     private final String connectorName;
 
     public IdempotentSinkRecord(String connectorName, SinkRecord base) {
@@ -42,36 +43,30 @@ public class IdempotentSinkRecord extends SinkRecord {
     }
 
     public String wfRunId() {
-        Header wfRunId = headers().lastWithName(WF_RUN_ID);
+        return getHeader(WF_RUN_ID);
+    }
+
+    public String parentWfRunId() {
+        return getHeader(PARENT_WF_RUN_ID);
+    }
+
+    public String guid() {
+        return getHeader(GUID);
+    }
+
+    private String getHeader(String key) {
+        Header wfRunId = headers().lastWithName(key);
         if (wfRunId == null) {
-            return idempotencyKey();
+            return null;
         }
 
         Object value = wfRunId.value();
         if (value == null) {
-            throw new DataException("Expected not null wfRunId header");
+            throw new DataException("Expected not null " + key + " header");
         }
 
         if (!(value instanceof String)) {
-            throw new DataException("Expected String not provided for wfRunId header");
-        }
-
-        return value.toString();
-    }
-
-    public String parentWfRunId() {
-        Header parentWfRunId = headers().lastWithName(PARENT_WF_RUN_ID);
-        if (parentWfRunId == null) {
-            return null;
-        }
-
-        Object value = parentWfRunId.value();
-        if (value == null) {
-            throw new DataException("Expected not null parentWfRunId header");
-        }
-
-        if (!(value instanceof String)) {
-            throw new DataException("Expected String not provided for parentWfRunId header");
+            throw new DataException("Expected String not provided for " + key + " header");
         }
 
         return value.toString();

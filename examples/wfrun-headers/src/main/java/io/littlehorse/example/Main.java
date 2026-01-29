@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import io.littlehorse.sdk.worker.WorkerContext;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,8 +41,9 @@ public class Main {
     public static class GreetingsWorker {
 
         @LHTaskMethod(TASK_DEF_NAME)
-        public String greeting(String name) {
-            String message = "Hello there! " + name;
+        public String greeting(String name, WorkerContext context) {
+            String message = "Hello there! " + name + ". My WfRunId is: "
+                    + context.getWfRunId().getId();
             log.info(message);
             return message;
         }

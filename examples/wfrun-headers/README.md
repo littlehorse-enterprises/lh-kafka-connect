@@ -60,6 +60,7 @@ Consume:
 docker compose exec kafka-connect \
 kafka-console-consumer --bootstrap-server kafka1:9092 \
 --topic example-wfrun-headers \
+--property print.headers=true \
 --from-beginning
 ```
 
@@ -98,12 +99,4 @@ List WfRuns:
 
 ```shell
 lhctl search wfRun example-wfrun-headers
-```
-
-## Produce in Interactive Shell
-
-```shell
-docker compose exec kafka-connect \
-kafka-console-producer --bootstrap-server kafka1:9092 \
---topic example-wfrun-headers
 ```

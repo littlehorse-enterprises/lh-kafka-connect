@@ -8,6 +8,7 @@ public class IdempotentSinkRecord extends SinkRecord {
     public static final String WF_RUN_ID = "wfRunId";
     public static final String PARENT_WF_RUN_ID = "parentWfRunId";
     public static final String GUID = "guid";
+    public static final String CORRELATION_ID = "correlationId";
     private final String connectorName;
 
     public IdempotentSinkRecord(String connectorName, SinkRecord base) {
@@ -52,6 +53,10 @@ public class IdempotentSinkRecord extends SinkRecord {
 
     public String guid() {
         return getHeader(GUID);
+    }
+
+    public String correlationId() {
+        return getHeader(CORRELATION_ID);
     }
 
     private String getHeader(String key) {

@@ -1,5 +1,6 @@
 package io.littlehorse.connect.record;
 
+import static io.littlehorse.connect.record.IdempotentSinkRecord.CORRELATION_ID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.GUID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.PARENT_WF_RUN_ID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.WF_RUN_ID;
@@ -153,18 +154,18 @@ class IdempotentSinkRecordTest {
 
     @Test
     void shouldReturnHeaderIfGuidIdHeaderExists() {
-        String guidfRunId = UUID.randomUUID().toString();
+        String guid = UUID.randomUUID().toString();
 
         SinkRecord base = mock();
         ConnectHeaders headers = mock();
         Header header = mock();
         when(base.headers()).thenReturn(headers);
         when(headers.lastWithName(GUID)).thenReturn(header);
-        when(header.value()).thenReturn(guidfRunId);
+        when(header.value()).thenReturn(guid);
 
         IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
 
-        assertThat(record.guid()).isEqualTo(guidfRunId);
+        assertThat(record.guid()).isEqualTo(guid);
     }
 
     @Test
@@ -193,5 +194,57 @@ class IdempotentSinkRecordTest {
         IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
 
         assertThrows(DataException.class, record::guid);
+    }
+
+    @Test
+    void shouldReturnNullIfCorrelationIdIdHeaderDoesNotExist() {
+        SinkRecord base = mock();
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThat(record.correlationId()).isNull();
+    }
+
+    @Test
+    void shouldReturnHeaderIfCorrelationIdIdHeaderExists() {
+        String correlationId = UUID.randomUUID().toString();
+
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(CORRELATION_ID)).thenReturn(header);
+        when(header.value()).thenReturn(correlationId);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThat(record.correlationId()).isEqualTo(correlationId);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfCorrelationIdIdHeaderIsNull() {
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(CORRELATION_ID)).thenReturn(header);
+        when(header.value()).thenReturn(null);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThrows(DataException.class, record::correlationId);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfCorrelationIdIdHeaderIsNotString() {
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(CORRELATION_ID)).thenReturn(header);
+        when(header.value()).thenReturn(faker.number().positive());
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(CONNECTOR_NAME, base);
+
+        assertThrows(DataException.class, record::correlationId);
     }
 }

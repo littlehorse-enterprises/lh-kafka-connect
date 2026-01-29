@@ -21,6 +21,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [Quick Example](#quick-example-1)
   * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-2)
+    * [Additional Metadata](#additional-metadata-2)
     * [Quick Example](#quick-example-2)
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
@@ -173,14 +174,22 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 
 ###  Expected Message Structure
 
-| Message Part | Description                                  | Type   | Valid Values     |
-|--------------|----------------------------------------------|--------|------------------|
-| `key`        | Define the associated `correlationId`        | string | non-empty string |
-| `value`      | Define the `content` of the correlated event | any    | any not null     |
+| Message Part | Description                                                                                                 | Type   | Valid Values     |
+|--------------|-------------------------------------------------------------------------------------------------------------|--------|------------------|
+| `key`        | Optional, define the associated `correlationId`. Precedence: 1. `correlationId` header key, 2. message key. | string | non-empty string |
+| `value`      | Define the `content` of the correlated event.                                                               | any    | any not null     |
 
 More about correlated event fields at [PutCorrelatedEventRequest](https://littlehorse.io/docs/server/api#putcorrelatedeventrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+### Additional Metadata
+
+Optionally this sink connector uses the record headers to configure the external event:
+
+| Header Key      | Description                                                                                                           | Type   | Valid Values     |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------|--------|------------------|
+| `correlationId` | Associated `correlationId`. It looks for the `correlationId` in the message key if it is not provided in the headers. | string | non-empty string |
 
 ### Quick Example
 

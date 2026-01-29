@@ -37,7 +37,7 @@ public class IdempotentSinkRecord extends SinkRecord {
                 .replace(".", "-");
     }
 
-    private String connectorName() {
+    public String connectorName() {
         return connectorName;
     }
 

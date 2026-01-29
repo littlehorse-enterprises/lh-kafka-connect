@@ -11,6 +11,7 @@ pluginManagement {
 
 rootProject.name = "lh-kafka-connect"
 include "connector"
+include "common"
 
 [
         "wfrun-json",
@@ -23,6 +24,7 @@ include "connector"
         "wfrun-protobuf",
         "wfrun-secrets",
         "wfrun-value-to-header",
+        "wfrun-parent",
         "external-event-json",
         "external-event-value-to-key",
         "external-event-simple",

@@ -4,12 +4,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 
-public class JsonSerializer {
+public class ProtobufSerializer {
 
     public static final JsonFormat.Printer printer =
             JsonFormat.printer().omittingInsignificantWhitespace();
 
-    private JsonSerializer() {}
+    private ProtobufSerializer() {}
 
     public static String serialize(MessageOrBuilder object) {
         try {

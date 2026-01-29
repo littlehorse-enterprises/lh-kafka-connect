@@ -45,8 +45,12 @@ public class WfRunSinkTask extends LHSinkTask {
                 .setId(sinkRecord.getWfRunId())
                 .putAllVariables(extractVariables(sinkRecord.value()));
 
-        if (config.getWfRunParentId() != null) {
-            requestBuilder.setParentWfRunId(LHLibUtil.wfRunIdFromString(config.getWfRunParentId()));
+        String wfRunParentId = sinkRecord.getParentWfRunId() == null
+                ? config.getWfRunParentId()
+                : sinkRecord.getParentWfRunId();
+
+        if (wfRunParentId != null) {
+            requestBuilder.setParentWfRunId(LHLibUtil.wfRunIdFromString(wfRunParentId));
         }
 
         if (config.getWfSpecMajorVersion() != null) {

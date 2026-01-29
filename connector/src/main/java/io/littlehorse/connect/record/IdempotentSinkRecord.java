@@ -51,6 +51,19 @@ public class IdempotentSinkRecord extends SinkRecord {
 
     public String getParentWfRunId() {
         Header parentWfRunId = headers().lastWithName(PARENT_WF_RUN_ID);
-        return parentWfRunId != null ? parentWfRunId.value().toString() : null;
+        if (parentWfRunId == null) {
+            return null;
+        }
+
+        Object value = parentWfRunId.value();
+        if (value == null) {
+            throw new DataException("Expected not null parentWfRunId header");
+        }
+
+        if (!(value instanceof String)) {
+            throw new DataException("Expected String not provided for parentWfRunId header");
+        }
+
+        return value.toString();
     }
 }

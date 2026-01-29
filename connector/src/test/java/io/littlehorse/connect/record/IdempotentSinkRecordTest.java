@@ -1,5 +1,6 @@
 package io.littlehorse.connect.record;
 
+import static io.littlehorse.connect.record.IdempotentSinkRecord.PARENT_WF_RUN_ID;
 import static io.littlehorse.connect.record.IdempotentSinkRecord.WF_RUN_ID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,5 +78,63 @@ class IdempotentSinkRecordTest {
         IdempotentSinkRecord record = new IdempotentSinkRecord(idempotencyKey, base);
 
         assertThrows(DataException.class, record::getWfRunId);
+    }
+
+    @Test
+    void shouldReturnNullIfParentWfRunIdHeaderDoesNotExist() {
+        String idempotencyKey = UUID.randomUUID().toString();
+        SinkRecord base = mock();
+        IdempotentSinkRecord record = new IdempotentSinkRecord(idempotencyKey, base);
+
+        assertThat(record.getParentWfRunId()).isNull();
+    }
+
+    @Test
+    void shouldReturnHeaderIfParentWfRunIdHeaderExists() {
+        String idempotencyKey = UUID.randomUUID().toString();
+        String parentWfRunIdfRunId = UUID.randomUUID().toString();
+
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(PARENT_WF_RUN_ID)).thenReturn(header);
+        when(header.value()).thenReturn(parentWfRunIdfRunId);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(idempotencyKey, base);
+
+        assertThat(record.getParentWfRunId()).isEqualTo(parentWfRunIdfRunId);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfParentWfRunIdHeaderIsNull() {
+        String idempotencyKey = UUID.randomUUID().toString();
+
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(PARENT_WF_RUN_ID)).thenReturn(header);
+        when(header.value()).thenReturn(null);
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(idempotencyKey, base);
+
+        assertThrows(DataException.class, record::getParentWfRunId);
+    }
+
+    @Test
+    void shouldThrowsExceptionIfParentWfRunIdHeaderIsNotString() {
+        String idempotencyKey = UUID.randomUUID().toString();
+
+        SinkRecord base = mock();
+        ConnectHeaders headers = mock();
+        Header header = mock();
+        when(base.headers()).thenReturn(headers);
+        when(headers.lastWithName(PARENT_WF_RUN_ID)).thenReturn(header);
+        when(header.value()).thenReturn(faker.number().positive());
+
+        IdempotentSinkRecord record = new IdempotentSinkRecord(idempotencyKey, base);
+
+        assertThrows(DataException.class, record::getParentWfRunId);
     }
 }

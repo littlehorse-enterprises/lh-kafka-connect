@@ -7,9 +7,9 @@ import org.apache.kafka.connect.sink.SinkRecord;
 public class IdempotentSinkRecord extends SinkRecord {
     public static final String WF_RUN_ID = "wfRunId";
     public static final String PARENT_WF_RUN_ID = "parentWfRunId";
-    private final String idempotencyKey;
+    private final String connectorName;
 
-    public IdempotentSinkRecord(String idempotencyKey, SinkRecord base) {
+    public IdempotentSinkRecord(String connectorName, SinkRecord base) {
         super(
                 base.topic(),
                 base.kafkaPartition(),
@@ -24,17 +24,27 @@ public class IdempotentSinkRecord extends SinkRecord {
                 base.originalTopic(),
                 base.originalKafkaPartition(),
                 base.originalKafkaOffset());
-        this.idempotencyKey = idempotencyKey;
+        this.connectorName = connectorName;
     }
 
-    public String getIdempotencyKey() {
-        return idempotencyKey;
+    public String idempotencyKey() {
+        // to ensure idempotency we use: connector name + topic + partition + offset
+        return String.format(
+                        "%s-%s-%d-%d", connectorName(), topic(), kafkaPartition(), kafkaOffset())
+                // a topic supports ".", "_" and upper case
+                .toLowerCase()
+                .replace("_", "-")
+                .replace(".", "-");
     }
 
-    public String getWfRunId() {
+    private String connectorName() {
+        return connectorName;
+    }
+
+    public String wfRunId() {
         Header wfRunId = headers().lastWithName(WF_RUN_ID);
         if (wfRunId == null) {
-            return getIdempotencyKey();
+            return idempotencyKey();
         }
 
         Object value = wfRunId.value();
@@ -49,7 +59,7 @@ public class IdempotentSinkRecord extends SinkRecord {
         return value.toString();
     }
 
-    public String getParentWfRunId() {
+    public String parentWfRunId() {
         Header parentWfRunId = headers().lastWithName(PARENT_WF_RUN_ID);
         if (parentWfRunId == null) {
             return null;

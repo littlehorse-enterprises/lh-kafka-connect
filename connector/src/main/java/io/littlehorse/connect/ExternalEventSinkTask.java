@@ -40,7 +40,7 @@ public class ExternalEventSinkTask extends LHSinkTask {
 
     private PutExternalEventRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         return PutExternalEventRequest.newBuilder()
-                .setGuid(sinkRecord.getIdempotencyKey())
+                .setGuid(sinkRecord.idempotencyKey())
                 .setWfRunId(WfRunId.newBuilder().setId(extractWfRunId(sinkRecord.key())))
                 .setContent(LHLibUtil.objToVarVal(ObjectMapper.removeStruct(sinkRecord.value())))
                 .setExternalEventDefId(

@@ -89,8 +89,7 @@ public abstract class LHSinkTask extends SinkTask {
                     connectorName);
 
             try {
-                executeGrpcCall(
-                        new IdempotentSinkRecord(calculateIdempotencyKey(sinkRecord), sinkRecord));
+                executeGrpcCall(new IdempotentSinkRecord(connectorName, sinkRecord));
                 // do not commit if it failed
                 updateSuccessfulOffsets(sinkRecord);
             } catch (Exception e) {
@@ -150,20 +149,6 @@ public abstract class LHSinkTask extends SinkTask {
         successfulOffsets.put(
                 new TopicPartition(sinkRecord.topic(), sinkRecord.kafkaPartition()),
                 new OffsetAndMetadata(sinkRecord.kafkaOffset() + 1));
-    }
-
-    private String calculateIdempotencyKey(SinkRecord sinkRecord) {
-        // to ensure idempotency we use: connector name + topic + partition + offset
-        return String.format(
-                        "%s-%s-%d-%d",
-                        connectorName,
-                        sinkRecord.topic(),
-                        sinkRecord.kafkaPartition(),
-                        sinkRecord.kafkaOffset())
-                // a topic supports ".", "_" and upper case
-                .toLowerCase()
-                .replace("_", "-")
-                .replace(".", "-");
     }
 
     private void report(SinkRecord sinkRecord, Exception e) {

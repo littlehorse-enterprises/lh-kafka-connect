@@ -1,0 +1,10 @@
+{"id":"custom-id-73cab66c-1187-4e72-88e9-5b0ca57af75b","name":"Chewbacca"}
+{"id":"custom-id-55edd677-cf87-42c0-90bb-0bb8750e5bf0","name":"Sheev Palpatine"}
+{"id":"custom-id-9e64e104-3585-4eca-b3c2-af3237974d0d","name":"Hera Syndulla"}
+{"id":"custom-id-3bec2fce-ef6f-4a5f-ae43-802168c1eb46","name":"Ahsoka Tano"}
+{"id":"custom-id-68c51c16-f4f2-4f3b-bfb5-712ca9b4d6a0","name":"Obi-Wan Kenobi"}
+{"id":"custom-id-cdf12913-96b5-4fec-8530-01a28aff26c7","name":"Nute Gunray"}
+{"id":"custom-id-6b4b8491-cf2a-4db9-97d7-2a1cd7ba85ec","name":"Count Dooku"}
+{"id":"custom-id-15c27cae-ebc7-4bf4-a1c4-18abc15d3a76","name":"Rey"}
+{"id":"custom-id-f7f8e3fb-f5fe-4516-8bb2-f0df9265693a","name":"Rose Tico"}
+{"id":"custom-id-14589e23-75c1-44b8-8237-462bb6b27e38","name":"Vice Admiral Holdo"}

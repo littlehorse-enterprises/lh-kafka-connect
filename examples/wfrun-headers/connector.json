@@ -4,6 +4,7 @@
   "topics": "example-wfrun-headers",
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "header.converter": "org.apache.kafka.connect.storage.StringConverter",
   "transforms": "HoistField",
   "transforms.HoistField.type": "org.apache.kafka.connect.transforms.HoistField$Value",
   "transforms.HoistField.field": "name",

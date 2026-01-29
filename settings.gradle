@@ -22,6 +22,7 @@ include "connector"
         "wfrun-filter",
         "wfrun-protobuf",
         "wfrun-secrets",
+        "wfrun-value-to-header",
         "external-event-json",
         "external-event-value-to-key",
         "external-event-simple",

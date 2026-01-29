@@ -1,0 +1,17 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-value-to-header",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "moveFieldsToHeader",
+  "transforms.moveFieldsToHeader.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+  "transforms.moveFieldsToHeader.fields": "id",
+  "transforms.moveFieldsToHeader.headers": "wfRunId",
+  "transforms.moveFieldsToHeader.operation": "move",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-value-to-header"
+}

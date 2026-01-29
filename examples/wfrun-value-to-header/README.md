@@ -1,10 +1,10 @@
-# WfRun Simple Connector with Headers
+# WfRun Connector with JSON value and Header
 
 In this example you will:
 
 - Register a workflow with variable types: `STR`.
-- Produce messages to a kafka topic with a wfRunId header and without SchemaRegistry.
-- Create a WfRunSinkConnector with a simple transformation.
+- Produce json messages to a kafka topic without SchemaRegistry.
+- Create a WfRunSinkConnector with a HeaderFrom transformation.
 
 > [!WARNING]
 > Run the commands in the root directory
@@ -38,7 +38,7 @@ docker compose exec kafka-connect \
 kafka-topics --create --bootstrap-server kafka1:9092 \
 --replication-factor 3 \
 --partitions 12 \
---topic example-wfrun-headers
+--topic example-wfrun-value-to-header
 ```
 
 Produce:
@@ -46,9 +46,8 @@ Produce:
 ```shell
 docker compose exec -T kafka-connect \
 kafka-console-producer --bootstrap-server kafka1:9092 \
---property parse.headers=true \
---topic example-wfrun-headers \
-< examples/wfrun-headers/data.txt
+--topic example-wfrun-value-to-header \
+< examples/wfrun-value-to-header/data.txt
 ```
 
 Consume:
@@ -59,8 +58,7 @@ Consume:
 ```shell
 docker compose exec kafka-connect \
 kafka-console-consumer --bootstrap-server kafka1:9092 \
---topic example-wfrun-headers \
---property print.headers=true \
+--topic example-wfrun-value-to-header \
 --from-beginning
 ```
 
@@ -68,7 +66,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 > If you need to generate new data run:
 
 ```shell
-./gradlew -q example-wfrun-headers:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-headers/data.txt
+./gradlew -q example-wfrun-value-to-header:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/wfrun-value-to-header/data.txt
 ```
 
 ## Run Worker
@@ -76,7 +74,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 Run worker:
 
 ```shell
-./gradlew example-wfrun-headers:run
+./gradlew example-wfrun-value-to-header:run
 ```
 
 ## Create Connector
@@ -84,13 +82,13 @@ Run worker:
 Create connector:
 
 ```shell
-http PUT :8083/connectors/example-wfrun-headers/config < examples/wfrun-headers/connector.json
+http PUT :8083/connectors/example-wfrun-value-to-header/config < examples/wfrun-value-to-header/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-wfrun-headers
+http :8083/connectors/example-wfrun-value-to-header
 ```
 
 ## Check WfRuns
@@ -98,5 +96,5 @@ http :8083/connectors/example-wfrun-headers
 List WfRuns:
 
 ```shell
-lhctl search wfRun example-wfrun-headers
+lhctl search wfRun example-wfrun-value-to-header
 ```

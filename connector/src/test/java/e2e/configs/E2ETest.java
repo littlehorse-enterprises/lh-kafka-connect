@@ -8,7 +8,6 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
@@ -18,6 +17,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.TopicExistsException;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.awaitility.Awaitility;
 import org.slf4j.Logger;
@@ -26,6 +26,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -164,16 +165,63 @@ public abstract class E2ETest {
         }
     }
 
-    public void produceValues(String topic, Pair<String, String>... keyValues) {
+    public static class KafkaMessage {
+        private final String key;
+        private final String value;
+        private final Map<String, String> headers;
+
+        public KafkaMessage(String key, String value, Map<String, String> headers) {
+            this.key = key;
+            this.value = value;
+            this.headers = headers;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public Map<String, String> getHeaders() {
+            return headers;
+        }
+
+        public static KafkaMessage of(String key, String value) {
+            return new KafkaMessage(key, value, Map.of());
+        }
+
+        public static KafkaMessage of(String value) {
+            return new KafkaMessage(null, value, Map.of());
+        }
+
+        public static KafkaMessage of(String key, String value, Map<String, String> headers) {
+            return new KafkaMessage(key, value, headers);
+        }
+    }
+
+    public void produceValues(String topic, KafkaMessage... kafkaMessages) {
         try {
             Map<String, Object> kafkaConfig = new HashMap<>(getKafkaConfig());
             kafkaConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             kafkaConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
             try (Producer<String, String> producer = new KafkaProducer<>(kafkaConfig)) {
-                Arrays.stream(keyValues)
-                        .map(keyValue ->
-                                new ProducerRecord<>(topic, keyValue.getKey(), keyValue.getValue()))
+                Arrays.stream(kafkaMessages)
+                        .map(kafkaMessage -> {
+                            RecordHeaders headers = new RecordHeaders();
+                            kafkaMessage
+                                    .getHeaders()
+                                    .forEach((key, value) -> headers.add(
+                                            key, value.getBytes(StandardCharsets.UTF_8)));
+                            return new ProducerRecord<>(
+                                    topic,
+                                    null,
+                                    kafkaMessage.getKey(),
+                                    kafkaMessage.getValue(),
+                                    new RecordHeaders(headers));
+                        })
                         .forEach(record -> {
                             try {
                                 producer.send(record).get(1, TimeUnit.SECONDS);

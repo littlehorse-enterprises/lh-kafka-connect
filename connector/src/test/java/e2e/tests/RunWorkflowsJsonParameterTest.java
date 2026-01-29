@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -46,12 +45,12 @@ public class RunWorkflowsJsonParameterTest extends E2ETest {
         return connectorConfig;
     }
 
-    public static class KafkaValue {
+    public static class JsonObject {
         private Person person;
 
-        public KafkaValue() {}
+        public JsonObject() {}
 
-        public KafkaValue(Person person) {
+        public JsonObject(Person person) {
             this.person = person;
         }
 
@@ -111,8 +110,8 @@ public class RunWorkflowsJsonParameterTest extends E2ETest {
         createTopics(INPUT_TOPIC);
         produceValues(
                 INPUT_TOPIC,
-                Pair.of(null, getJsonStr(new KafkaValue(new Person("Leia", "Organa")))),
-                Pair.of(null, getJsonStr(new KafkaValue(new Person("Luke", null)))));
+                KafkaMessage.of(getJsonStr(new JsonObject(new Person("Leia", "Organa")))),
+                KafkaMessage.of(getJsonStr(new JsonObject(new Person("Luke", null)))));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {

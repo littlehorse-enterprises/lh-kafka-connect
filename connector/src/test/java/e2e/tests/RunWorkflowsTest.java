@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -61,8 +60,9 @@ public class RunWorkflowsTest extends E2ETest {
         startWorker(this);
         registerWorkflow(WORKFLOW);
         createTopics(INPUT_TOPIC_1, INPUT_TOPIC_2);
-        produceValues(INPUT_TOPIC_1, Pair.of(null, "Leia Organa"), Pair.of(null, "Luke Skywalker"));
-        produceValues(INPUT_TOPIC_2, Pair.of(null, "Anakin Skywalker"));
+        produceValues(
+                INPUT_TOPIC_1, KafkaMessage.of("Leia Organa"), KafkaMessage.of("Luke Skywalker"));
+        produceValues(INPUT_TOPIC_2, KafkaMessage.of("Anakin Skywalker"));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {

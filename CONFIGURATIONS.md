@@ -92,7 +92,7 @@
   * Importance: low
 
 ``wf.run.parent.id``
-  Optionally specify the parent WfRunId
+  Optionally specify the default parent WfRunId.
 
   * Type: string
   * Default: null

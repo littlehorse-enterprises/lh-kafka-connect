@@ -151,7 +151,7 @@ services:
   littlehorse:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:${LITTLEHORSE_VERSION}
     healthcheck:
-      test: wget --no-verbose --spider http://localhost:1822/readiness
+      test: curl --fail 0.0.0.0:1822/liveness
       timeout: 10s
       retries: 3
       start_period: 10s

@@ -8,7 +8,7 @@
         "analytics",
         "orchestrator"
     ],
-    "version": "0.15.1",
+    "version": "0.16.0",
     "title": "LittleHorse Connector for Apache Kafka",
     "description": "The LittleHorse Server is a high-performance and developer-first platform for building Durable Workflows in code",
     "documentation_url": "https://littlehorse.io/docs",
@@ -45,7 +45,7 @@
     "component_types": [
         "sink"
     ],
-    "release_date": "2025-12-18",
+    "release_date": "2026-01-29",
     "license": [
         {
             "name": "Server Side Public License, Version 1",

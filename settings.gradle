@@ -16,6 +16,7 @@ include "connector"
         "wfrun-json",
         "wfrun-dlq",
         "wfrun-simple",
+        "wfrun-headers",
         "wfrun-avro",
         "wfrun-list",
         "wfrun-filter",

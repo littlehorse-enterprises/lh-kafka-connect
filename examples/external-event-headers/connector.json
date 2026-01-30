@@ -1,0 +1,19 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.ExternalEventSinkConnector",
+  "topics": "example-external-event-headers",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "moveFieldsToHeader,extractField",
+  "transforms.moveFieldsToHeader.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+  "transforms.moveFieldsToHeader.fields": "id",
+  "transforms.moveFieldsToHeader.headers": "wfRunId",
+  "transforms.moveFieldsToHeader.operation": "move",
+  "transforms.extractField.type": "org.apache.kafka.connect.transforms.ExtractField$Value",
+  "transforms.extractField.field": "units",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "external.event.name": "example-external-event-headers"
+}

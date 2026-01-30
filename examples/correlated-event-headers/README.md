@@ -1,4 +1,4 @@
-# CorrelatedEvent JSON Connector
+# CorrelatedEvent Connector with Header
 
 In this example you will:
 
@@ -16,6 +16,7 @@ In this example you will:
 - httpie
 - docker
 - java
+- jq
 
 ## Setup Environment
 
@@ -40,7 +41,7 @@ docker compose exec kafka-connect \
 kafka-topics --create --bootstrap-server kafka1:9092 \
 --replication-factor 3 \
 --partitions 12 \
---topic example-correlated-event-json
+--topic example-correlated-event-headers
 ```
 
 Produce:
@@ -48,10 +49,8 @@ Produce:
 ```shell
 docker compose exec -T kafka-connect \
 kafka-console-producer --bootstrap-server kafka1:9092 \
---topic example-correlated-event-json \
---property "parse.key=true" \
---property "key.separator=|" \
-< examples/correlated-event-json/data.txt
+--topic example-correlated-event-headers \
+< examples/correlated-event-headers/data.txt
 ```
 
 Consume:
@@ -62,9 +61,7 @@ Consume:
 ```shell
 docker compose exec kafka-connect \
 kafka-console-consumer --bootstrap-server kafka1:9092 \
---topic example-correlated-event-json \
---property "print.key=true" \
---property "key.separator=|" \
+--topic example-correlated-event-headers \
 --from-beginning
 ```
 
@@ -72,7 +69,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 > If you need to generate new data run:
 
 ```shell
-./gradlew -q example-correlated-event-json:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/correlated-event-json/data.txt
+./gradlew -q example-correlated-event-headers:run -DmainClass="io.littlehorse.example.DataGenerator" --args="10" > examples/correlated-event-headers/data.txt
 ```
 
 ## Run Worker
@@ -80,7 +77,7 @@ kafka-console-consumer --bootstrap-server kafka1:9092 \
 Run worker:
 
 ```shell
-./gradlew example-correlated-event-json:run
+./gradlew example-correlated-event-headers:run
 ```
 
 ## Create Connector
@@ -88,13 +85,13 @@ Run worker:
 Create connector:
 
 ```shell
-http PUT :8083/connectors/example-correlated-event-json/config < examples/correlated-event-json/connector.json
+http PUT :8083/connectors/example-correlated-event-headers/config < examples/correlated-event-headers/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-correlated-event-json
+http :8083/connectors/example-correlated-event-headers
 ```
 
 ## Run Workflows
@@ -103,8 +100,8 @@ Run workflows with the same id for every external event:
 
 ```shell
 while read line; do \
-  lhctl run example-correlated-event-json payment-id "${line%|*}"; \
-done < examples/correlated-event-json/data.txt
+  lhctl run example-correlated-event-headers payment-id "$(echo $line | jq -r '.id')"; \
+done < examples/correlated-event-headers/data.txt
 ```
 
 ## Check CorrelatedEvents
@@ -112,7 +109,7 @@ done < examples/correlated-event-json/data.txt
 List external events:
 
 ```shell
-lhctl search correlatedEvent example-correlated-event-json
+lhctl search correlatedEvent example-correlated-event-headers
 ```
 
 > At this point all the external events are waiting for being claimed.
@@ -122,7 +119,7 @@ lhctl search correlatedEvent example-correlated-event-json
 List WfRuns:
 
 ```shell
-lhctl search wfRun example-correlated-event-json
+lhctl search wfRun example-correlated-event-headers
 ```
 
 > You can use `lhctl get externalEvent <wfRunId> <externalEventDefName> <guid>` \

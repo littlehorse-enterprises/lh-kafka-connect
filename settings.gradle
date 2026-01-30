@@ -28,8 +28,10 @@ include "common"
         "external-event-json",
         "external-event-value-to-key",
         "external-event-simple",
+        "external-event-headers",
         "correlated-event-simple",
-        "correlated-event-json"
+        "correlated-event-json",
+        "correlated-event-headers"
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

@@ -97,16 +97,6 @@ Get connector:
 http :8083/connectors/example-correlated-event-simple
 ```
 
-## Check CorrelatedEvents
-
-List external events:
-
-```shell
-lhctl search externalEvent example-correlated-event-simple
-```
-
-> At this point all the external events are waiting for being claimed.
-
 ## Run Workflows
 
 Run workflows with the same id for every external event:
@@ -116,6 +106,16 @@ while read line; do \
   lhctl run example-correlated-event-simple id "${line%|*}"; \
 done < examples/correlated-event-simple/data.txt
 ```
+
+## Check CorrelatedEvents
+
+List external events:
+
+```shell
+lhctl search correlatedEvent example-correlated-event-simple
+```
+
+> At this point all the external events are waiting for being claimed.
 
 ## Check WfRuns
 

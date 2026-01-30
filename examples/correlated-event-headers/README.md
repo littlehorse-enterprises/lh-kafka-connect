@@ -2,7 +2,7 @@
 
 In this example you will:
 
-- Register a task with a `JASON_OBJ` variable.
+- Register a task with a `JSON_OBJ` variable.
 - Register a workflow that waits for an external event.
 - Produce string messages to a kafka topic without SchemaRegistry.
 - Create an CorrelatedEventSinkConnector without transformations.

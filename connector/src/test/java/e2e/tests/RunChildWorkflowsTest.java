@@ -50,22 +50,6 @@ public class RunChildWorkflowsTest extends E2ETest {
         CHILD_WORKFLOW.setParent(PARENT_WORKFLOW_NAME);
     }
 
-    private static HashMap<String, Object> getConnectorConfig() {
-        HashMap<String, Object> connectorConfig = new HashMap<>();
-        connectorConfig.put("tasks.max", 1);
-        connectorConfig.put("connector.class", "io.littlehorse.connect.WfRunSinkConnector");
-        connectorConfig.put("topics", INPUT_TOPIC);
-        connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
-        connectorConfig.put("value.converter", "org.apache.kafka.connect.json.JsonConverter");
-        connectorConfig.put("value.converter.schemas.enable", false);
-        connectorConfig.put("lhc.api.port", 2023);
-        connectorConfig.put("lhc.api.host", "littlehorse");
-        connectorConfig.put("lhc.tenant.id", "default");
-        connectorConfig.put("wf.spec.name", CHILD_WORKFLOW_NAME);
-        connectorConfig.put("wf.run.parent.id", PARENT_WORKFLOW_ID);
-        return connectorConfig;
-    }
-
     @LHTaskMethod(TASK_NAME)
     public String greetings(String wfName, String name) {
         String message = String.format("Hello %s! from %s", name, wfName);
@@ -114,5 +98,21 @@ public class RunChildWorkflowsTest extends E2ETest {
             TaskRunIdList result = lhClient.searchTaskRun(criteria);
             assertThat(result.getResultsCount()).isEqualTo(3);
         });
+    }
+
+    private static HashMap<String, Object> getConnectorConfig() {
+        HashMap<String, Object> connectorConfig = new HashMap<>();
+        connectorConfig.put("tasks.max", 1);
+        connectorConfig.put("connector.class", "io.littlehorse.connect.WfRunSinkConnector");
+        connectorConfig.put("topics", INPUT_TOPIC);
+        connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
+        connectorConfig.put("value.converter", "org.apache.kafka.connect.json.JsonConverter");
+        connectorConfig.put("value.converter.schemas.enable", false);
+        connectorConfig.put("lhc.api.port", 2023);
+        connectorConfig.put("lhc.api.host", "littlehorse");
+        connectorConfig.put("lhc.tenant.id", "default");
+        connectorConfig.put("wf.spec.name", CHILD_WORKFLOW_NAME);
+        connectorConfig.put("wf.run.parent.id", PARENT_WORKFLOW_ID);
+        return connectorConfig;
     }
 }

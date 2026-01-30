@@ -30,22 +30,8 @@ public class RunWorkflowsJsonParameterTest extends E2ETest {
             WORKFLOW_NAME, wf -> wf.execute(TASK_NAME, wf.declareJsonObj(INPUT_PARAMETER)));
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
 
-    private static HashMap<String, Object> getConnectorConfig() {
-        HashMap<String, Object> connectorConfig = new HashMap<>();
-        connectorConfig.put("tasks.max", 1);
-        connectorConfig.put("connector.class", "io.littlehorse.connect.WfRunSinkConnector");
-        connectorConfig.put("topics", INPUT_TOPIC);
-        connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
-        connectorConfig.put("value.converter", "org.apache.kafka.connect.json.JsonConverter");
-        connectorConfig.put("value.converter.schemas.enable", false);
-        connectorConfig.put("lhc.api.port", 2023);
-        connectorConfig.put("lhc.api.host", "littlehorse");
-        connectorConfig.put("lhc.tenant.id", "default");
-        connectorConfig.put("wf.spec.name", WORKFLOW_NAME);
-        return connectorConfig;
-    }
-
     public static class JsonObject {
+
         private Person person;
 
         public JsonObject() {}
@@ -64,6 +50,7 @@ public class RunWorkflowsJsonParameterTest extends E2ETest {
     }
 
     public static class Person {
+
         private String firstName;
         private String secondName;
 
@@ -142,5 +129,20 @@ public class RunWorkflowsJsonParameterTest extends E2ETest {
 
     private String getJsonStr(Object object) {
         return LHLibUtil.serializeToJson(object).getJsonStr();
+    }
+
+    private static HashMap<String, Object> getConnectorConfig() {
+        HashMap<String, Object> connectorConfig = new HashMap<>();
+        connectorConfig.put("tasks.max", 1);
+        connectorConfig.put("connector.class", "io.littlehorse.connect.WfRunSinkConnector");
+        connectorConfig.put("topics", INPUT_TOPIC);
+        connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
+        connectorConfig.put("value.converter", "org.apache.kafka.connect.json.JsonConverter");
+        connectorConfig.put("value.converter.schemas.enable", false);
+        connectorConfig.put("lhc.api.port", 2023);
+        connectorConfig.put("lhc.api.host", "littlehorse");
+        connectorConfig.put("lhc.tenant.id", "default");
+        connectorConfig.put("wf.spec.name", WORKFLOW_NAME);
+        return connectorConfig;
     }
 }

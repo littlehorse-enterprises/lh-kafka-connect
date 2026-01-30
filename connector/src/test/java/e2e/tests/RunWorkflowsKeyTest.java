@@ -17,14 +17,17 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
-public class RunWorkflowsTest extends E2ETest {
+public class RunWorkflowsKeyTest extends E2ETest {
 
-    public static final String WORKFLOW_NAME = "wf-run-test";
-    public static final String TASK_NAME = "wf-run-test";
-    public static final String CONNECTOR_NAME = "wf-run-test";
-    private static final String INPUT_TOPIC_1 = "wf-run-test";
-    private static final String INPUT_TOPIC_2 = "ThisIs_A-valid.topic-1";
+    public static final String WORKFLOW_NAME = "wfrun-test-with-key";
+    public static final String TASK_NAME = "wfrun-test-with-key";
+    public static final String CONNECTOR_NAME = "wfrun-test-with-key";
+    private static final String INPUT_TOPIC = "wfrun-test-with-key";
+    public static final String WF_RUN_ID_1 = UUID.randomUUID().toString();
+    public static final String WF_RUN_ID_2 = UUID.randomUUID().toString();
     private static final Workflow WORKFLOW = Workflow.newWorkflow(
             WORKFLOW_NAME, wf -> wf.execute(WORKFLOW_NAME, wf.declareStr("name")));
     private final LittleHorseBlockingStub lhClient = getLittleHorseConfig().getBlockingStub();
@@ -33,7 +36,7 @@ public class RunWorkflowsTest extends E2ETest {
         HashMap<String, Object> connectorConfig = new HashMap<>();
         connectorConfig.put("tasks.max", 1);
         connectorConfig.put("connector.class", "io.littlehorse.connect.WfRunSinkConnector");
-        connectorConfig.put("topics", INPUT_TOPIC_1 + "," + INPUT_TOPIC_2);
+        connectorConfig.put("topics", INPUT_TOPIC);
         connectorConfig.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
         connectorConfig.put("value.converter", "org.apache.kafka.connect.storage.StringConverter");
         connectorConfig.put("transforms", "HoistField");
@@ -59,10 +62,11 @@ public class RunWorkflowsTest extends E2ETest {
     public void shouldExecuteWfRunAfterProducing() {
         startWorker(this);
         registerWorkflow(WORKFLOW);
-        createTopics(INPUT_TOPIC_1, INPUT_TOPIC_2);
+        createTopics(INPUT_TOPIC);
         produceValues(
-                INPUT_TOPIC_1, KafkaMessage.of("Leia Organa"), KafkaMessage.of("Luke Skywalker"));
-        produceValues(INPUT_TOPIC_2, KafkaMessage.of("Anakin Skywalker"));
+                INPUT_TOPIC,
+                KafkaMessage.of(WF_RUN_ID_1, "Leia Organa"),
+                KafkaMessage.of(WF_RUN_ID_2, "Luke Skywalker"));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {
@@ -71,32 +75,19 @@ public class RunWorkflowsTest extends E2ETest {
                     .setWfSpecName(WORKFLOW_NAME)
                     .build();
             WfRunIdList result = lhClient.searchWfRun(criteria);
+            List<WfRunId> resultsList = result.getResultsList();
 
-            WfRunIdList expected = WfRunIdList.newBuilder()
-                    .addResults(WfRunId.newBuilder()
-                            .setId("%s-%s-0-0".formatted(CONNECTOR_NAME, INPUT_TOPIC_1))
-                            .build())
-                    .addResults(WfRunId.newBuilder()
-                            .setId("%s-%s-0-1".formatted(CONNECTOR_NAME, INPUT_TOPIC_1))
-                            .build())
-                    .addResults(WfRunId.newBuilder()
-                            .setId("%s-%s-0-0"
-                                    .formatted(
-                                            CONNECTOR_NAME,
-                                            INPUT_TOPIC_2
-                                                    .toLowerCase()
-                                                    .replace("_", "-")
-                                                    .replace(".", "-")))
-                            .build())
-                    .build();
-            assertThat(result).isEqualTo(expected);
+            assertThat(resultsList)
+                    .contains(WfRunId.newBuilder().setId(WF_RUN_ID_1).build());
+            assertThat(resultsList)
+                    .contains(WfRunId.newBuilder().setId(WF_RUN_ID_2).build());
         });
 
         await(() -> {
             SearchTaskRunRequest criteria =
                     SearchTaskRunRequest.newBuilder().setTaskDefName(TASK_NAME).build();
             TaskRunIdList result = lhClient.searchTaskRun(criteria);
-            assertThat(result.getResultsCount()).isEqualTo(3);
+            assertThat(result.getResultsCount()).isEqualTo(2);
         });
     }
 }

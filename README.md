@@ -1,8 +1,8 @@
 # LittleHorse Connectors for Kafka Connect
 
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect"><img alt="github" src="https://img.shields.io/badge/GitHub-blue?logo=github&logoColor=white"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect"><img alt="github" src="https://img.shields.io/badge/GitHub-purple?logo=github&logoColor=white"></a>
 <a href="https://docs.confluent.io/platform/current/connect/index.html"><img alt="confluent" src="https://raw.githubusercontent.com/littlehorse-enterprises/lh-kafka-connect/refs/heads/main/assets/confluent-badge.svg"/></a>
-<a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/refs/heads/master/img/badges/gray.svg"/></a>
+<a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/refs/heads/master/img/badges/blue.svg"/></a>
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
@@ -47,14 +47,16 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 
 ### Expected Message Structure
 
-| Message Part | Description                                   | Type | Valid Values       |
-|--------------|-----------------------------------------------|------|--------------------|
-| `key`        | Ignored.                                      | any  | any                |
-| `value`      | Define the `variables` field of the workflow. | map  | key-value not null |
+| Message Part | Description                                                                                                              | Type   | Valid Values       |
+|--------------|--------------------------------------------------------------------------------------------------------------------------|--------|--------------------|
+| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format    |
+| `value`      | Define the `variables` field of the workflow.                                                                            | map    | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+> `wfRunId` precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key.
 
 ### Additional Metadata
 
@@ -319,6 +321,7 @@ More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/c
 
 ## Download
 
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="github" src="https://img.shields.io/badge/releases-orange?logo=github&logoColor=white"></a>
 <a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).

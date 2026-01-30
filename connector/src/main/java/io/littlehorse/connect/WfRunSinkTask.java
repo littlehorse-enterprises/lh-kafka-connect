@@ -42,10 +42,7 @@ public class WfRunSinkTask extends LHSinkTask {
     private RunWfRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         RunWfRequest.Builder requestBuilder = RunWfRequest.newBuilder()
                 .setWfSpecName(config.getWfSpecName())
-                .setId(
-                        sinkRecord.wfRunId() == null
-                                ? sinkRecord.idempotencyKey()
-                                : sinkRecord.wfRunId());
+                .setId(extractWfRunId(sinkRecord));
 
         Object value = sinkRecord.value();
         if (value != null) {
@@ -82,5 +79,22 @@ public class WfRunSinkTask extends LHSinkTask {
         return variables.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, entry -> LHLibUtil.objToVarVal(entry.getValue())));
+    }
+
+    private String extractWfRunId(IdempotentSinkRecord sinkRecord) {
+        if (sinkRecord.wfRunId() != null) {
+            return sinkRecord.wfRunId();
+        }
+
+        if (sinkRecord.key() != null) {
+            if (!(sinkRecord.key() instanceof String)) {
+                throw new DataException(
+                        "Expected schema structure not provided, key should be a String object");
+            }
+
+            return sinkRecord.key().toString();
+        }
+
+        return sinkRecord.idempotencyKey();
     }
 }

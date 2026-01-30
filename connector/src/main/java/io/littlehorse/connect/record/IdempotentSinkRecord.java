@@ -71,7 +71,8 @@ public class IdempotentSinkRecord extends SinkRecord {
         }
 
         if (!(value instanceof String)) {
-            throw new DataException("Expected String not provided for " + key + " header");
+            throw new DataException("Expected schema structure not provided for " + key
+                    + " header, header should be a String object");
         }
 
         return value.toString();

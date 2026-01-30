@@ -1,8 +1,8 @@
 # LittleHorse Connectors for Kafka Connect
 
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect"><img alt="github" src="https://img.shields.io/badge/GitHub-blue?logo=github&logoColor=white"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect"><img alt="github" src="https://img.shields.io/badge/GitHub-purple?logo=github&logoColor=white"></a>
 <a href="https://docs.confluent.io/platform/current/connect/index.html"><img alt="confluent" src="https://raw.githubusercontent.com/littlehorse-enterprises/lh-kafka-connect/refs/heads/main/assets/confluent-badge.svg"/></a>
-<a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/refs/heads/master/img/badges/gray.svg"/></a>
+<a href="https://littlehorse.io/"><img alt="littlehorse" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/refs/heads/master/img/badges/blue.svg"/></a>
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
@@ -13,12 +13,15 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [Table Of Content](#table-of-content)
   * [WfRunSinkConnector](#wfrunsinkconnector)
     * [Expected Message Structure](#expected-message-structure)
+    * [Additional Metadata](#additional-metadata)
     * [Quick Example](#quick-example)
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-1)
+    * [Additional Metadata](#additional-metadata-1)
     * [Quick Example](#quick-example-1)
   * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-2)
+    * [Additional Metadata](#additional-metadata-2)
     * [Quick Example](#quick-example-2)
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
@@ -44,14 +47,25 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 
 ### Expected Message Structure
 
-| Message Part | Description                                  | Type | Valid Values       |
-|--------------|----------------------------------------------|------|--------------------|
-| `key`        | Ignored                                      | any  | any                |
-| `value`      | Define the `variables` field of the workflow | map  | key-value not null |
+| Message Part | Description                                                                                                              | Type   | Valid Values       |
+|--------------|--------------------------------------------------------------------------------------------------------------------------|--------|--------------------|
+| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format    |
+| `value`      | Define the `variables` field of the workflow.                                                                            | map    | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+> `wfRunId` precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key.
+
+### Additional Metadata
+
+Optionally this sink connector uses the record headers to configure the wf runs:
+
+| Header Key      | Description                                                                                                              | Type   | Valid Values    |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
+| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
+| `parentWfRunId` | Optional, sets a parent wf run.                                                                                          | string | hostname format |
 
 ### Quick Example
 
@@ -100,14 +114,23 @@ More about running external events at [LittleHorse External Events](https://litt
 
 ### Expected Message Structure
 
-| Message Part | Description                                | Type   | Valid Values     |
-|--------------|--------------------------------------------|--------|------------------|
-| `key`        | Define the associated `wf_run_id`          | string | non-empty string |
-| `value`      | Define the `content` of the external event | any    | any not null     |
+| Message Part | Description                                                                                     | Type   | Valid Values    |
+|--------------|-------------------------------------------------------------------------------------------------|--------|-----------------|
+| `key`        | Optional, define the associated `wfRunId`. Precedence: 1. `wfRunId` header key, 2. message key. | string | hostname format |
+| `value`      | Define the `content` of the external event.                                                     | any    | any not null    |
 
 More about external event fields at [PutExternalEventRequest](https://littlehorse.io/docs/server/api#putexternaleventrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+### Additional Metadata
+
+Optionally this sink connector uses the record headers to configure the external event:
+
+| Header Key | Description                                                                                                                                            | Type   | Valid Values    |
+|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
+| `wfRunId`  | Associated `wfRunId`. It looks for the `wfRunId` in the message key if it is not provided in the headers.                                              | string | hostname format |
+| `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 
 ### Quick Example
 
@@ -153,14 +176,22 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 
 ###  Expected Message Structure
 
-| Message Part | Description                                  | Type   | Valid Values     |
-|--------------|----------------------------------------------|--------|------------------|
-| `key`        | Define the associated `CorrelationId`        | string | non-empty string |
-| `value`      | Define the `Content` of the correlated event | any    | any not null     |
+| Message Part | Description                                                                                                 | Type   | Valid Values     |
+|--------------|-------------------------------------------------------------------------------------------------------------|--------|------------------|
+| `key`        | Optional, define the associated `correlationId`. Precedence: 1. `correlationId` header key, 2. message key. | string | non-empty string |
+| `value`      | Define the `content` of the correlated event.                                                               | any    | any not null     |
 
 More about correlated event fields at [PutCorrelatedEventRequest](https://littlehorse.io/docs/server/api#putcorrelatedeventrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
+
+### Additional Metadata
+
+Optionally this sink connector uses the record headers to configure the external event:
+
+| Header Key      | Description                                                                                                           | Type   | Valid Values     |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------|--------|------------------|
+| `correlationId` | Associated `correlationId`. It looks for the `correlationId` in the message key if it is not provided in the headers. | string | non-empty string |
 
 ### Quick Example
 
@@ -290,6 +321,7 @@ More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/c
 
 ## Download
 
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="github" src="https://img.shields.io/badge/releases-orange?logo=github&logoColor=white"></a>
 <a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).

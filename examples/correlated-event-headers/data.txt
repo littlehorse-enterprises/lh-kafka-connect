@@ -1,0 +1,10 @@
+{"id":"3cc0b998ad4f4515b1fb05fcbc97b061","droid":"BB-8","credits":1967.0}
+{"id":"8c5127a741d940c6b30dfc2bfd6992c5","droid":"BB-9E","credits":1832.0}
+{"id":"694405e3cd2c4247acaee31a83d34a53","droid":"NR-N99","credits":4083.0}
+{"id":"8bdd9e883c1c4447a634d21f9f672fd6","droid":"B2-RP","credits":9376.0}
+{"id":"70b7f2e147a5496e970e0012dea40727","droid":"B2-RP","credits":9307.0}
+{"id":"2ba567115e8e4ffa9c69ced1987a163c","droid":"B4-D4","credits":5060.0}
+{"id":"1e4b3df9e2e94bc7bef1222ff580bf9a","droid":"Magnaguard","credits":8940.0}
+{"id":"e60a3cced4df462a8e4b3fdd8d8a832a","droid":"NR-N99","credits":4825.0}
+{"id":"74b67fe90bae42c989d9836924c24b85","droid":"GNK","credits":4415.0}
+{"id":"4802db6b5f124785aa2d1e1f78074370","droid":"BB-9E","credits":1154.0}

@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.Workflow;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class CorrelatedEventsTest extends E2ETest {
 
         registerWorkflow(WORKFLOW);
         createTopics(TOPIC_NAME);
-        produceValues(TOPIC_NAME, Pair.of(correlatedId, "my-event-for: " + wfRunId));
+        produceValues(TOPIC_NAME, KafkaMessage.of(correlatedId, "my-event-for: " + wfRunId));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         lhClient.runWf(RunWfRequest.newBuilder()

@@ -42,6 +42,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
+    testImplementation "net.datafaker:datafaker:${datafakerVersion}"
 }
 
 test {
@@ -100,7 +101,11 @@ tasks.register("generateManifest", Task) {
                     url     : "https://littlehorse.io",
                     logo    : "assets/logo.svg"
             ],
-            requirements     : ["LittleHorse 0.12.0 or greater"],
+            requirements     : [
+                    "Java version 17 or greater",
+                    "Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater",
+                    "LittleHorse version 0.14 or greater"
+            ],
             support          : [
                     logo         : "assets/logo.svg",
                     summary      : "Officially supported by LittleHorse Enterprises LLC",

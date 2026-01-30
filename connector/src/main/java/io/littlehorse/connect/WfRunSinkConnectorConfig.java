@@ -38,7 +38,7 @@ public class WfRunSinkConnectorConfig extends LHSinkConnectorConfig {
                     Type.STRING,
                     null,
                     Importance.LOW,
-                    "Optionally specify the parent WfRunId");
+                    "Optionally specify the default parent WfRunId.");
 
     private final String wfSpecName;
     private final Integer wfSpecRevision;

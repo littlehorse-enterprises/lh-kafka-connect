@@ -1,8 +1,8 @@
-# CorrelatedEvent Simple Connector
+# CorrelatedEvent JSON Connector
 
 In this example you will:
 
-- Register a task with a `JASON_OBJ` variable.
+- Register a task with a `JSON_OBJ` variable.
 - Register a workflow that waits for an external event.
 - Produce string messages to a kafka topic without SchemaRegistry.
 - Create an CorrelatedEventSinkConnector without transformations.
@@ -97,16 +97,6 @@ Get connector:
 http :8083/connectors/example-correlated-event-json
 ```
 
-## Check CorrelatedEvents
-
-List external events:
-
-```shell
-lhctl search externalEvent example-correlated-event-json
-```
-
-> At this point all the external events are waiting for being claimed.
-
 ## Run Workflows
 
 Run workflows with the same id for every external event:
@@ -116,6 +106,16 @@ while read line; do \
   lhctl run example-correlated-event-json payment-id "${line%|*}"; \
 done < examples/correlated-event-json/data.txt
 ```
+
+## Check CorrelatedEvents
+
+List external events:
+
+```shell
+lhctl search correlatedEvent example-correlated-event-json
+```
+
+> At this point all the external events are waiting for being claimed.
 
 ## Check WfRuns
 

@@ -1,0 +1,17 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.CorrelatedEventSinkConnector",
+  "topics": "example-correlated-event-headers",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "HeaderFrom",
+  "transforms.HeaderFrom.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+  "transforms.HeaderFrom.fields": "id",
+  "transforms.HeaderFrom.headers": "correlationId",
+  "transforms.HeaderFrom.operation": "copy",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "external.event.name": "example-correlated-event-headers"
+}

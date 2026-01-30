@@ -42,11 +42,19 @@ public class WfRunSinkTask extends LHSinkTask {
     private RunWfRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         RunWfRequest.Builder requestBuilder = RunWfRequest.newBuilder()
                 .setWfSpecName(config.getWfSpecName())
-                .setId(sinkRecord.getIdempotencyKey())
-                .putAllVariables(extractVariables(sinkRecord.value()));
+                .setId(extractWfRunId(sinkRecord));
 
-        if (config.getWfRunParentId() != null) {
-            requestBuilder.setParentWfRunId(LHLibUtil.wfRunIdFromString(config.getWfRunParentId()));
+        Object value = sinkRecord.value();
+        if (value != null) {
+            requestBuilder.putAllVariables(extractVariables(value));
+        }
+
+        String parentWfRunId = sinkRecord.parentWfRunId() == null
+                ? config.getWfRunParentId()
+                : sinkRecord.parentWfRunId();
+
+        if (parentWfRunId != null) {
+            requestBuilder.setParentWfRunId(LHLibUtil.wfRunIdFromString(parentWfRunId));
         }
 
         if (config.getWfSpecMajorVersion() != null) {
@@ -71,5 +79,22 @@ public class WfRunSinkTask extends LHSinkTask {
         return variables.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, entry -> LHLibUtil.objToVarVal(entry.getValue())));
+    }
+
+    private String extractWfRunId(IdempotentSinkRecord sinkRecord) {
+        if (sinkRecord.wfRunId() != null) {
+            return sinkRecord.wfRunId();
+        }
+
+        if (sinkRecord.key() != null) {
+            if (!(sinkRecord.key() instanceof String)) {
+                throw new DataException(
+                        "Expected schema structure not provided, key should be a String object");
+            }
+
+            return sinkRecord.key().toString();
+        }
+
+        return sinkRecord.idempotencyKey();
     }
 }

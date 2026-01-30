@@ -1,14 +1,17 @@
 package io.littlehorse.connect.record;
 
-import lombok.Getter;
-
+import org.apache.kafka.connect.errors.DataException;
+import org.apache.kafka.connect.header.Header;
 import org.apache.kafka.connect.sink.SinkRecord;
 
-@Getter
 public class IdempotentSinkRecord extends SinkRecord {
-    private final String idempotencyKey;
+    public static final String WF_RUN_ID = "wfRunId";
+    public static final String PARENT_WF_RUN_ID = "parentWfRunId";
+    public static final String GUID = "guid";
+    public static final String CORRELATION_ID = "correlationId";
+    private final String connectorName;
 
-    public IdempotentSinkRecord(String idempotencyKey, SinkRecord base) {
+    public IdempotentSinkRecord(String connectorName, SinkRecord base) {
         super(
                 base.topic(),
                 base.kafkaPartition(),
@@ -23,6 +26,55 @@ public class IdempotentSinkRecord extends SinkRecord {
                 base.originalTopic(),
                 base.originalKafkaPartition(),
                 base.originalKafkaOffset());
-        this.idempotencyKey = idempotencyKey;
+        this.connectorName = connectorName;
+    }
+
+    public String idempotencyKey() {
+        // to ensure idempotency we use: connector name + topic + partition + offset
+        return String.format(
+                        "%s-%s-%d-%d", connectorName(), topic(), kafkaPartition(), kafkaOffset())
+                // a topic supports ".", "_" and upper case
+                .toLowerCase()
+                .replace("_", "-")
+                .replace(".", "-");
+    }
+
+    public String connectorName() {
+        return connectorName;
+    }
+
+    public String wfRunId() {
+        return getHeader(WF_RUN_ID);
+    }
+
+    public String parentWfRunId() {
+        return getHeader(PARENT_WF_RUN_ID);
+    }
+
+    public String guid() {
+        return getHeader(GUID);
+    }
+
+    public String correlationId() {
+        return getHeader(CORRELATION_ID);
+    }
+
+    private String getHeader(String key) {
+        Header wfRunId = headers().lastWithName(key);
+        if (wfRunId == null) {
+            return null;
+        }
+
+        Object value = wfRunId.value();
+        if (value == null) {
+            throw new DataException("Expected not null " + key + " header");
+        }
+
+        if (!(value instanceof String)) {
+            throw new DataException("Expected schema structure not provided for " + key
+                    + " header, header should be a String object");
+        }
+
+        return value.toString();
     }
 }

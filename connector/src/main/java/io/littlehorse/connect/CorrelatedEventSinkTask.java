@@ -39,7 +39,10 @@ public class CorrelatedEventSinkTask extends LHSinkTask {
 
     private PutCorrelatedEventRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         return PutCorrelatedEventRequest.newBuilder()
-                .setKey(extractCorrelationId(sinkRecord.key()))
+                .setKey(
+                        sinkRecord.correlationId() == null
+                                ? extractCorrelationId(sinkRecord.key())
+                                : sinkRecord.correlationId())
                 .setContent(LHLibUtil.objToVarVal(ObjectMapper.removeStruct(sinkRecord.value())))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))

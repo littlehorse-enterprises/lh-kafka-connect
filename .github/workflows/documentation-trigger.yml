@@ -1,7 +1,5 @@
 name: Documentation Trigger
 
-# Uses littlehorse-enterprises/action-docs-dispatch (https://github.com/littlehorse-enterprises/action-docs-dispatch).
-
 on:
   push:
     branches:

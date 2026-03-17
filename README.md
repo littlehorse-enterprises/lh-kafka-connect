@@ -342,7 +342,7 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 
 - Java version 17 or greater.
 - Apache Kafka version 3.8 or greater, equivalent to Confluent Platform 7.8 or greater ([Interoperability for Confluent Platform](https://docs.confluent.io/platform/current/installation/versions-interoperability.html#cp-and-apache-ak-compatibility)).
-- LittleHorse version 0.14 or greater.
+- LittleHorse version 1.0 or greater.
 
 ## License
 

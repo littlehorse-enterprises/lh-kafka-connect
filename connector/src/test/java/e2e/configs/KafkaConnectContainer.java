@@ -31,6 +31,8 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
     private static final String CONNECT_STATUS_STORAGE_REPLICATION_FACTOR =
             "CONNECT_STATUS_STORAGE_REPLICATION_FACTOR";
     private static final String DEFAULT_KAFKA_BOOTSTRAP_SERVERS = "kafka:19092";
+    private static final String CONNECT_PLUGIN_PATH = "CONNECT_PLUGIN_PATH";
+    private static final String PLUGINS_PATH = "/usr/local/share/kafka/plugins";
     private static final int DEFAULT_ADVERTISED_PORT = 38083;
     public static final String CONNECT_REST_ADVERTISED_PORT = "CONNECT_REST_ADVERTISED_PORT";
     public static final String CONNECT_LISTENERS = "CONNECT_LISTENERS";
@@ -51,6 +53,7 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
                 .withEnv(CONNECT_KEY_CONVERTER, "org.apache.kafka.connect.json.JsonConverter")
                 .withEnv(CONNECT_VALUE_CONVERTER, "org.apache.kafka.connect.json.JsonConverter")
                 .withEnv(CONNECT_REST_ADVERTISED_HOST_NAME, "localhost")
+                .withEnv(CONNECT_PLUGIN_PATH, PLUGINS_PATH + ",/usr/share/filestream-connectors")
                 .withEnv(CONNECT_LISTENERS, "http://0.0.0.0:" + DEFAULT_PORT)
                 .withEnv(CONNECT_REST_PORT, String.valueOf(DEFAULT_PORT))
                 .withAdvertisedPort(DEFAULT_ADVERTISED_PORT)
@@ -66,8 +69,7 @@ public class KafkaConnectContainer extends GenericContainer<KafkaConnectContaine
     }
 
     public KafkaConnectContainer withPluginsFromHost(final String path) {
-        return this.withCopyFileToContainer(
-                MountableFile.forHostPath(path), "/usr/share/java/kafka-connect-container-plugins");
+        return this.withCopyFileToContainer(MountableFile.forHostPath(path), PLUGINS_PATH);
     }
 
     public KafkaConnectContainer withAdvertisedPort(final int port) {

@@ -39,6 +39,9 @@ public class InstallPluginsTest extends E2ETest {
                                         "predicate"),
                                 buildEntry(
                                         "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value",
-                                        "predicate")));
+                                        "predicate"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.JsonPathMapper",
+                                        "transformation")));
     }
 }

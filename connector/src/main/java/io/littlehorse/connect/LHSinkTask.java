@@ -58,7 +58,14 @@ public abstract class LHSinkTask extends SinkTask {
                 getClass().getSimpleName(),
                 connectorName,
                 isDLQEnabled() ? "enabled" : "disabled");
+        afterStart();
     }
+
+    /**
+     * Hook invoked at the end of {@link #start(Map)}, once the config and blocking stub are
+     * ready. Subclasses may override it to perform additional initialization.
+     */
+    protected void afterStart() {}
 
     @Override
     public void stop() {

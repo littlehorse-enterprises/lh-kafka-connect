@@ -15,6 +15,7 @@ include "common"
 
 [
         "wfrun-json",
+        "wfrun-struct",
         "wfrun-dlq",
         "wfrun-simple",
         "wfrun-headers",

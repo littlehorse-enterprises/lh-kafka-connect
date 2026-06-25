@@ -1,0 +1,10 @@
+{"name":"Luke Skywalker","vehicle":{"model":"Snowspeeder"}}
+{"name":"Han Solo","vehicle":{"model":"Millennium Falcon"}}
+{"name":"Anakin Skywalker","vehicle":{"model":"Jedi starfighter"}}
+{"name":"Leia Organa","vehicle":{"model":"Tantive IV"}}
+{"name":"Padme Amidala","vehicle":{"model":"Naboo Royal Starship"}}
+{"name":"Obi-Wan Kenobi","vehicle":{"model":"Jedi starfighter"}}
+{"name":"Boba Fett","vehicle":{"model":"Slave I"}}
+{"name":"Lando Calrissian","vehicle":{"model":"Millennium Falcon"}}
+{"name":"Wedge Antilles","vehicle":{"model":"X-wing"}}
+{"name":"Darth Vader","vehicle":{"model":"TIE Advanced x1"}}

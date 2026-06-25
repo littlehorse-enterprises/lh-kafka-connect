@@ -1,0 +1,15 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-struct",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "HoistField",
+  "transforms.HoistField.type": "org.apache.kafka.connect.transforms.HoistField$Value",
+  "transforms.HoistField.field": "pilot",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-struct"
+}

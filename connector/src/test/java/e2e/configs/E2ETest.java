@@ -2,6 +2,7 @@ package e2e.configs;
 
 import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -146,6 +147,24 @@ public abstract class E2ETest {
                         worker.start();
                     });
                 });
+    }
+
+    public void registerStructDef(Object executable, Class<?>... structClasses) {
+        LHTaskWorker worker = Arrays.stream(executable.getClass().getMethods())
+                .filter(method -> method.isAnnotationPresent(LHTaskMethod.class))
+                .map(method -> new LHTaskWorker(
+                        executable,
+                        method.getAnnotation(LHTaskMethod.class).value(),
+                        getLittleHorseConfig()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException("No @LHTaskMethod found on executable"));
+
+        await(() -> {
+            for (Class<?> structClass : structClasses) {
+                worker.registerStructDef(structClass, StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+            }
+        });
     }
 
     public Map<String, Object> getKafkaConfig() {

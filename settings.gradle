@@ -29,8 +29,10 @@ include "common"
         "external-event-json",
         "external-event-value-to-key",
         "external-event-simple",
+        "external-event-struct",
         "external-event-headers",
         "correlated-event-simple",
+        "correlated-event-struct",
         "correlated-event-json",
         "correlated-event-headers"
 ].each { example ->

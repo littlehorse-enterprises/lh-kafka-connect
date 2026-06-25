@@ -4,15 +4,10 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
+import io.littlehorse.connect.util.StructValueMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.InlineStruct;
-import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.StructDef;
-import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.common.proto.StructField;
-import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -34,7 +29,7 @@ public class WfRunSinkTask extends LHSinkTask {
 
     private WfRunSinkConnectorConfig config;
     private final Map<String, TypeDefinition> variableTypeDefs = new HashMap<>();
-    private final Map<StructDefId, StructDef> structDefCache = new HashMap<>();
+    private StructValueMapper structMapper;
 
     @Override
     public LHSinkConnectorConfig configure(Map<String, String> props) {
@@ -43,23 +38,17 @@ public class WfRunSinkTask extends LHSinkTask {
 
     @Override
     protected void afterStart() {
+        structMapper = new StructValueMapper(getBlockingStub());
         loadVariableTypeDefs();
     }
 
     private void loadVariableTypeDefs() {
-        try {
-            WfSpec wfSpec = fetchWfSpec();
-            ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        WfSpec wfSpec = fetchWfSpec();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
 
-            for (ThreadVarDef threadVarDef : entrypoint.getVariableDefsList()) {
-                VariableDef varDef = threadVarDef.getVarDef();
-                variableTypeDefs.put(varDef.getName(), varDef.getTypeDef());
-            }
-        } catch (StatusRuntimeException grpcException) {
-            log.warn(
-                    "Could not load WfSpec '{}' to resolve variable types; struct variables may not be detected",
-                    config.getWfSpecName(),
-                    grpcException);
+        for (ThreadVarDef threadVarDef : entrypoint.getVariableDefsList()) {
+            VariableDef varDef = threadVarDef.getVarDef();
+            variableTypeDefs.put(varDef.getName(), varDef.getTypeDef());
         }
     }
 
@@ -141,47 +130,7 @@ public class WfRunSinkTask extends LHSinkTask {
     }
 
     private VariableValue buildVariableValue(String name, Object value) {
-        TypeDefinition typeDef = variableTypeDefs.get(name);
-        if (typeDef != null && typeDef.hasStructDefId()) {
-            return buildStructValue(value, typeDef.getStructDefId());
-        }
-        return LHLibUtil.objToVarVal(value);
-    }
-
-    @SuppressWarnings("unchecked")
-    private VariableValue buildStructValue(Object value, StructDefId structDefId) {
-        if (value == null) {
-            return VariableValue.newBuilder().build();
-        }
-
-        if (!(value instanceof Map)) {
-            throw new DataException("Expected schema structure not provided, struct variable '"
-                    + structDefId.getName() + "' should be a key-value pair data set");
-        }
-
-        Map<String, Object> fields = (Map<String, Object>) value;
-        InlineStructDef structDef = getStructDef(structDefId).getStructDef();
-        InlineStruct.Builder inlineStruct = InlineStruct.newBuilder();
-
-        for (Map.Entry<String, StructFieldDef> field : structDef.getFieldsMap().entrySet()) {
-            String fieldName = field.getKey();
-            TypeDefinition fieldType = field.getValue().getFieldType();
-            Object fieldValue = fields.get(fieldName);
-
-            VariableValue fieldVarVal = fieldType.hasStructDefId()
-                    ? buildStructValue(fieldValue, fieldType.getStructDefId())
-                    : LHLibUtil.objToVarVal(fieldValue);
-
-            inlineStruct.putFields(
-                    fieldName, StructField.newBuilder().setValue(fieldVarVal).build());
-        }
-
-        return LHLibUtil.inlineStructToVarVal(inlineStruct.build(), structDefId);
-    }
-
-    private StructDef getStructDef(StructDefId structDefId) {
-        return structDefCache.computeIfAbsent(
-                structDefId, id -> getBlockingStub().getStructDef(id));
+        return structMapper.toVariableValue(value, variableTypeDefs.get(name));
     }
 
     private String extractWfRunId(IdempotentSinkRecord sinkRecord) {

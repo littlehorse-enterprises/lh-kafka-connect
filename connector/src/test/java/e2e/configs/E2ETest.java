@@ -13,12 +13,17 @@ import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.awaitility.Awaitility;
 import org.slf4j.Logger;
@@ -29,10 +34,12 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -254,5 +261,25 @@ public abstract class E2ETest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<ConsumerRecord<byte[], byte[]>> consumeRecords(String topic, Duration timeout) {
+        Map<String, Object> consumerConfig = new HashMap<>(getKafkaConfig());
+        consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
+        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        consumerConfig.put(
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
+        consumerConfig.put(
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
+
+        List<ConsumerRecord<byte[], byte[]>> records = new ArrayList<>();
+        try (Consumer<byte[], byte[]> consumer = new KafkaConsumer<>(consumerConfig)) {
+            consumer.subscribe(List.of(topic));
+            long deadline = System.currentTimeMillis() + timeout.toMillis();
+            while (System.currentTimeMillis() < deadline) {
+                consumer.poll(Duration.ofMillis(500)).forEach(records::add);
+            }
+        }
+        return records;
     }
 }

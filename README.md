@@ -20,10 +20,12 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [Expected Message Structure](#expected-message-structure-1)
     * [Additional Metadata](#additional-metadata-1)
     * [Quick Example](#quick-example-1)
+    * [Struct Content](#struct-content)
   * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-2)
     * [Additional Metadata](#additional-metadata-2)
     * [Quick Example](#quick-example-2)
+    * [Struct Content](#struct-content-1)
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
   * [Dead Letter Queue](#dead-letter-queue)
@@ -130,8 +132,8 @@ Produce a message whose value contains the struct fields under the variable name
 key: null, value: {"pilot":{"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}}
 ```
 
-> If the `WfSpec` cannot be loaded at startup, the connector logs a warning and treats every
-> variable as a regular type, so make sure the `WfSpec` is registered before the connector runs.
+> If the `WfSpec` cannot be loaded at startup, the connector fails to start, so make sure the
+> `WfSpec` is registered before the connector runs.
 
 ## ExternalEventSinkConnector
 
@@ -199,6 +201,31 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 
 More configurations at [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
+### Struct Content
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` to discover whether
+its content is a `STRUCT` type. When it is, the connector builds the LittleHorse struct from the
+message value automatically; otherwise the content keeps its regular type. No additional
+configuration is required.
+
+Given a workflow that waits for an event whose content is a `pilot` `STRUCT`:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    wf.execute("greet", wf.waitForEvent("set-pilot").registeredAs(Pilot.class));
+});
+```
+
+Produce a message whose value contains the struct fields:
+
+```text
+key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}
+```
+
+> If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
+> sure the `ExternalEventDef` is registered before the connector runs.
+
 ## CorrelatedEventSinkConnector
 
 ###  Expected Message Structure
@@ -260,6 +287,34 @@ the message `value` will be the `Content` (more at [PutCorrelatedEventRequest](h
 ```
 
 More configurations at [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
+
+### Struct Content
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` to discover whether
+its content is a `STRUCT` type. When it is, the connector builds the LittleHorse struct from the
+message value automatically; otherwise the content keeps its regular type. No additional
+configuration is required.
+
+Given a workflow that waits for a correlated event whose content is a `pilot` `STRUCT`:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    WfRunVariable pilotId = wf.declareStr("pilot-id");
+    wf.execute("greet", wf.waitForEvent("set-pilot")
+            .withCorrelationId(pilotId)
+            .registeredAs(Pilot.class));
+});
+```
+
+Produce a message whose key is the `correlationId` and whose value contains the struct fields:
+
+```text
+key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}
+```
+
+> If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
+> sure the `ExternalEventDef` is registered before the connector runs.
 
 ## Idempotent Writes
 

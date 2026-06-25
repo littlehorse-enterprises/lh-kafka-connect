@@ -4,9 +4,12 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
+import io.littlehorse.connect.util.StructValueMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +21,26 @@ import java.util.Map;
 public class ExternalEventSinkTask extends LHSinkTask {
 
     private ExternalEventSinkConnectorConfig config;
+    private StructValueMapper structMapper;
+    private TypeDefinition contentType;
 
     @Override
     public LHSinkConnectorConfig configure(Map<String, String> props) {
         return config = new ExternalEventSinkConnectorConfig(props);
+    }
+
+    @Override
+    protected void afterStart() {
+        structMapper = new StructValueMapper(getBlockingStub());
+        loadContentType();
+    }
+
+    private void loadContentType() {
+        ExternalEventDef externalEventDef = getBlockingStub()
+                .getExternalEventDef(ExternalEventDefId.newBuilder()
+                        .setName(config.getExternalEventName())
+                        .build());
+        contentType = externalEventDef.getTypeInformation().getReturnType();
     }
 
     @Override
@@ -45,7 +64,8 @@ public class ExternalEventSinkTask extends LHSinkTask {
                         sinkRecord.wfRunId() == null
                                 ? extractWfRunId(sinkRecord.key())
                                 : sinkRecord.wfRunId()))
-                .setContent(LHLibUtil.objToVarVal(ObjectMapper.removeStruct(sinkRecord.value())))
+                .setContent(structMapper.toVariableValue(
+                        ObjectMapper.removeStruct(sinkRecord.value()), contentType))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))
                 .build();

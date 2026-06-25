@@ -4,7 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
-import io.littlehorse.connect.util.StructValueMapper;
+import io.littlehorse.connect.util.VariableValueMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
@@ -29,7 +29,8 @@ public class WfRunSinkTask extends LHSinkTask {
 
     private WfRunSinkConnectorConfig config;
     private final Map<String, TypeDefinition> variableTypeDefs = new HashMap<>();
-    private StructValueMapper structMapper;
+    private ObjectMapper objectMapper;
+    private VariableValueMapper variableMapper;
 
     @Override
     public LHSinkConnectorConfig configure(Map<String, String> props) {
@@ -38,7 +39,8 @@ public class WfRunSinkTask extends LHSinkTask {
 
     @Override
     protected void afterStart() {
-        structMapper = new StructValueMapper(getBlockingStub());
+        variableMapper = new VariableValueMapper(getBlockingStub());
+        objectMapper = new ObjectMapper();
         loadVariableTypeDefs();
     }
 
@@ -121,7 +123,7 @@ public class WfRunSinkTask extends LHSinkTask {
                     "Expected schema structure not provided, it should be a key-value pair data set");
         }
 
-        Map<String, Object> variables = (Map<String, Object>) ObjectMapper.removeStruct(value);
+        Map<String, Object> variables = (Map<String, Object>) objectMapper.removeStruct(value);
         Map<String, VariableValue> result = new HashMap<>();
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             result.put(entry.getKey(), buildVariableValue(entry.getKey(), entry.getValue()));
@@ -130,7 +132,7 @@ public class WfRunSinkTask extends LHSinkTask {
     }
 
     private VariableValue buildVariableValue(String name, Object value) {
-        return structMapper.toVariableValue(value, variableTypeDefs.get(name));
+        return variableMapper.toVariableValue(value, variableTypeDefs.get(name));
     }
 
     private String extractWfRunId(IdempotentSinkRecord sinkRecord) {

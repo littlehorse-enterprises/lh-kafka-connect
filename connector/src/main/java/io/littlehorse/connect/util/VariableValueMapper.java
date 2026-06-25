@@ -21,11 +21,11 @@ import java.util.Map;
  * {@code STRUCT} types against their {@link StructDef}s. Each {@link StructDef} is fetched lazily
  * and cached, so a given definition is only loaded once per task.
  */
-public class StructValueMapper {
+public class VariableValueMapper {
     private final LittleHorseBlockingStub blockingStub;
     private final Map<StructDefId, StructDef> structDefCache = new HashMap<>();
 
-    public StructValueMapper(LittleHorseBlockingStub blockingStub) {
+    public VariableValueMapper(LittleHorseBlockingStub blockingStub) {
         this.blockingStub = blockingStub;
     }
 

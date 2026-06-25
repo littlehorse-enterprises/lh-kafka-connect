@@ -16,6 +16,8 @@ import java.util.Map;
 
 class ObjectMapperTest {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void shouldAllowNullInStruct() {
         String expectedFieldName = "my-null-input";
@@ -30,20 +32,20 @@ class ObjectMapperTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put(expectedFieldName, null);
 
-        assertThat(ObjectMapper.removeStruct(input)).isEqualTo(expected);
+        assertThat(objectMapper.removeStruct(input)).isEqualTo(expected);
     }
 
     @Test
     void shouldAllowNullInLists() {
         List<Object> input = new ArrayList<>();
         input.add(null);
-        assertThat(ObjectMapper.removeStruct(input)).isEqualTo(input);
+        assertThat(objectMapper.removeStruct(input)).isEqualTo(input);
     }
 
     @Test
     void shouldAllowNullInMaps() {
         Map<String, Object> input = new HashMap<>();
         input.put("my-null-input", null);
-        assertThat(ObjectMapper.removeStruct(input)).isEqualTo(input);
+        assertThat(objectMapper.removeStruct(input)).isEqualTo(input);
     }
 }

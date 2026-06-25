@@ -9,10 +9,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ObjectMapper {
-    private ObjectMapper() {}
 
     @SuppressWarnings("unchecked")
-    public static Object removeStruct(Object value) {
+    public Object removeStruct(Object value) {
         if (value instanceof Struct objectStruct) {
             Map<String, Object> result = new HashMap<>();
 
@@ -25,7 +24,7 @@ public class ObjectMapper {
 
         if (value instanceof List) {
             List<Object> objectList = (List<Object>) value;
-            return objectList.stream().map(ObjectMapper::removeStruct).collect(Collectors.toList());
+            return objectList.stream().map(this::removeStruct).collect(Collectors.toList());
         }
 
         if (value instanceof Map) {

@@ -74,7 +74,7 @@ docker compose up -d
 
 ### Struct content support
 
-- Building `VariableValue`s from message payloads goes through `util/StructValueMapper`,
+- Building `VariableValue`s from message payloads goes through `util/VariableValueMapper`,
   which resolves `STRUCT` types and caches `StructDef` lookups (including nested structs).
   Prefer it over calling `LHLibUtil.objToVarVal(...)` directly in tasks.
 - Connectors discover whether content is a `STRUCT` by reading metadata on startup

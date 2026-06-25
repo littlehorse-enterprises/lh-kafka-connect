@@ -4,7 +4,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
-import io.littlehorse.connect.util.StructValueMapper;
+import io.littlehorse.connect.util.VariableValueMapper;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -21,8 +21,9 @@ import java.util.Map;
 public class ExternalEventSinkTask extends LHSinkTask {
 
     private ExternalEventSinkConnectorConfig config;
-    private StructValueMapper structMapper;
+    private VariableValueMapper variableMapper;
     private TypeDefinition contentType;
+    private ObjectMapper objectMapper;
 
     @Override
     public LHSinkConnectorConfig configure(Map<String, String> props) {
@@ -31,7 +32,8 @@ public class ExternalEventSinkTask extends LHSinkTask {
 
     @Override
     protected void afterStart() {
-        structMapper = new StructValueMapper(getBlockingStub());
+        variableMapper = new VariableValueMapper(getBlockingStub());
+        objectMapper = new ObjectMapper();
         loadContentType();
     }
 
@@ -66,8 +68,8 @@ public class ExternalEventSinkTask extends LHSinkTask {
                         sinkRecord.wfRunId() == null
                                 ? extractWfRunId(sinkRecord.key())
                                 : sinkRecord.wfRunId()))
-                .setContent(structMapper.toVariableValue(
-                        ObjectMapper.removeStruct(sinkRecord.value()), contentType))
+                .setContent(variableMapper.toVariableValue(
+                        objectMapper.removeStruct(sinkRecord.value()), contentType))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))
                 .build();

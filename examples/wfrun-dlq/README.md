@@ -5,7 +5,13 @@ In this example you will:
 - Register a workflow with variable types: `STR`.
 - Produce json messages to a kafka topic without SchemaRegistry.
 - Create a WfRunSinkConnector with DLQ and without transformations.
-- Introduce errors, this error will be redirected to a DLQ topic.
+- Introduce a permanent error, this error will be redirected to a DLQ topic.
+
+> [!NOTE]
+> Only permanent errors (such as the invalid records in this example) are sent
+> to the DLQ. Transient errors, like network issues or LittleHorse being
+> temporarily unavailable, are retried instead. See the
+> [Error Handling](../../README.md#error-handling) section for details.
 
 > [!WARNING]
 > Run the commands in the root directory

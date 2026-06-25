@@ -291,6 +291,36 @@ These connectors support Dead Letter Queue (DLQ).
 
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
+### Error Handling
+
+These connectors distinguish between two kinds of failures so that transient
+problems do not cause data loss:
+
+- **Transient errors** are retried. When a gRPC call to LittleHorse fails with a
+  retriable status code (`CANCELLED`, `DEADLINE_EXCEEDED`, `RESOURCE_EXHAUSTED`,
+  `ABORTED`, `INTERNAL` or `UNAVAILABLE` — e.g. network issues or the server
+  being temporarily unavailable), the record is **not** sent to the DLQ. Instead
+  the connector asks Kafka Connect to retry, since the record is valid and may
+  succeed on a later attempt. This happens regardless of the `errors.tolerance`
+  setting.
+- **Permanent errors** are treated as bad records. Any other failure (e.g.
+  `INVALID_ARGUMENT`, `FAILED_PRECONDITION`, a malformed payload, or a missing
+  required field) cannot succeed on retry, so it is handled according to
+  `errors.tolerance`:
+  - `errors.tolerance=none` (default): the task fails immediately.
+  - `errors.tolerance=all`: the record is sent to the DLQ (when configured) and
+    its offset is committed so processing continues.
+
+> [!NOTE]
+> The DLQ only captures permanent errors raised while delivering records to
+> LittleHorse. Deserialization and transformation errors are routed to the DLQ
+> by Kafka Connect itself.
+
+Retry timing is controlled by the standard Kafka Connect configurations
+`errors.retry.timeout` and `errors.retry.delay.max.ms`.
+
+See the [wfrun-dlq example](examples/wfrun-dlq/README.md) for a runnable setup.
+
 ## Data Types
 
 Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.

@@ -36,11 +36,11 @@
   * Importance: medium
 
 ``transient.errors.tolerance``
-  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'retry' the record is retried by Kafka Connect and never sent to the DLQ; when 'fail' the transient error is treated like any other error and handled according to the errors.tolerance setting.
+  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'transients' the record is retried by Kafka Connect and never sent to the DLQ; when 'none' the transient error is treated like any other error and handled according to the errors.tolerance setting.
 
   * Type: string
-  * Default: retry
-  * Valid Values: [retry, fail]
+  * Default: transients
+  * Valid Values: [none, transients]
   * Importance: medium
 
 ``lhc.ca.cert``
@@ -156,11 +156,11 @@
   * Importance: medium
 
 ``transient.errors.tolerance``
-  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'retry' the record is retried by Kafka Connect and never sent to the DLQ; when 'fail' the transient error is treated like any other error and handled according to the errors.tolerance setting.
+  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'transients' the record is retried by Kafka Connect and never sent to the DLQ; when 'none' the transient error is treated like any other error and handled according to the errors.tolerance setting.
 
   * Type: string
-  * Default: retry
-  * Valid Values: [retry, fail]
+  * Default: transients
+  * Valid Values: [none, transients]
   * Importance: medium
 
 ``lhc.ca.cert``
@@ -255,11 +255,11 @@
   * Importance: medium
 
 ``transient.errors.tolerance``
-  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'retry' the record is retried by Kafka Connect and never sent to the DLQ; when 'fail' the transient error is treated like any other error and handled according to the errors.tolerance setting.
+  How to handle records that fail with a transient (retriable) gRPC error such as network issues or the server being temporarily unavailable. When 'transients' the record is retried by Kafka Connect and never sent to the DLQ; when 'none' the transient error is treated like any other error and handled according to the errors.tolerance setting.
 
   * Type: string
-  * Default: retry
-  * Valid Values: [retry, fail]
+  * Default: transients
+  * Valid Values: [none, transients]
   * Importance: medium
 
 ``lhc.ca.cert``

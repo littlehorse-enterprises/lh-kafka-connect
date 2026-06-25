@@ -366,7 +366,7 @@ problems do not cause data loss:
   being temporarily unavailable), the record is **not** sent to the DLQ. Instead
   the connector asks Kafka Connect to retry, since the record is valid and may
   succeed on a later attempt. This happens regardless of the `errors.tolerance`
-  setting. Set `transient.errors.tolerance=fail` (default `retry`) to instead
+  setting. Set `transient.errors.tolerance=none` (default `transients`) to instead
   treat transient errors like any other error, handling them according to
   `errors.tolerance`.
 - **Permanent errors** are treated as bad records. Any other failure (e.g.

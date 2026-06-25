@@ -78,9 +78,21 @@ docker compose up -d
   which resolves `STRUCT` types and caches `StructDef` lookups (including nested structs).
   Prefer it over calling `LHLibUtil.objToVarVal(...)` directly in tasks.
 - Connectors discover whether content is a `STRUCT` by reading metadata on startup
-  (`afterStart()`): `WfRunSinkTask` loads variable type defs from the `WfSpec`;
-  `ExternalEventSinkTask` and `CorrelatedEventSinkTask` load the content type from the
-  `ExternalEventDef`. If that metadata cannot be loaded the connector fails to start.
+  (`afterStart()`):
+  - `WfRunSinkTask` loads the type defs of the entrypoint thread's input variables from the
+    `WfSpec`, fetched via the `getWfSpec` gRPC (when `wf.spec.major.version` and
+    `wf.spec.revision` are set) or `getLatestWfSpec` (resolved by `wf.spec.name` and optional
+    version). Variables in child threads are not inspected.
+  - `ExternalEventSinkTask` and `CorrelatedEventSinkTask` load the content type from the
+    `ExternalEventDef`, fetched via the `getExternalEventDef` gRPC (resolved by
+    `external.event.name`). Its `type_information` field is optional, so they guard with
+    `hasTypeInformation()` before reading the return type.
+- Resolution at `put()` time is best-effort: `VariableValueMapper.toVariableValue` only builds a
+  struct when it receives a non-null `TypeDefinition` whose type is a `StructDef`. A message field
+  with no matching `STRUCT` type def (unknown variable, missing `type_information`, or a
+  non-struct type) falls back to `LHLibUtil.objToVarVal(...)` and keeps its value-inferred type.
+- If the `WfSpec`/`ExternalEventDef` itself cannot be loaded at startup, the connector fails to
+  start (so the metadata must be registered before the connector runs).
 
 ### End-to-end tests
 

@@ -113,9 +113,14 @@ More configurations at [WfRun Sink Connector Configurations](https://github.com/
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) variables.
 On startup it reads the `WfSpec` referenced by `wf.spec.name` (honoring `wf.spec.major.version`
-and `wf.spec.revision` when provided) to discover which input variables are `STRUCT` types.
-Variables backed by a `StructDef` are built from the matching nested object in the message value,
-while every other variable keeps its regular type. No additional configuration is required.
+and `wf.spec.revision` when provided) and inspects the input variable definitions of its
+entrypoint thread to discover which variables are `STRUCT` types.
+
+When a message field matches a variable whose type is a `StructDef`, the connector builds the
+LittleHorse struct (including nested structs) from that object automatically. Any field that has
+no matching `STRUCT` variable in the `WfSpec` — including fields that do not correspond to any
+declared variable — keeps its regular, value-inferred type. No additional configuration is
+required.
 
 Given a workflow with a `pilot` `STRUCT` variable:
 
@@ -204,10 +209,12 @@ More configurations at [ExternalEvent Sink Connector Configurations](https://git
 ### Struct Content
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
-On startup it reads the `ExternalEventDef` referenced by `external.event.name` to discover whether
-its content is a `STRUCT` type. When it is, the connector builds the LittleHorse struct from the
-message value automatically; otherwise the content keeps its regular type. No additional
-configuration is required.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
+type information to discover whether its content is a `STRUCT` type. When the content is a
+`StructDef`, the connector builds the LittleHorse struct (including nested structs) from the
+message value automatically. When the `ExternalEventDef` has no type information, or its content
+is not a `STRUCT`, the content keeps its regular, value-inferred type. No additional configuration
+is required.
 
 Given a workflow that waits for an event whose content is a `pilot` `STRUCT`:
 
@@ -291,10 +298,12 @@ More configurations at [CorrelatedEvent Sink Connector Configurations](https://g
 ### Struct Content
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
-On startup it reads the `ExternalEventDef` referenced by `external.event.name` to discover whether
-its content is a `STRUCT` type. When it is, the connector builds the LittleHorse struct from the
-message value automatically; otherwise the content keeps its regular type. No additional
-configuration is required.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
+type information to discover whether its content is a `STRUCT` type. When the content is a
+`StructDef`, the connector builds the LittleHorse struct (including nested structs) from the
+message value automatically. When the `ExternalEventDef` has no type information, or its content
+is not a `STRUCT`, the content keeps its regular, value-inferred type. No additional configuration
+is required.
 
 Given a workflow that waits for a correlated event whose content is a `pilot` `STRUCT`:
 

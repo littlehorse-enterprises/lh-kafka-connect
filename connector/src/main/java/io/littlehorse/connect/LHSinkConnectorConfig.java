@@ -134,7 +134,7 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
         super(definition, props);
     }
 
-    public boolean isRetryTransientErrors() {
+    public boolean doesTolerateTransientErrors() {
         return getString(TRANSIENT_ERRORS_TOLERANCE_KEY)
                 .equals(TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS);
     }

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.connect.errors.RetriableException;
+import org.apache.kafka.connect.runtime.errors.ToleranceType;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 
@@ -50,7 +51,7 @@ public abstract class LHSinkTask extends SinkTask {
     private LittleHorseBlockingStub blockingStub;
     private LHConfig lhConfig;
     private String connectorName;
-    private String errorsTolerance;
+    private ToleranceType errorsTolerance;
 
     public abstract void executeGrpcCall(IdempotentSinkRecord sinkRecord);
 
@@ -67,7 +68,9 @@ public abstract class LHSinkTask extends SinkTask {
                         NAME_CONFIG,
                         "lh-connector-" + UUID.randomUUID().toString().replace("-", ""))
                 .trim();
-        errorsTolerance = props.getOrDefault(ERRORS_TOLERANCE_CONFIG, "none");
+        errorsTolerance = ToleranceType.valueOf(
+                props.getOrDefault(ERRORS_TOLERANCE_CONFIG, ToleranceType.NONE.value())
+                        .toUpperCase());
         connectorConfig = configure(props);
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();
@@ -128,7 +131,7 @@ public abstract class LHSinkTask extends SinkTask {
                         connectorName,
                         e);
 
-                if (isRetryTransientErrors() && isRetriable(e)) {
+                if (doesTolerateTransientErrors() && isRetriable(e)) {
                     // transient failure: let Kafka Connect retry the batch instead of
                     // discarding a valid record (no DLQ, no offset commit)
                     log.debug(
@@ -209,7 +212,7 @@ public abstract class LHSinkTask extends SinkTask {
     }
 
     private boolean doesTolerateErrors() {
-        return errorsTolerance.equals("all");
+        return errorsTolerance == ToleranceType.ALL;
     }
 
     private boolean isRetriable(Throwable e) {
@@ -219,8 +222,8 @@ public abstract class LHSinkTask extends SinkTask {
         return false;
     }
 
-    private boolean isRetryTransientErrors() {
-        return connectorConfig.isRetryTransientErrors();
+    private boolean doesTolerateTransientErrors() {
+        return connectorConfig.doesTolerateTransientErrors();
     }
 
     private boolean isDLQEnabled() {

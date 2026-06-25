@@ -40,7 +40,9 @@ public class ExternalEventSinkTask extends LHSinkTask {
                 .getExternalEventDef(ExternalEventDefId.newBuilder()
                         .setName(config.getExternalEventName())
                         .build());
-        contentType = externalEventDef.getTypeInformation().getReturnType();
+        if (externalEventDef.hasTypeInformation()) {
+            contentType = externalEventDef.getTypeInformation().getReturnType();
+        }
     }
 
     @Override

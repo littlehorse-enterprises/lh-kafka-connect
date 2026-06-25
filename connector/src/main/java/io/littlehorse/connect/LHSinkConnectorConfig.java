@@ -37,6 +37,10 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     public static final String LHC_GRPC_KEEPALIVE_TIMEOUT_MS_KEY =
             parseKafkaConnectConfig(LHConfig.GRPC_KEEPALIVE_TIMEOUT_MS_KEY);
 
+    public static final String TRANSIENT_ERRORS_TOLERANCE_KEY = "transient.errors.tolerance";
+    public static final String TRANSIENT_ERRORS_TOLERANCE_NONE = "none";
+    public static final String TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS = "transients";
+
     public static final String LH_API_PROTOCOL_PLAINTEXT = "PLAINTEXT";
     public static final String LH_API_PROTOCOL_TLS = "TLS";
 
@@ -111,10 +115,28 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
                     Type.LONG,
                     Duration.ofSeconds(5).toMillis(),
                     Importance.LOW,
-                    "Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.");
+                    "Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.")
+            .define(
+                    TRANSIENT_ERRORS_TOLERANCE_KEY,
+                    Type.STRING,
+                    TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS,
+                    ConfigDef.ValidString.in(
+                            TRANSIENT_ERRORS_TOLERANCE_NONE, TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS),
+                    Importance.MEDIUM,
+                    "How to handle records that fail with a transient (retriable) gRPC error such"
+                            + " as network issues or the server being temporarily unavailable."
+                            + " When 'transients' the record is retried by Kafka Connect and never"
+                            + " sent to the DLQ; when 'none' the transient error is treated like"
+                            + " any other error and handled according to the errors.tolerance"
+                            + " setting.");
 
     public LHSinkConnectorConfig(ConfigDef definition, Map<?, ?> props) {
         super(definition, props);
+    }
+
+    public boolean doesTolerateTransientErrors() {
+        return getString(TRANSIENT_ERRORS_TOLERANCE_KEY)
+                .equals(TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS);
     }
 
     private static String parseKafkaConnectConfig(String key) {

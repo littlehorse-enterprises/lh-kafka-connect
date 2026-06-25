@@ -4,6 +4,8 @@ import static org.apache.kafka.connect.runtime.ConnectorConfig.ERRORS_TOLERANCE_
 import static org.apache.kafka.connect.runtime.ConnectorConfig.NAME_CONFIG;
 
 import io.grpc.ManagedChannel;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.VersionReader;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -14,25 +16,42 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.connect.errors.RetriableException;
+import org.apache.kafka.connect.runtime.errors.ToleranceType;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Getter
 public abstract class LHSinkTask extends SinkTask {
+    /**
+     * gRPC status codes that represent transient failures (e.g. network issues, server
+     * unavailable or overloaded). Errors with these codes are retried instead of being sent to
+     * the DLQ, since the record itself is valid and could succeed on a later attempt.
+     */
+    private static final Set<Status.Code> RETRIABLE_CODES = EnumSet.of(
+            Status.Code.CANCELLED,
+            Status.Code.DEADLINE_EXCEEDED,
+            Status.Code.RESOURCE_EXHAUSTED,
+            Status.Code.ABORTED,
+            Status.Code.INTERNAL,
+            Status.Code.UNAVAILABLE);
+
     private final Map<TopicPartition, OffsetAndMetadata> successfulOffsets = new HashMap<>();
 
     private LHSinkConnectorConfig connectorConfig;
     private LittleHorseBlockingStub blockingStub;
     private LHConfig lhConfig;
     private String connectorName;
-    private String errorsTolerance;
+    private ToleranceType errorsTolerance;
 
     public abstract void executeGrpcCall(IdempotentSinkRecord sinkRecord);
 
@@ -49,7 +68,9 @@ public abstract class LHSinkTask extends SinkTask {
                         NAME_CONFIG,
                         "lh-connector-" + UUID.randomUUID().toString().replace("-", ""))
                 .trim();
-        errorsTolerance = props.getOrDefault(ERRORS_TOLERANCE_CONFIG, "none");
+        errorsTolerance = ToleranceType.valueOf(
+                props.getOrDefault(ERRORS_TOLERANCE_CONFIG, ToleranceType.NONE.value())
+                        .toUpperCase());
         connectorConfig = configure(props);
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();
@@ -58,7 +79,14 @@ public abstract class LHSinkTask extends SinkTask {
                 getClass().getSimpleName(),
                 connectorName,
                 isDLQEnabled() ? "enabled" : "disabled");
+        afterStart();
     }
+
+    /**
+     * Hook invoked at the end of {@link #start(Map)}, once the config and blocking stub are
+     * ready. Subclasses may override it to perform additional initialization.
+     */
+    protected void afterStart() {}
 
     @Override
     public void stop() {
@@ -103,12 +131,26 @@ public abstract class LHSinkTask extends SinkTask {
                         connectorName,
                         e);
 
+                if (doesTolerateTransientErrors() && isRetriable(e)) {
+                    // transient failure: let Kafka Connect retry the batch instead of
+                    // discarding a valid record (no DLQ, no offset commit)
+                    log.debug(
+                            "Retrying record [topic={}, partition={}, offset={}] for task {}[{}]"
+                                    + " after transient error",
+                            sinkRecord.topic(),
+                            sinkRecord.kafkaPartition(),
+                            sinkRecord.kafkaOffset(),
+                            getClass().getSimpleName(),
+                            connectorName);
+                    throw new RetriableException(e);
+                }
+
                 if (!doesTolerateErrors()) {
                     // full stop
                     throw e;
                 }
 
-                // send error to the dlq
+                // permanent failure: send error to the dlq
                 report(sinkRecord, e);
                 // commit if it tolerates errors
                 updateSuccessfulOffsets(sinkRecord);
@@ -170,7 +212,18 @@ public abstract class LHSinkTask extends SinkTask {
     }
 
     private boolean doesTolerateErrors() {
-        return errorsTolerance.equals("all");
+        return errorsTolerance == ToleranceType.ALL;
+    }
+
+    private boolean isRetriable(Throwable e) {
+        if (e instanceof StatusRuntimeException grpcException) {
+            return RETRIABLE_CODES.contains(grpcException.getStatus().getCode());
+        }
+        return false;
+    }
+
+    private boolean doesTolerateTransientErrors() {
+        return connectorConfig.doesTolerateTransientErrors();
     }
 
     private boolean isDLQEnabled() {

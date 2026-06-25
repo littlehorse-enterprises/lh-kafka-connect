@@ -1,0 +1,10 @@
+427a63878fae4f91b251040e0449b19a|{"name":"Luke Skywalker","vehicle":{"model":"Snowspeeder"}}
+003246152ac542b5a816d2ea9f304f1d|{"name":"Han Solo","vehicle":{"model":"Millennium Falcon"}}
+39c2fef095874e2b8daa5e40205bc992|{"name":"Anakin Skywalker","vehicle":{"model":"Jedi starfighter"}}
+1e0d9a6f4c7b4e9d8a2f6b3c5d1e7f80|{"name":"Leia Organa","vehicle":{"model":"Speeder bike"}}
+8b4c2d1e6f3a4b7c9d0e1f2a3b4c5d6e|{"name":"Obi-Wan Kenobi","vehicle":{"model":"Jedi starfighter"}}
+2a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d|{"name":"Chewbacca","vehicle":{"model":"Millennium Falcon"}}
+6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c|{"name":"Padme Amidala","vehicle":{"model":"Naboo star skiff"}}
+9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f|{"name":"Darth Vader","vehicle":{"model":"TIE Advanced x1"}}
+4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a|{"name":"Yoda","vehicle":{"model":"Republic Gunship"}}
+7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b|{"name":"Lando Calrissian","vehicle":{"model":"Millennium Falcon"}}

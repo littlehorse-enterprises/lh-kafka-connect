@@ -4,9 +4,11 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.connect.record.IdempotentSinkRecord;
 import io.littlehorse.connect.util.ObjectMapper;
-import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.connect.util.VariableValueMapper;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.PutCorrelatedEventRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +20,30 @@ import java.util.Map;
 public class CorrelatedEventSinkTask extends LHSinkTask {
 
     private CorrelatedEventSinkConnectorConfig config;
+    private VariableValueMapper variableMapper;
+    private TypeDefinition contentType;
+    private ObjectMapper objectMapper;
 
     @Override
     public LHSinkConnectorConfig configure(Map<String, String> props) {
         return config = new CorrelatedEventSinkConnectorConfig(props);
+    }
+
+    @Override
+    protected void afterStart() {
+        variableMapper = new VariableValueMapper(getBlockingStub());
+        objectMapper = new ObjectMapper();
+        loadContentType();
+    }
+
+    private void loadContentType() {
+        ExternalEventDef externalEventDef = getBlockingStub()
+                .getExternalEventDef(ExternalEventDefId.newBuilder()
+                        .setName(config.getExternalEventName())
+                        .build());
+        if (externalEventDef.hasTypeInformation()) {
+            contentType = externalEventDef.getTypeInformation().getReturnType();
+        }
     }
 
     @Override
@@ -43,7 +65,8 @@ public class CorrelatedEventSinkTask extends LHSinkTask {
                         sinkRecord.correlationId() == null
                                 ? extractCorrelationId(sinkRecord.key())
                                 : sinkRecord.correlationId())
-                .setContent(LHLibUtil.objToVarVal(ObjectMapper.removeStruct(sinkRecord.value())))
+                .setContent(variableMapper.toVariableValue(
+                        objectMapper.removeStruct(sinkRecord.value()), contentType))
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))
                 .build();

@@ -15,14 +15,17 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [Expected Message Structure](#expected-message-structure)
     * [Additional Metadata](#additional-metadata)
     * [Quick Example](#quick-example)
+    * [Struct Variables](#struct-variables)
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-1)
     * [Additional Metadata](#additional-metadata-1)
     * [Quick Example](#quick-example-1)
+    * [Struct Content](#struct-content)
   * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-2)
     * [Additional Metadata](#additional-metadata-2)
     * [Quick Example](#quick-example-2)
+    * [Struct Content](#struct-content-1)
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
   * [Dead Letter Queue](#dead-letter-queue)
@@ -106,6 +109,37 @@ Next connector configuration will execute `WfRuns` with the variable `name`.
 
 More configurations at [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 
+### Struct Variables
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) variables.
+On startup it reads the `WfSpec` referenced by `wf.spec.name` (honoring `wf.spec.major.version`
+and `wf.spec.revision` when provided) and inspects the input variable definitions of its
+entrypoint thread to discover which variables are `STRUCT` types.
+
+When a message field matches a variable whose type is a `StructDef`, the connector builds the
+LittleHorse struct (including nested structs) from that object automatically. Any field that has
+no matching `STRUCT` variable in the `WfSpec` — including fields that do not correspond to any
+declared variable — keeps its regular, value-inferred type. No additional configuration is
+required.
+
+Given a workflow with a `pilot` `STRUCT` variable:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    WfRunVariable pilot = wf.declareStruct("pilot", Pilot.class);
+    wf.execute("greet", pilot);
+});
+```
+
+Produce a message whose value contains the struct fields under the variable name:
+
+```text
+key: null, value: {"pilot":{"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}}
+```
+
+> If the `WfSpec` cannot be loaded at startup, the connector fails to start, so make sure the
+> `WfSpec` is registered before the connector runs.
+
 ## ExternalEventSinkConnector
 
 This connector allows you to execute [External Events](https://littlehorse.io/docs/server/concepts/external-events) into LittleHorse.
@@ -172,6 +206,33 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 
 More configurations at [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
+### Struct Content
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
+type information to discover whether its content is a `STRUCT` type. When the content is a
+`StructDef`, the connector builds the LittleHorse struct (including nested structs) from the
+message value automatically. When the `ExternalEventDef` has no type information, or its content
+is not a `STRUCT`, the content keeps its regular, value-inferred type. No additional configuration
+is required.
+
+Given a workflow that waits for an event whose content is a `pilot` `STRUCT`:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    wf.execute("greet", wf.waitForEvent("set-pilot").registeredAs(Pilot.class));
+});
+```
+
+Produce a message whose value contains the struct fields:
+
+```text
+key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}
+```
+
+> If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
+> sure the `ExternalEventDef` is registered before the connector runs.
+
 ## CorrelatedEventSinkConnector
 
 ###  Expected Message Structure
@@ -234,6 +295,36 @@ the message `value` will be the `Content` (more at [PutCorrelatedEventRequest](h
 
 More configurations at [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
 
+### Struct Content
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
+On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
+type information to discover whether its content is a `STRUCT` type. When the content is a
+`StructDef`, the connector builds the LittleHorse struct (including nested structs) from the
+message value automatically. When the `ExternalEventDef` has no type information, or its content
+is not a `STRUCT`, the content keeps its regular, value-inferred type. No additional configuration
+is required.
+
+Given a workflow that waits for a correlated event whose content is a `pilot` `STRUCT`:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    WfRunVariable pilotId = wf.declareStr("pilot-id");
+    wf.execute("greet", wf.waitForEvent("set-pilot")
+            .withCorrelationId(pilotId)
+            .registeredAs(Pilot.class));
+});
+```
+
+Produce a message whose key is the `correlationId` and whose value contains the struct fields:
+
+```text
+key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}
+```
+
+> If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
+> sure the `ExternalEventDef` is registered before the connector runs.
+
 ## Idempotent Writes
 
 To ensure idempotency, we generate a unique id
@@ -263,6 +354,38 @@ More configurations at [Configure Sink Connector](https://docs.confluent.io/plat
 These connectors support Dead Letter Queue (DLQ).
 
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
+
+### Error Handling
+
+These connectors distinguish between two kinds of failures so that transient
+problems do not cause data loss:
+
+- **Transient errors** are retried. When a gRPC call to LittleHorse fails with a
+  retriable status code (`CANCELLED`, `DEADLINE_EXCEEDED`, `RESOURCE_EXHAUSTED`,
+  `ABORTED`, `INTERNAL` or `UNAVAILABLE` — e.g. network issues or the server
+  being temporarily unavailable), the record is **not** sent to the DLQ. Instead
+  the connector asks Kafka Connect to retry, since the record is valid and may
+  succeed on a later attempt. This happens regardless of the `errors.tolerance`
+  setting. Set `transient.errors.tolerance=none` (default `transients`) to instead
+  treat transient errors like any other error, handling them according to
+  `errors.tolerance`.
+- **Permanent errors** are treated as bad records. Any other failure (e.g.
+  `INVALID_ARGUMENT`, `FAILED_PRECONDITION`, a malformed payload, or a missing
+  required field) cannot succeed on retry, so it is handled according to
+  `errors.tolerance`:
+  - `errors.tolerance=none` (default): the task fails immediately.
+  - `errors.tolerance=all`: the record is sent to the DLQ (when configured) and
+    its offset is committed so processing continues.
+
+> [!NOTE]
+> The DLQ only captures permanent errors raised while delivering records to
+> LittleHorse. Deserialization and transformation errors are routed to the DLQ
+> by Kafka Connect itself.
+
+Retry timing is controlled by the standard Kafka Connect configurations
+`errors.retry.timeout` and `errors.retry.delay.max.ms`.
+
+See the [wfrun-dlq example](examples/wfrun-dlq/README.md) for a runnable setup.
 
 ## Data Types
 

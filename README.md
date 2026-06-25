@@ -15,6 +15,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [Expected Message Structure](#expected-message-structure)
     * [Additional Metadata](#additional-metadata)
     * [Quick Example](#quick-example)
+    * [Struct Variables](#struct-variables)
   * [ExternalEventSinkConnector](#externaleventsinkconnector)
     * [Expected Message Structure](#expected-message-structure-1)
     * [Additional Metadata](#additional-metadata-1)
@@ -105,6 +106,32 @@ Next connector configuration will execute `WfRuns` with the variable `name`.
 ```
 
 More configurations at [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
+
+### Struct Variables
+
+This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) variables.
+On startup it reads the `WfSpec` referenced by `wf.spec.name` (honoring `wf.spec.major.version`
+and `wf.spec.revision` when provided) to discover which input variables are `STRUCT` types.
+Variables backed by a `StructDef` are built from the matching nested object in the message value,
+while every other variable keeps its regular type. No additional configuration is required.
+
+Given a workflow with a `pilot` `STRUCT` variable:
+
+```java
+Workflow workflow = Workflow.newWorkflow("greetings", wf -> {
+    WfRunVariable pilot = wf.declareStruct("pilot", Pilot.class);
+    wf.execute("greet", pilot);
+});
+```
+
+Produce a message whose value contains the struct fields under the variable name:
+
+```text
+key: null, value: {"pilot":{"name":"Anakin Skywalker","vehicle":{"model":"Podracer"}}}
+```
+
+> If the `WfSpec` cannot be loaded at startup, the connector logs a warning and treats every
+> variable as a regular type, so make sure the `WfSpec` is registered before the connector runs.
 
 ## ExternalEventSinkConnector
 

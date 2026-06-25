@@ -5,18 +5,20 @@ In this example you will:
 - Define LittleHorse [StructDefs](https://littlehorse.io/docs/server/concepts/structs) (`Pilot` with a nested `Vehicle`).
 - Register a workflow with a `STRUCT` variable type.
 - Produce json messages to a kafka topic without SchemaRegistry.
-- Create a WfRunSinkConnector without transformations.
+- Create a WfRunSinkConnector with a `HoistField` transformation.
 
 > [!WARNING]
 > Run the commands in the root directory
 
-> [!IMPORTANT]
-> `StructDef`s are experimental in LittleHorse and **not yet supported by the Kafka
-> Connect sink connectors**. This example shows how to model and register the
-> `StructDef`s and a workflow that uses them. The connector configuration is included
-> for completeness, but passing a `Struct` as a `WfRun` variable through Kafka Connect
-> is not wired up yet. See the upstream
+> [!NOTE]
+> The connector reads the `WfSpec` on startup to detect that the `pilot` variable is a
+> `STRUCT`, so it builds the LittleHorse struct from the nested json object automatically.
+> The `data.txt` records hold the struct fields at the top level (`{"name":...,"vehicle":...}`),
+> so the `connector.json` uses a [`HoistField`](https://docs.confluent.io/kafka-connectors/transforms/current/hoistfield.html)
+> transformation to wrap each record under the `pilot` field before it reaches LittleHorse.
+> See the upstream
 > [struct-def example](https://github.com/littlehorse-enterprises/littlehorse/tree/master/examples/java/struct-def).
+
 
 ## Dependencies
 

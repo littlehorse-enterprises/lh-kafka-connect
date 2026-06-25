@@ -37,6 +37,10 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     public static final String LHC_GRPC_KEEPALIVE_TIMEOUT_MS_KEY =
             parseKafkaConnectConfig(LHConfig.GRPC_KEEPALIVE_TIMEOUT_MS_KEY);
 
+    public static final String TRANSIENT_ERRORS_TOLERANCE_KEY = "transient.errors.tolerance";
+    public static final String TRANSIENT_ERRORS_TOLERANCE_RETRY = "retry";
+    public static final String TRANSIENT_ERRORS_TOLERANCE_FAIL = "fail";
+
     public static final String LH_API_PROTOCOL_PLAINTEXT = "PLAINTEXT";
     public static final String LH_API_PROTOCOL_TLS = "TLS";
 
@@ -111,10 +115,26 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
                     Type.LONG,
                     Duration.ofSeconds(5).toMillis(),
                     Importance.LOW,
-                    "Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.");
+                    "Time in milliseconds to configure the timeout for the keepalive pings on the grpc client.")
+            .define(
+                    TRANSIENT_ERRORS_TOLERANCE_KEY,
+                    Type.STRING,
+                    TRANSIENT_ERRORS_TOLERANCE_RETRY,
+                    ConfigDef.ValidString.in(
+                            TRANSIENT_ERRORS_TOLERANCE_RETRY, TRANSIENT_ERRORS_TOLERANCE_FAIL),
+                    Importance.MEDIUM,
+                    "How to handle records that fail with a transient (retriable) gRPC error such"
+                            + " as network issues or the server being temporarily unavailable."
+                            + " When 'retry' the record is retried by Kafka Connect and never sent"
+                            + " to the DLQ; when 'fail' the transient error is treated like any"
+                            + " other error and handled according to the errors.tolerance setting.");
 
     public LHSinkConnectorConfig(ConfigDef definition, Map<?, ?> props) {
         super(definition, props);
+    }
+
+    public boolean isRetryTransientErrors() {
+        return getString(TRANSIENT_ERRORS_TOLERANCE_KEY).equals(TRANSIENT_ERRORS_TOLERANCE_RETRY);
     }
 
     private static String parseKafkaConnectConfig(String key) {

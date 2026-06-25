@@ -128,7 +128,7 @@ public abstract class LHSinkTask extends SinkTask {
                         connectorName,
                         e);
 
-                if (isRetriable(e)) {
+                if (isRetryTransientErrors() && isRetriable(e)) {
                     // transient failure: let Kafka Connect retry the batch instead of
                     // discarding a valid record (no DLQ, no offset commit)
                     log.debug(
@@ -217,6 +217,10 @@ public abstract class LHSinkTask extends SinkTask {
             return RETRIABLE_CODES.contains(grpcException.getStatus().getCode());
         }
         return false;
+    }
+
+    private boolean isRetryTransientErrors() {
+        return connectorConfig.isRetryTransientErrors();
     }
 
     private boolean isDLQEnabled() {

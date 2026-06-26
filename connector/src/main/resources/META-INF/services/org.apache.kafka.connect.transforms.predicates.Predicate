@@ -1,2 +1,3 @@
 io.littlehorse.connect.predicate.FilterByFieldPredicate$Key
 io.littlehorse.connect.predicate.FilterByFieldPredicate$Value
+io.littlehorse.connect.predicate.JsonPathFilterPredicate

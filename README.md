@@ -34,6 +34,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [LiteralMapperTransform](#literalmappertransform)
   * [Predicates](#predicates)
     * [FilterByFieldPredicate](#filterbyfieldpredicate)
+    * [JsonPathFilterPredicate](#jsonpathfilterpredicate)
   * [Data Types](#data-types)
   * [Converters](#converters)
   * [External Secrets](#external-secrets)
@@ -471,6 +472,34 @@ transform to drop records:
 See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete setup, and the
 [predicate configurations](CONFIGURATIONS.md#filterbyfieldpredicate-configurations) for all options.
 
+### JsonPathFilterPredicate
+
+Matches a record by evaluating a JSONPath `expression` against the record envelope
+`{key, value, headers}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the
+expression itself selects `$.key`, `$.value` or `$.headers`, so it can reach nested fields and does
+not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-empty
+match list or object (e.g. an inline filter `[?(...)]`), or any other non-null value (an existence
+check); it does not match on `null`, `false`, or an empty match.
+
+Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
+transform, and use the transform's `negate` option to invert the result. For example, keep only the
+records whose `wfSpecName` starts with `order-`:
+
+```json
+{
+  "transforms": "FilterMessage",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "IsOrder",
+  "transforms.FilterMessage.negate": true,
+  "predicates": "IsOrder",
+  "predicates.IsOrder.type": "io.littlehorse.connect.predicate.JsonPathFilterPredicate",
+  "predicates.IsOrder.expression": "$.value[?(@.wfSpecName =~ /order-.*/)]"
+}
+```
+
+See the [predicate configurations](CONFIGURATIONS.md#jsonpathfilterpredicate-configurations) for all
+options.
+
 ## Data Types
 
 Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.
@@ -526,6 +555,7 @@ More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/c
 - [JsonPathMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathmappertransform-configurations).
 - [LiteralMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#literalmappertransform-configurations).
 - [FilterByFieldPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#filterbyfieldpredicate-configurations).
+- [JsonPathFilterPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathfilterpredicate-configurations).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
 

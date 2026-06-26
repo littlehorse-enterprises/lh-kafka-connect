@@ -340,6 +340,14 @@
   * Valid Values: [include, exclude]
   * Importance: high
 
+## JsonPathFilterPredicate Configurations
+
+``expression``
+  A JSONPath expression (starting with '$') evaluated against the record envelope {key, value, headers}. The record matches when the result is truthy: a true boolean, a non-empty match list or object, or any other non-null value (e.g. an existence check); it does not match when the result is null, false, or an empty match. Combine with the transform's 'negate' option to invert the result.
+
+  * Type: string
+  * Importance: high
+
 ## JsonPathMapperTransform Configurations
 
 ``mapping``

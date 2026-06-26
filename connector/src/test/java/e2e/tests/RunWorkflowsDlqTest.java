@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 
-public class WfRunDlqTest extends E2ETest {
+public class RunWorkflowsDlqTest extends E2ETest {
 
     public static final String WORKFLOW_NAME = "wfrun-dlq";
     public static final String TASK_NAME = "wfrun-dlq";

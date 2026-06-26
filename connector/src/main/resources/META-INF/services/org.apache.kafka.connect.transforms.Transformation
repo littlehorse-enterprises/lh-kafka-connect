@@ -1,1 +1,6 @@
-io.littlehorse.connect.transform.JsonPathMapper
+io.littlehorse.connect.transform.JsonPathMapperTransform$Key
+io.littlehorse.connect.transform.JsonPathMapperTransform$Value
+io.littlehorse.connect.transform.JsonPathMapperTransform$Headers
+io.littlehorse.connect.transform.LiteralMapperTransform$Key
+io.littlehorse.connect.transform.LiteralMapperTransform$Value
+io.littlehorse.connect.transform.LiteralMapperTransform$Headers

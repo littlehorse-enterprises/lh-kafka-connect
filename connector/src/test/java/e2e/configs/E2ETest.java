@@ -282,4 +282,17 @@ public abstract class E2ETest {
         }
         return records;
     }
+
+    /**
+     * Reads a file written inside the Kafka Connect container (e.g. the output of a
+     * {@code FileStreamSinkConnector}). Returns an empty string while the file does not yet
+     * exist, so it can be polled with {@link #await(Runnable)}.
+     */
+    public String readFileFromKafkaConnect(String path) {
+        try {
+            return KAFKA_CONNECT.execInContainer("cat", path).getStdout();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

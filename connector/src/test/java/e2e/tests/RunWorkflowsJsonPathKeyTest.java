@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class JsonPathMapperTest extends E2ETest {
+public class RunWorkflowsJsonPathKeyTest extends E2ETest {
 
     public static final String WORKFLOW_NAME = "json-path-mapper-key";
     public static final String CONNECTOR_NAME = "json-path-mapper-key";
@@ -58,8 +58,8 @@ public class JsonPathMapperTest extends E2ETest {
         connectorConfig.put("transforms", "jsonPathMapper");
         connectorConfig.put(
                 "transforms.jsonPathMapper.type",
-                "io.littlehorse.connect.transform.JsonPathMapper");
-        connectorConfig.put("transforms.jsonPathMapper.mappings", "{\"key\":\"$.key.id\"}");
+                "io.littlehorse.connect.transform.JsonPathMapperTransform$Key");
+        connectorConfig.put("transforms.jsonPathMapper.mapping", "$.key.id");
         connectorConfig.put("lhc.api.port", 2023);
         connectorConfig.put("lhc.api.host", "littlehorse");
         connectorConfig.put("lhc.tenant.id", "default");

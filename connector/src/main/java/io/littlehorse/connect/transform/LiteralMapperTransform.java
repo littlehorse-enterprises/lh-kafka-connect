@@ -68,12 +68,22 @@ public abstract class LiteralMapperTransform<R extends ConnectRecord<R>>
 
     public static final class Key<R extends ConnectRecord<R>> extends LiteralMapperTransform<R> {
         @Override
+        protected Object initialDomain(R record) {
+            return record.key();
+        }
+
+        @Override
         protected R newRecord(R record, Object updatedValue) {
             return asKey(record, updatedValue);
         }
     }
 
     public static final class Value<R extends ConnectRecord<R>> extends LiteralMapperTransform<R> {
+        @Override
+        protected Object initialDomain(R record) {
+            return record.value();
+        }
+
         @Override
         protected R newRecord(R record, Object updatedValue) {
             return asValue(record, updatedValue);
@@ -85,6 +95,11 @@ public abstract class LiteralMapperTransform<R extends ConnectRecord<R>>
         @Override
         protected List<String> parseTarget(String target) {
             return flatTarget(target);
+        }
+
+        @Override
+        protected Object initialDomain(R record) {
+            return headersToMap(record);
         }
 
         @Override

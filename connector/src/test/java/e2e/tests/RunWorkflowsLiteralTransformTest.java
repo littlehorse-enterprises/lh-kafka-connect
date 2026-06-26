@@ -18,7 +18,8 @@ import java.util.HashMap;
 /**
  * Uses the {@code LiteralMapperTransform} together with the {@code WfRunSinkConnector} to inject
  * constant, type-inferred values into typed WfSpec input variables (string, integer, double and
- * boolean), independently of the incoming record payload.
+ * boolean). The literal transform merges its constants onto the record value, so the payload is an
+ * empty object and the resulting variables are exactly the injected constants.
  */
 public class RunWorkflowsLiteralTransformTest extends E2ETest {
 
@@ -38,7 +39,7 @@ public class RunWorkflowsLiteralTransformTest extends E2ETest {
     public void shouldInjectLiteralValuesIntoTypedVariables() {
         registerWorkflow(WORKFLOW);
         createTopics(INPUT_TOPIC);
-        produceValues(INPUT_TOPIC, KafkaMessage.of("{\"ignored\":\"payload\"}"));
+        produceValues(INPUT_TOPIC, KafkaMessage.of("{}"));
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {

@@ -100,24 +100,6 @@ class LiteralMapperTransformTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldBuildNestedObjects() {
-        SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, new HashMap<>(), 0);
-
-        LiteralMapperTransform.Value<SinkRecord> mapper = new LiteralMapperTransform.Value<>();
-        mapper.configure(Map.of(MAPPING_PREFIX + "meta.region", "us-east-1"));
-
-        SinkRecord result = mapper.apply(record);
-        Map<String, Object> value = (Map<String, Object>) result.value();
-
-        assertThat(value).containsOnlyKeys("meta");
-        Map<String, Object> meta = (Map<String, Object>) value.get("meta");
-        assertThat(meta.get("region")).isEqualTo("us-east-1");
-
-        mapper.close();
-    }
-
-    @Test
     void shouldStampConstantHeadersLeavingKeyAndValueUntouched() {
         Map<String, Object> value = new HashMap<>();
         value.put("id", "ord-789");
@@ -145,6 +127,72 @@ class LiteralMapperTransformTest {
         Header notes = result.headers().lastWithName("notes");
         assertThat(notes).isNotNull();
         assertThat(notes.value()).isNull();
+
+        mapper.close();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldBuildNestedObjects() {
+        SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, new HashMap<>(), 0);
+
+        LiteralMapperTransform.Value<SinkRecord> mapper = new LiteralMapperTransform.Value<>();
+        mapper.configure(Map.of(MAPPING_PREFIX + "meta.region", "us-east-1"));
+
+        SinkRecord result = mapper.apply(record);
+        Map<String, Object> value = (Map<String, Object>) result.value();
+
+        assertThat(value).containsOnlyKeys("meta");
+        Map<String, Object> meta = (Map<String, Object>) value.get("meta");
+        assertThat(meta.get("region")).isEqualTo("us-east-1");
+
+        mapper.close();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldMergeConstantOntoExistingValue() {
+        Map<String, Object> existing = new HashMap<>();
+        existing.put("film", "A New Hope");
+        existing.put("episode", 4);
+
+        SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, existing, 0);
+
+        LiteralMapperTransform.Value<SinkRecord> mapper = new LiteralMapperTransform.Value<>();
+        mapper.configure(Map.of(MAPPING_PREFIX + "franchise", "Star Wars"));
+
+        SinkRecord result = mapper.apply(record);
+        Map<String, Object> value = (Map<String, Object>) result.value();
+
+        // The literal transform always merges: it keeps the existing value and adds the constant.
+        assertThat(value).containsOnlyKeys("film", "episode", "franchise");
+        assertThat(value.get("film")).isEqualTo("A New Hope");
+        assertThat(value.get("episode")).isEqualTo(4);
+        assertThat(value.get("franchise")).isEqualTo("Star Wars");
+
+        // The original value map is not mutated.
+        assertThat(existing).containsOnlyKeys("film", "episode");
+
+        mapper.close();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldOverrideExistingValueField() {
+        Map<String, Object> existing = new HashMap<>();
+        existing.put("franchise", "unknown");
+
+        SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, existing, 0);
+
+        LiteralMapperTransform.Value<SinkRecord> mapper = new LiteralMapperTransform.Value<>();
+        mapper.configure(Map.of(MAPPING_PREFIX + "franchise", "Star Wars"));
+
+        SinkRecord result = mapper.apply(record);
+        Map<String, Object> value = (Map<String, Object>) result.value();
+
+        // A mapping overrides the existing field of the same name.
+        assertThat(value).containsOnlyKeys("franchise");
+        assertThat(value.get("franchise")).isEqualTo("Star Wars");
 
         mapper.close();
     }

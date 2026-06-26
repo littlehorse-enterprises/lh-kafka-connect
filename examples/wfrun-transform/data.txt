@@ -1,0 +1,9 @@
+{"id":1,"title":"The Phantom Menace","director":"George Lucas","domesticGross":474.54,"internationalGross":551.97,"cast":["Liam Neeson","Ewan McGregor","Natalie Portman"]}
+{"id":2,"title":"Attack of the Clones","director":"George Lucas","domesticGross":310.68,"internationalGross":338.72,"cast":["Ewan McGregor","Natalie Portman","Hayden Christensen"]}
+{"id":3,"title":"Revenge of the Sith","director":"George Lucas","domesticGross":380.27,"internationalGross":488.0,"cast":["Ewan McGregor","Natalie Portman","Hayden Christensen"]}
+{"id":4,"title":"A New Hope","director":"George Lucas","domesticGross":307.26,"internationalGross":468.0,"cast":["Mark Hamill","Harrison Ford","Carrie Fisher"]}
+{"id":5,"title":"The Empire Strikes Back","director":"Irvin Kershner","domesticGross":290.48,"internationalGross":248.16,"cast":["Mark Hamill","Harrison Ford","Carrie Fisher"]}
+{"id":6,"title":"Return of the Jedi","director":"Richard Marquand","domesticGross":309.13,"internationalGross":166.5,"cast":["Mark Hamill","Harrison Ford","Carrie Fisher"]}
+{"id":7,"title":"The Force Awakens","director":"J.J. Abrams","domesticGross":936.66,"internationalGross":1132.86,"cast":["Daisy Ridley","John Boyega","Harrison Ford"]}
+{"id":8,"title":"The Last Jedi","director":"Rian Johnson","domesticGross":620.18,"internationalGross":712.4,"cast":["Daisy Ridley","John Boyega","Mark Hamill"]}
+{"id":9,"title":"The Rise of Skywalker","director":"J.J. Abrams","domesticGross":515.2,"internationalGross":559.0,"cast":["Daisy Ridley","John Boyega","Adam Driver"]}

@@ -42,9 +42,14 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public R apply(R record) {
         Object context = createContext(record);
-        Object updatedValue = null;
+        Object updatedValue = initialDomain(record);
+        if (updatedValue instanceof Map) {
+            // Copy so merging does not mutate the domain a previous transform produced.
+            updatedValue = new LinkedHashMap<>((Map<String, Object>) updatedValue);
+        }
         for (Mapping mapping : mappings) {
             updatedValue = write(updatedValue, mapping.targetPath, mapping.resolve(context));
         }
@@ -81,6 +86,16 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
 
     /** Compiles (and validates) a single mapping value. */
     protected abstract Mapping compile(List<String> targetPath, String value);
+
+    /**
+     * Returns the seed the mappings are written on top of. The default is {@code null}, so the
+     * operating domain is built from scratch (construct-only); the unmapped parts of the record
+     * are dropped. The {@link LiteralMapperTransform} variants override this to return the
+     * record's current domain so their constants are merged onto it instead of replacing it.
+     */
+    protected Object initialDomain(R record) {
+        return null;
+    }
 
     /** Writes the rebuilt operating domain back into a new record. */
     protected abstract R newRecord(R record, Object updatedValue);
@@ -148,6 +163,15 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
                 record.value(),
                 record.timestamp(),
                 headers);
+    }
+
+    /** Flattens the record's existing headers into a map, used to seed a header merge. */
+    protected final Map<String, Object> headersToMap(R record) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (org.apache.kafka.connect.header.Header header : record.headers()) {
+            result.put(header.key(), header.value());
+        }
+        return result;
     }
 
     @Override

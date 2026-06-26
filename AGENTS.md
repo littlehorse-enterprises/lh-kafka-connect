@@ -15,7 +15,7 @@ Three sink connectors are provided:
 
 ## Repository Layout
 
-- `connector/` — the connectors, tasks, configs, predicates, and unit/e2e tests.
+- `connector/` — the connectors, tasks, configs, predicates, transforms, and unit/e2e tests.
   - `src/main/java/io/littlehorse/connect/` — production code.
   - `src/test/java/io/littlehorse/connect/` — unit tests.
   - `src/test/java/e2e/` — end-to-end tests (Testcontainers + Kafka Connect).
@@ -93,6 +93,26 @@ docker compose up -d
   non-struct type) falls back to `LHLibUtil.objToVarVal(...)` and keeps its value-inferred type.
 - If the `WfSpec`/`ExternalEventDef` itself cannot be loaded at startup, the connector fails to
   start (so the metadata must be registered before the connector runs).
+
+### Mapper transforms (SMTs)
+
+- The `transform/` package provides two Single Message Transforms that reshape a record by
+  writing into an "operating domain" (the record key, value, or headers). Both share
+  `AbstractMapperTransform`, which parses the dynamic `mapping`/`mapping.<path>` properties via
+  `MapperTransformConfig`, sorts mappings by path depth, and writes them into the domain. Each
+  transform exposes its own documented `CONFIG_DEF` (built with
+  `MapperTransformConfig.configDef(doc)`) returned from `config()` and surfaced in
+  `CONFIGURATIONS.md` by `ConfigExporter`.
+- `JsonPathMapperTransform` builds the domain from scratch by evaluating JSONPath expressions
+  (values must start with `$`) against the record envelope `{key, value, headers}`; unmapped
+  fields are dropped. Functions such as `concat`/`sum` are supported.
+- `LiteralMapperTransform` injects constant values whose type is inferred (int, double,
+  `true`/`false`, `null`, else string; double-quote to force a string). Unlike the JSONPath
+  transform, it merges its constants onto the existing domain, overriding fields with the same
+  name (each variant overrides `initialDomain` to seed from the existing key/value/headers).
+- Both transforms expose `$Key`, `$Value`, and `$Headers` nested variants to choose which part
+  of the record is rebuilt. For the `$Headers` variant a `mapping.<path>` is a single, flat
+  header name rather than a nested path.
 
 ### End-to-end tests
 

@@ -9,6 +9,7 @@ import com.jayway.jsonpath.Option;
 
 import io.littlehorse.connect.util.ObjectMapper;
 
+import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.header.Header;
@@ -26,6 +27,18 @@ import java.util.Map;
 public abstract class JsonPathMapperTransform<R extends ConnectRecord<R>>
         extends AbstractMapperTransform<R> {
 
+    public static final ConfigDef CONFIG_DEF = MapperTransformConfig.configDef(
+            "Defines a mapping written into the operating domain. Each mapping is its own property:"
+                    + " the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a"
+                    + " dot-separated path such as ``mapping.pilot.vehicle.model``) builds nested"
+                    + " objects; for the ``$Headers`` variant the whole path is a single, flat"
+                    + " header name. The value must be a JSONPath expression (starting with '$')"
+                    + " evaluated against the record envelope ``{key, value, headers}``, and"
+                    + " functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``,"
+                    + " ``$Value`` or ``$Headers`` nested variant to choose whether the record key,"
+                    + " value or headers are rebuilt. The operating domain is built from scratch, so"
+                    + " unmapped fields are dropped.");
+
     private static final String KEY_DOMAIN = "key";
     private static final String VALUE_DOMAIN = "value";
     private static final String HEADERS_DOMAIN = "headers";
@@ -35,6 +48,11 @@ public abstract class JsonPathMapperTransform<R extends ConnectRecord<R>>
             .build();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    public ConfigDef config() {
+        return CONFIG_DEF;
+    }
 
     @Override
     protected Object createContext(R record) {

@@ -29,6 +29,11 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [Idempotent Writes](#idempotent-writes)
   * [Multiple Tasks](#multiple-tasks)
   * [Dead Letter Queue](#dead-letter-queue)
+  * [Transforms](#transforms)
+    * [JsonPathMapperTransform](#jsonpathmappertransform)
+    * [LiteralMapperTransform](#literalmappertransform)
+  * [Predicates](#predicates)
+    * [FilterByFieldPredicate](#filterbyfieldpredicate)
   * [Data Types](#data-types)
   * [Converters](#converters)
   * [External Secrets](#external-secrets)
@@ -387,6 +392,85 @@ Retry timing is controlled by the standard Kafka Connect configurations
 
 See the [wfrun-dlq example](examples/wfrun-dlq/README.md) for a runnable setup.
 
+## Transforms
+
+Besides the standard [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html),
+these connectors ship two custom mapper transforms that build a record part (the key, value or
+headers) from a set of declarative `mapping` properties. Each transform has a `$Key`, `$Value` and
+`$Headers` variant that selects which part of the record is written, and each mapping is its own
+property: the bare `mapping` targets the whole part, while `mapping.<path>` (a dotted path) builds
+nested objects (for the `$Headers` variant the whole path is a single, flat header name).
+
+### JsonPathMapperTransform
+
+Builds the operating domain by evaluating JSONPath expressions (each value must start with `$`)
+against the record envelope `{key, value, headers}`. It is construct-only: fields that are not
+mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
+
+```json
+{
+  "transforms": "build",
+  "transforms.build.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.build.mapping.film.title": "$.value.title",
+  "transforms.build.mapping.episode": "$.value.id",
+  "transforms.build.mapping.summary": "$.concat($.value.title, \" by \", $.value.director)"
+}
+```
+
+### LiteralMapperTransform
+
+Injects constant, type-inferred values into the operating domain (an integer, a double, a boolean,
+`null`, otherwise a string; wrap the value in double quotes to force a string). Unlike the JSONPath
+transform, it merges its constants onto the existing domain, overriding fields with the same name,
+so it can add fields on top of a value another transform produced.
+
+```json
+{
+  "transforms": "build,constant",
+  "transforms.constant.type": "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
+  "transforms.constant.mapping.franchise.name": "Star Wars",
+  "transforms.constant.mapping.franchise.producer": "Lucasfilm"
+}
+```
+
+See the [wfrun-transform example](examples/wfrun-transform/README.md) for a complete setup chaining
+both transforms, and the [transform configurations](CONFIGURATIONS.md#jsonpathmappertransform-configurations)
+for all options.
+
+## Predicates
+
+Kafka Connect [predicates](https://docs.confluent.io/platform/current/connect/transforms/overview.html#predicates)
+let you apply a transformation only to the records that match a condition. Besides the standard
+predicates, these connectors ship a custom one.
+
+### FilterByFieldPredicate
+
+Matches a record by testing a Java regex `pattern` against a string `field` of the record's `Struct`
+key or value. It has a `$Key` and a `$Value` variant that selects which part of the record is
+inspected, and the field must be present in a schema (the key/value must be a `Struct`).
+
+Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
+transform to drop records:
+
+- `operation=exclude` (default): records whose `field` matches `pattern` are dropped.
+- `operation=include`: only records whose `field` matches `pattern` are kept.
+
+```json
+{
+  "transforms": "FilterMessage",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "FilterByField",
+  "predicates": "FilterByField",
+  "predicates.FilterByField.type": "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
+  "predicates.FilterByField.operation": "include",
+  "predicates.FilterByField.pattern": "example-wfrun-filter",
+  "predicates.FilterByField.field": "wfSpecName"
+}
+```
+
+See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete setup, and the
+[predicate configurations](CONFIGURATIONS.md#filterbyfieldpredicate-configurations) for all options.
+
 ## Data Types
 
 Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.
@@ -439,6 +523,9 @@ More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/c
 
 - [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 - [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
+- [JsonPathMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathmappertransform-configurations).
+- [LiteralMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#literalmappertransform-configurations).
+- [FilterByFieldPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#filterbyfieldpredicate-configurations).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
 

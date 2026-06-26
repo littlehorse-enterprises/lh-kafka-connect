@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigDef.Importance;
+import org.apache.kafka.common.config.ConfigDef.Type;
 import org.apache.kafka.common.config.ConfigException;
 
 import java.util.LinkedHashMap;
@@ -23,13 +25,16 @@ public class MapperTransformConfig extends AbstractConfig {
 
     public static final String MAPPING_PREFIX = MAPPING_KEY + ".";
 
-    public static final ConfigDef CONFIG_DEF = new ConfigDef();
-
     private final Map<String, String> mappings;
 
-    public MapperTransformConfig(Map<?, ?> originals) {
-        super(CONFIG_DEF, originals);
+    public MapperTransformConfig(ConfigDef configDef, Map<?, ?> originals) {
+        super(configDef, originals);
         mappings = parseMappings();
+    }
+
+    /** Builds the {@link ConfigDef} for a mapper transform, documenting its {@code mapping} key. */
+    public static ConfigDef configDef(String mappingDoc) {
+        return new ConfigDef().define(MAPPING_KEY, Type.STRING, null, Importance.HIGH, mappingDoc);
     }
 
     private Map<String, String> parseMappings() {

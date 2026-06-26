@@ -1,5 +1,6 @@
 package io.littlehorse.connect.transform;
 
+import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.ConnectRecord;
 
 import java.util.List;
@@ -14,6 +15,23 @@ import java.util.List;
  */
 public abstract class LiteralMapperTransform<R extends ConnectRecord<R>>
         extends AbstractMapperTransform<R> {
+
+    public static final ConfigDef CONFIG_DEF = MapperTransformConfig.configDef(
+            "Defines a mapping written into the operating domain. Each mapping is its own property:"
+                    + " the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a"
+                    + " dot-separated path) builds nested objects; for the ``$Headers`` variant the"
+                    + " whole path is a single, flat header name. The value is a constant whose type"
+                    + " is inferred (an integer, a double, ``true``/``false`` as a boolean,"
+                    + " ``null`` as a null value, otherwise a string; wrap the value in double"
+                    + " quotes to force a string). Use the ``$Key``, ``$Value`` or ``$Headers``"
+                    + " nested variant to choose whether the record key, value or headers are"
+                    + " written. The constants are merged onto the existing domain, overriding any"
+                    + " fields with the same name.");
+
+    @Override
+    public ConfigDef config() {
+        return CONFIG_DEF;
+    }
 
     @Override
     protected Object createContext(R record) {

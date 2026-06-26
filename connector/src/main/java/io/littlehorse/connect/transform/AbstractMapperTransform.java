@@ -2,7 +2,6 @@ package io.littlehorse.connect.transform;
 
 import io.littlehorse.connect.util.VersionReader;
 
-import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.components.Versioned;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.header.ConnectHeaders;
@@ -28,13 +27,8 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
     private List<Mapping> mappings;
 
     @Override
-    public ConfigDef config() {
-        return MapperTransformConfig.CONFIG_DEF;
-    }
-
-    @Override
     public void configure(Map<String, ?> configs) {
-        MapperTransformConfig config = new MapperTransformConfig(configs);
+        MapperTransformConfig config = new MapperTransformConfig(config(), configs);
         mappings = config.getMappings().entrySet().stream()
                 .map(entry -> compile(parseTarget(entry.getKey()), entry.getValue()))
                 .sorted(Comparator.comparingInt(mapping -> mapping.targetPath.size()))

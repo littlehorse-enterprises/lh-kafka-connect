@@ -339,3 +339,21 @@
   * Default: exclude
   * Valid Values: [include, exclude]
   * Importance: high
+
+## JsonPathMapperTransform Configurations
+
+``mapping``
+  Defines a mapping written into the operating domain. Each mapping is its own property: the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a dot-separated path such as ``mapping.pilot.vehicle.model``) builds nested objects; for the ``$Headers`` variant the whole path is a single, flat header name. The value must be a JSONPath expression (starting with '$') evaluated against the record envelope ``{key, value, headers}``, and functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``, ``$Value`` or ``$Headers`` nested variant to choose whether the record key, value or headers are rebuilt. The operating domain is built from scratch, so unmapped fields are dropped.
+
+  * Type: string
+  * Default: null
+  * Importance: high
+
+## LiteralMapperTransform Configurations
+
+``mapping``
+  Defines a mapping written into the operating domain. Each mapping is its own property: the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a dot-separated path) builds nested objects; for the ``$Headers`` variant the whole path is a single, flat header name. The value is a constant whose type is inferred (an integer, a double, ``true``/``false`` as a boolean, ``null`` as a null value, otherwise a string; wrap the value in double quotes to force a string). Use the ``$Key``, ``$Value`` or ``$Headers`` nested variant to choose whether the record key, value or headers are written. The constants are merged onto the existing domain, overriding any fields with the same name.
+
+  * Type: string
+  * Default: null
+  * Importance: high

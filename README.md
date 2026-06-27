@@ -410,11 +410,11 @@ mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
 
 ```json
 {
-  "transforms": "build",
-  "transforms.build.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
-  "transforms.build.mapping.film.title": "$.value.title",
-  "transforms.build.mapping.episode": "$.value.id",
-  "transforms.build.mapping.summary": "$.concat($.value.title, \" by \", $.value.director)"
+  "transforms": "WfRunVariablesMapper",
+  "transforms.WfRunVariablesMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.WfRunVariablesMapper.mapping.film.title": "$.value.title",
+  "transforms.WfRunVariablesMapper.mapping.episode": "$.value.id",
+  "transforms.WfRunVariablesMapper.mapping.summary": "$.concat($.value.title, \" by \", $.value.director)"
 }
 ```
 
@@ -427,10 +427,10 @@ so it can add fields on top of a value another transform produced.
 
 ```json
 {
-  "transforms": "build,constant",
-  "transforms.constant.type": "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
-  "transforms.constant.mapping.franchise.name": "Star Wars",
-  "transforms.constant.mapping.franchise.producer": "Lucasfilm"
+  "transforms": "WfRunVariablesMapper,StampFranchise",
+  "transforms.StampFranchise.type": "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
+  "transforms.StampFranchise.mapping.franchise.name": "Star Wars",
+  "transforms.StampFranchise.mapping.franchise.producer": "Lucasfilm"
 }
 ```
 
@@ -446,9 +446,10 @@ predicates, these connectors ship a custom one.
 
 ### FilterByFieldPredicate
 
-Matches a record by testing a Java regex `pattern` against a string `field` of the record's `Struct`
-key or value. It has a `$Key` and a `$Value` variant that selects which part of the record is
-inspected, and the field must be present in a schema (the key/value must be a `Struct`).
+Matches a record by testing a Java regex `pattern` against a string `field`. It has a `$Key` and a
+`$Value` variant that read the field from the record's `Struct` key or value (which must be a
+`Struct` carrying that field), and a `$Headers` variant where `field` is a header name and the
+record matches against that header's value.
 
 Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
 transform to drop records:
@@ -497,8 +498,9 @@ records whose `wfSpecName` starts with `order-`:
 }
 ```
 
-See the [predicate configurations](CONFIGURATIONS.md#jsonpathfilterpredicate-configurations) for all
-options.
+See the [wfrun-json-path-filter example](examples/wfrun-json-path-filter/README.md) for a complete
+setup, and the [predicate configurations](CONFIGURATIONS.md#jsonpathfilterpredicate-configurations)
+for all options.
 
 ## Data Types
 

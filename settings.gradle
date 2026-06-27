@@ -22,6 +22,7 @@ include "common"
         "wfrun-avro",
         "wfrun-list",
         "wfrun-filter",
+        "wfrun-json-path-filter",
         "wfrun-protobuf",
         "wfrun-secrets",
         "wfrun-value-to-header",

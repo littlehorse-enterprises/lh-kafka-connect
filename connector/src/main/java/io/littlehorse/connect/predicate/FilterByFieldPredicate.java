@@ -10,6 +10,7 @@ import org.apache.kafka.connect.components.Versioned;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.errors.DataException;
+import org.apache.kafka.connect.header.Header;
 import org.apache.kafka.connect.transforms.predicates.Predicate;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
 
     @Override
     public boolean test(R record) {
-        String fieldValue = getFieldValue(getObject(record));
+        String fieldValue = getFieldValue(record);
 
         if (OPERATION_EXCLUDE.equals(config.getOperationType())) {
             return fieldValue.matches(config.getPattern());
@@ -39,7 +40,11 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
         throw new DataException("Invalid operation");
     }
 
-    private String getFieldValue(Object object) {
+    protected String getField() {
+        return config.getField();
+    }
+
+    protected String getStructFieldValue(Object object) {
         if (object == null) {
             throw new DataException("Key or Value should be different to null");
         }
@@ -50,10 +55,10 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
         }
 
         Struct structObject = (Struct) object;
-        String fieldValue = structObject.getString(config.getField());
+        String fieldValue = structObject.getString(getField());
         if (fieldValue == null) {
-            throw new DataException(String.format(
-                    "Field %s value was expected but not provided", config.getField()));
+            throw new DataException(
+                    String.format("Field %s value was expected but not provided", getField()));
         }
         return fieldValue;
     }
@@ -73,19 +78,31 @@ public abstract class FilterByFieldPredicate<R extends ConnectRecord<R>>
         return VersionReader.version();
     }
 
-    public abstract Object getObject(R record);
+    public abstract String getFieldValue(R record);
 
     public static class Key<T extends ConnectRecord<T>> extends FilterByFieldPredicate<T> {
         @Override
-        public Object getObject(T record) {
-            return record.key();
+        public String getFieldValue(T record) {
+            return getStructFieldValue(record.key());
         }
     }
 
     public static class Value<T extends ConnectRecord<T>> extends FilterByFieldPredicate<T> {
         @Override
-        public Object getObject(T record) {
-            return record.value();
+        public String getFieldValue(T record) {
+            return getStructFieldValue(record.value());
+        }
+    }
+
+    public static class Headers<T extends ConnectRecord<T>> extends FilterByFieldPredicate<T> {
+        @Override
+        public String getFieldValue(T record) {
+            Header header = record.headers().lastWithName(getField());
+            if (header == null || header.value() == null) {
+                throw new DataException(
+                        String.format("Header %s value was expected but not provided", getField()));
+            }
+            return String.valueOf(header.value());
         }
     }
 }

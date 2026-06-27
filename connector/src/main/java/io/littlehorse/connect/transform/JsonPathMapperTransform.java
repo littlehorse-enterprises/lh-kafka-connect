@@ -48,8 +48,9 @@ public abstract class JsonPathMapperTransform<R extends ConnectRecord<R>>
 
     @Override
     protected Mapping compile(List<String> targetPath, String value) {
-        // A JSONPath always starts with '$'; reject literals so responsibilities stay separate.
-        if (!value.strip().startsWith("$")) {
+        // A JSONPath always starts with '$'; reject null and literals so responsibilities stay
+        // separate.
+        if (value == null || !value.strip().startsWith("$")) {
             throw new ConfigException(
                     MAPPING_PREFIX + String.join(".", targetPath),
                     value,

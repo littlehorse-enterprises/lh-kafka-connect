@@ -365,3 +365,10 @@
   * Type: string
   * Default: null
   * Importance: high
+
+``implicit.casting.enabled``
+  When ``true`` (the default), each mapping value is parsed into an inferred type (an integer, a double, ``true``/``false`` as a boolean, ``null`` as a null value, otherwise a string). When ``false``, every value is kept as its original string with no type inference.
+
+  * Type: boolean
+  * Default: true
+  * Importance: medium

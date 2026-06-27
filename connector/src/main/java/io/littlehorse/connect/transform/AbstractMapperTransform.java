@@ -29,11 +29,18 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
     @Override
     public void configure(Map<String, ?> configs) {
         MapperTransformConfig config = new MapperTransformConfig(config(), configs);
+        onConfigure(config);
         mappings = config.getMappings().entrySet().stream()
                 .map(entry -> compile(parseTarget(entry.getKey()), entry.getValue()))
                 .sorted(Comparator.comparingInt(mapping -> mapping.targetPath.size()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Hook invoked after the config is parsed but before the mappings are compiled, letting
+     * concrete transforms read additional configuration. The default does nothing.
+     */
+    protected void onConfigure(MapperTransformConfig config) {}
 
     @Override
     @SuppressWarnings("unchecked")

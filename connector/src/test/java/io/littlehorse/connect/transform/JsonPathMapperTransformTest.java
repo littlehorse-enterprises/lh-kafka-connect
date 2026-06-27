@@ -256,6 +256,19 @@ class JsonPathMapperTransformTest {
     }
 
     @Test
+    void shouldFailWhenValueIsNull() {
+        JsonPathMapperTransform.Value<SinkRecord> mapper = new JsonPathMapperTransform.Value<>();
+        // A bare null is not a JSONPath expression, so configuration fails fast.
+        Map<String, String> config = new HashMap<>();
+        config.put(MAPPING_PREFIX + "source", null);
+        assertThatThrownBy(() -> mapper.configure(config))
+                .isInstanceOf(ConfigException.class)
+                .hasMessageContaining("JSONPath expression");
+
+        mapper.close();
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     void shouldSupportConcat() {
         Map<String, Object> value = new HashMap<>();

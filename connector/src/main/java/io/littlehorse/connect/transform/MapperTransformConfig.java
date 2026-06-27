@@ -6,7 +6,6 @@ import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
-import org.apache.kafka.common.config.ConfigException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,10 +50,10 @@ public class MapperTransformConfig extends AbstractConfig {
                 continue;
             }
 
-            if (entry.getValue() == null) {
-                throw new ConfigException(key, null, "Mapping value must not be null.");
-            }
-            result.put(target, String.valueOf(entry.getValue()));
+            // A bare JSON null arrives as a Java null; preserve it so the concrete transform
+            // can decide what it means (the literal transform maps it to a null value).
+            String value = entry.getValue() == null ? null : String.valueOf(entry.getValue());
+            result.put(target, value);
         }
         return result;
     }

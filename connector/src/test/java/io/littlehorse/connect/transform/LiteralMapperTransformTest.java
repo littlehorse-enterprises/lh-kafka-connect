@@ -62,6 +62,26 @@ class LiteralMapperTransformTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    void shouldSupportBareNullMappingValue() {
+        SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, new HashMap<>(), 0);
+
+        LiteralMapperTransform.Value<SinkRecord> mapper = new LiteralMapperTransform.Value<>();
+        // A bare JSON null (no quotes) arrives as a Java null and becomes a null value.
+        Map<String, String> config = new HashMap<>();
+        config.put(MAPPING_PREFIX + "notes", null);
+        mapper.configure(config);
+
+        SinkRecord result = mapper.apply(record);
+        Map<String, Object> value = (Map<String, Object>) result.value();
+
+        assertThat(value).containsKey("notes");
+        assertThat(value.get("notes")).isNull();
+
+        mapper.close();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     void shouldForceStringWithDoubleQuotes() {
         SinkRecord record = new SinkRecord(TOPIC, 0, null, null, null, new HashMap<>(), 0);
 

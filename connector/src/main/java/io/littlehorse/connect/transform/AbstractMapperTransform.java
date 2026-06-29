@@ -2,6 +2,8 @@ package io.littlehorse.connect.transform;
 
 import io.littlehorse.connect.util.VersionReader;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.kafka.connect.components.Versioned;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.header.ConnectHeaders;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  * JsonPathMapperTransform} evaluates JSONPath against the record, while {@link
  * LiteralMapperTransform} injects constant values.
  */
+@Slf4j
 public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
         implements Transformation<R>, Versioned {
 
@@ -28,6 +31,11 @@ public abstract class AbstractMapperTransform<R extends ConnectRecord<R>>
 
     @Override
     public void configure(Map<String, ?> configs) {
+        configs.forEach((key, value) -> log.debug(
+                "Config entry: key={}, value={}, type={}",
+                key,
+                value,
+                value == null ? "null" : value.getClass().getName()));
         MapperTransformConfig config = new MapperTransformConfig(config(), configs);
         onConfigure(config);
         mappings = config.getMappings().entrySet().stream()

@@ -170,3 +170,21 @@ services:
       LHS_ADVERTISED_LISTENERS: EXTERNAL://localhost:2023,INTERNAL://littlehorse:2024
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
       LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN
+
+  dashboard:
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:${LITTLEHORSE_VERSION}
+    ports:
+      - "3000:3000"
+    depends_on:
+      littlehorse:
+        condition: service_healthy
+    environment:
+      LHC_API_HOST: littlehorse
+      LHC_API_PORT: 2024
+      LHC_OAUTH_ENABLED: false
+    healthcheck:
+      test: wget --no-verbose --spider 0.0.0.0:3000
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s

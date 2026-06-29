@@ -76,6 +76,8 @@ docker compose up -d
 
 - Building `VariableValue`s from message payloads goes through `util/VariableValueMapper`,
   which resolves `STRUCT` types and caches `StructDef` lookups (including nested structs).
+  Lookups use the versioned `StructDefId` carried by the `WfSpec`'s `TypeDefinition`, so the
+  connector builds structs from the version the `WfSpec` pinned, not the latest registered one.
   Prefer it over calling `LHLibUtil.objToVarVal(...)` directly in tasks.
 - Connectors discover whether content is a `STRUCT` by reading metadata on startup
   (`afterStart()`):
@@ -102,14 +104,21 @@ docker compose up -d
   `MapperTransformConfig`, sorts mappings by path depth, and writes them into the domain. Each
   transform exposes its own documented `CONFIG_DEF` (built with
   `MapperTransformConfig.configDef(doc)`) returned from `config()` and surfaced in
-  `CONFIGURATIONS.md` by `ConfigExporter`.
+  `CONFIGURATIONS.md` by `ConfigExporter`. Concrete transforms read extra config via the
+  `onConfigure(MapperTransformConfig)` hook, invoked after parsing but before mappings compile.
+- A `null` mapping value is preserved by `MapperTransformConfig` (not rejected) so each transform
+  decides its meaning, but note the Kafka Connect REST API itself rejects a bare JSON `null` config
+  value, so reaching this path means using the `null` literal text or a non-REST config source.
 - `JsonPathMapperTransform` builds the domain from scratch by evaluating JSONPath expressions
   (values must start with `$`) against the record envelope `{key, value, headers}`; unmapped
   fields are dropped. Functions such as `concat`/`sum` are supported.
 - `LiteralMapperTransform` injects constant values whose type is inferred (int, double,
-  `true`/`false`, `null`, else string; double-quote to force a string). Unlike the JSONPath
+  `true`/`false`, `null`, else string; double-quote to force a string). Setting
+  `implicit.casting.enabled=false` disables inference and keeps every value as its original
+  string (a bare `null` mapping still becomes a null value). Unlike the JSONPath
   transform, it merges its constants onto the existing domain, overriding fields with the same
   name (each variant overrides `initialDomain` to seed from the existing key/value/headers).
+  `JsonPathMapperTransform` rejects a `null` mapping value (it cannot be a `$` expression).
 - Both transforms expose `$Key`, `$Value`, and `$Headers` nested variants to choose which part
   of the record is rebuilt. For the `$Headers` variant a `mapping.<path>` is a single, flat
   header name rather than a nested path.

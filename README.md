@@ -449,7 +449,7 @@ for all options.
 
 ## Predicates
 
-Kafka Connect [predicates](https://docs.confluent.io/platform/current/connect/transforms/overview.html#predicates)
+Kafka Connect [predicates](https://docs.confluent.io/kafka-connectors/transforms/current/filter-ak.html)
 let you apply a transformation only to the records that match a condition. Besides the standard
 predicates, these connectors ship a custom one.
 

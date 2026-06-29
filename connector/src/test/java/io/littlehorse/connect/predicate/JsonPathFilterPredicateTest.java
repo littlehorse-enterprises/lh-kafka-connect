@@ -12,6 +12,7 @@ import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 class JsonPathFilterPredicateTest {
@@ -44,6 +45,16 @@ class JsonPathFilterPredicateTest {
     }
 
     @Test
+    void shouldEvaluateNestedFieldPath() {
+        SinkRecord record = recordWithValue(Map.of("order", Map.of("priority", "high")));
+
+        assertThat(predicate("$.value.order.priority").test(record)).isTrue();
+        assertThat(predicate("$.value.order.missing").test(record)).isFalse();
+        assertThat(predicate("$.value.order[?(@.priority == 'high')]").test(record))
+                .isTrue();
+    }
+
+    @Test
     void shouldMatchWhenInlineFilterReturnsResults() {
         SinkRecord record = recordWithValue(Map.of("amount", 150));
 
@@ -58,10 +69,55 @@ class JsonPathFilterPredicateTest {
     }
 
     @Test
+    void shouldMatchInlineFilterComparingAgainstEmptyString() {
+        String expression = "$.value[?(@.propertyName == '')]";
+
+        assertThat(predicate(expression).test(recordWithValue(Map.of("propertyName", ""))))
+                .isTrue();
+        assertThat(predicate(expression).test(recordWithValue(Map.of("propertyName", "text"))))
+                .isFalse();
+    }
+
+    @Test
+    void shouldMatchInlineFilterCheckingEmptyArrayLength() {
+        String expression = "$.value[?(@.arrayName.length() == 0)]";
+
+        assertThat(predicate(expression).test(recordWithValue(Map.of("arrayName", List.of()))))
+                .isTrue();
+        assertThat(predicate(expression).test(recordWithValue(Map.of("arrayName", List.of(1, 2)))))
+                .isFalse();
+    }
+
+    @Test
+    void shouldMatchInlineFilterNegatingMissingProperty() {
+        String expression = "$.value[?(!@.key)]";
+
+        assertThat(predicate(expression).test(recordWithValue(Map.of()))).isTrue();
+        assertThat(predicate(expression).test(recordWithValue(Map.of("key", "value"))))
+                .isFalse();
+    }
+
+    @Test
     void shouldEvaluateBooleanPathAsItsValue() {
         assertThat(predicate("$.value.active").test(recordWithValue(Map.of("active", true))))
                 .isTrue();
         assertThat(predicate("$.value.active").test(recordWithValue(Map.of("active", false))))
+                .isFalse();
+    }
+
+    @Test
+    void shouldEvaluateNumberPathByItsValue() {
+        assertThat(predicate("$.value.amount").test(recordWithValue(Map.of("amount", 42))))
+                .isTrue();
+        assertThat(predicate("$.value.amount").test(recordWithValue(Map.of("amount", 0))))
+                .isFalse();
+    }
+
+    @Test
+    void shouldEvaluateStringPathByItsEmptiness() {
+        assertThat(predicate("$.value.note").test(recordWithValue(Map.of("note", "text"))))
+                .isTrue();
+        assertThat(predicate("$.value.note").test(recordWithValue(Map.of("note", ""))))
                 .isFalse();
     }
 

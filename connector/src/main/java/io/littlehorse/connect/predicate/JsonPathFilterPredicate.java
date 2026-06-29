@@ -19,8 +19,9 @@ import java.util.Map;
 /**
  * A {@link Predicate} that matches a record by evaluating a JSONPath expression against an
  * envelope of the record: {@code {key, value, headers}}. The record matches when the result is
- * truthy: a {@code true} boolean, a non-empty match list or object, or any other non-null value.
- * It does not match when the result is {@code null}, {@code false}, or an empty match.
+ * truthy: a {@code true} boolean, a non-zero number, a non-empty string, a non-empty match list
+ * or object, or any other non-null value. It does not match when the result is {@code null},
+ * {@code false}, {@code 0}, an empty string, or an empty match.
  *
  * <p>Unlike {@link FilterByFieldPredicate} there is no {@code $Key}/{@code $Value} variant: the
  * expression itself selects {@code $.key}, {@code $.value} or {@code $.headers}. Use the
@@ -65,6 +66,12 @@ public class JsonPathFilterPredicate<R extends ConnectRecord<R>>
         }
         if (result instanceof Boolean booleanResult) {
             return booleanResult;
+        }
+        if (result instanceof Number numberResult) {
+            return numberResult.doubleValue() != 0;
+        }
+        if (result instanceof String stringResult) {
+            return !stringResult.isEmpty();
         }
         if (result instanceof Collection<?> collectionResult) {
             return !collectionResult.isEmpty();

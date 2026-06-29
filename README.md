@@ -487,9 +487,9 @@ See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete s
 Matches a record by evaluating a JSONPath `expression` against the record envelope
 `{key, value, headers}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the
 expression itself selects `$.key`, `$.value` or `$.headers`, so it can reach nested fields and does
-not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-empty
-match list or object (e.g. an inline filter `[?(...)]`), or any other non-null value (an existence
-check); it does not match on `null`, `false`, or an empty match.
+not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
+number, a non-empty string, or a non-empty match list or object (e.g. an inline filter `[?(...)]`);
+it does not match on `null`, `false`, `0`, an empty string, or an empty match.
 
 Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
 transform, and use the transform's `negate` option to invert the result. For example, keep only the

@@ -28,7 +28,7 @@ Build plugin bundle:
 Run compose:
 
 ```shell
-docker compose up -d
+./gradlew dockerComposeUp
 ```
 
 Check that LH plugin was installed:

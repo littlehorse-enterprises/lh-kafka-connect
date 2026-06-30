@@ -1,0 +1,17 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.ExternalEventSinkConnector",
+  "topics": "example-external-event-json-path",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "external.event.name": "example-external-event-json-path",
+
+  "transforms": "PilotMapper",
+  "transforms.PilotMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.PilotMapper.mapping.name": "$.value.name",
+  "transforms.PilotMapper.mapping.vehicle.model": "$.value.model"
+}

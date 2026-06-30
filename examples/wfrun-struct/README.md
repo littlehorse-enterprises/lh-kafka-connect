@@ -37,7 +37,7 @@ Build plugin bundle:
 Run environment:
 
 ```shell
-docker compose up -d
+./gradlew dockerComposeUp
 ```
 
 ## Populate Topic

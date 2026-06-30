@@ -1,5 +1,6 @@
 package io.littlehorse.connect;
 
+import static io.littlehorse.connect.ExternalEventSinkConnectorConfig.AUTO_IDEMPOTENCY_KEY_ENABLED_KEY;
 import static io.littlehorse.connect.ExternalEventSinkConnectorConfig.EXTERNAL_EVENT_NAME_KEY;
 import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_API_HOST_KEY;
 import static io.littlehorse.connect.LHSinkConnectorConfig.LHC_API_PORT_KEY;
@@ -38,5 +39,33 @@ class ExternalEventSinkConnectorConfigTest {
         assertThat(lhConfig.getApiBootstrapPort()).isEqualTo(Integer.valueOf(2023));
         assertThat(lhConfig.getTenantId().getId()).isEqualTo("default");
         assertThat(connectorConfig.getExternalEventName()).isEqualTo("my-external-event");
+    }
+
+    @Test
+    void shouldEnableAutoIdempotencyKeyByDefault() {
+        ExternalEventSinkConnectorConfig connectorConfig =
+                new ExternalEventSinkConnectorConfig(Map.of(
+                        LHC_API_HOST_KEY,
+                        "localhost",
+                        LHC_API_PORT_KEY,
+                        2023,
+                        EXTERNAL_EVENT_NAME_KEY,
+                        "my-external-event"));
+        assertThat(connectorConfig.isAutoIdempotencyKeyEnabled()).isTrue();
+    }
+
+    @Test
+    void shouldDisableAutoIdempotencyKey() {
+        ExternalEventSinkConnectorConfig connectorConfig =
+                new ExternalEventSinkConnectorConfig(Map.of(
+                        LHC_API_HOST_KEY,
+                        "localhost",
+                        LHC_API_PORT_KEY,
+                        2023,
+                        EXTERNAL_EVENT_NAME_KEY,
+                        "my-external-event",
+                        AUTO_IDEMPOTENCY_KEY_ENABLED_KEY,
+                        false));
+        assertThat(connectorConfig.isAutoIdempotencyKeyEnabled()).isFalse();
     }
 }

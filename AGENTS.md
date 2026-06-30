@@ -37,7 +37,7 @@ Use the Gradle wrapper. Common commands:
 Local stack:
 
 ```shell
-docker compose up -d
+./gradlew dockerComposeUp
 ```
 
 ## Conventions

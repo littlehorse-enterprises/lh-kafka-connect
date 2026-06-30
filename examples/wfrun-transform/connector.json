@@ -1,0 +1,28 @@
+{
+  "tasks.max": 1,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-transform",
+  "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "key.converter.schemas.enable": false,
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-transform",
+
+  "transforms": "WfRunVariablesMapper,StampFranchise",
+
+  "transforms.WfRunVariablesMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.WfRunVariablesMapper.mapping.film.title": "$.value.title",
+  "transforms.WfRunVariablesMapper.mapping.film.director.name": "$.value.director",
+  "transforms.WfRunVariablesMapper.mapping.episode": "$.value.id",
+  "transforms.WfRunVariablesMapper.mapping.cast": "$.value.cast",
+  "transforms.WfRunVariablesMapper.mapping.summary": "$.concat($.value.title, \" directed by \", $.value.director)",
+  "transforms.WfRunVariablesMapper.mapping.boxOffice": "$.sum($.value.domesticGross, $.value.internationalGross)",
+
+  "transforms.StampFranchise.type": "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
+  "transforms.StampFranchise.mapping.franchise.name": "Star Wars",
+  "transforms.StampFranchise.mapping.franchise.producer": "Lucasfilm"
+}

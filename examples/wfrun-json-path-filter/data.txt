@@ -1,0 +1,10 @@
+{"quote":"I find your lack of faith disturbing.","priority":"high"}
+{"quote":"No reward is worth this.","priority":"low"}
+{"quote":"You will remove these restraints and leave this cell with the door open.","priority":"low"}
+{"quote":"Well, you said you wanted to be around when I made a mistake.","priority":"high"}
+{"quote":"Bone duwa pweepway? (Have you now?)","priority":"low"}
+{"quote":"I find your lack of faith disturbing.","priority":"high"}
+{"quote":"Oh, I'm afraid the deflector shield will be quite operational when your friends arrive.","priority":"high"}
+{"quote":"Ee mara tom tee tok maky cheesa. (You should have paid him when you had the chance.)","priority":"high"}
+{"quote":"You don’t need to see his identification. These aren’t the droids you’re looking for.","priority":"low"}
+{"quote":"Yipe! How wude!","priority":"low"}

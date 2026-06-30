@@ -8,6 +8,10 @@ import io.littlehorse.connect.WfRunSinkConnector;
 import io.littlehorse.connect.WfRunSinkConnectorConfig;
 import io.littlehorse.connect.predicate.FilterByFieldPredicate;
 import io.littlehorse.connect.predicate.FilterByFieldPredicateConfig;
+import io.littlehorse.connect.predicate.JsonPathFilterPredicate;
+import io.littlehorse.connect.predicate.JsonPathFilterPredicateConfig;
+import io.littlehorse.connect.transform.JsonPathMapperTransform;
+import io.littlehorse.connect.transform.LiteralMapperTransform;
 
 import lombok.Builder;
 
@@ -37,6 +41,18 @@ public class ConfigExporter {
             Section.builder()
                     .title(FilterByFieldPredicate.class.getSimpleName())
                     .content(FilterByFieldPredicateConfig.CONFIG_DEF.toEnrichedRst())
+                    .build(),
+            Section.builder()
+                    .title(JsonPathFilterPredicate.class.getSimpleName())
+                    .content(JsonPathFilterPredicateConfig.CONFIG_DEF.toEnrichedRst())
+                    .build(),
+            Section.builder()
+                    .title(JsonPathMapperTransform.class.getSimpleName())
+                    .content(JsonPathMapperTransform.CONFIG_DEF.toEnrichedRst())
+                    .build(),
+            Section.builder()
+                    .title(LiteralMapperTransform.class.getSimpleName())
+                    .content(LiteralMapperTransform.CONFIG_DEF.toEnrichedRst())
                     .build());
 
     @Builder

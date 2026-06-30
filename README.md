@@ -6,30 +6,40 @@
 
 These connectors allow data transfer between Apache Kafka and LittleHorse.
 
+
+
 ## Table Of Content
 
 <!-- TOC -->
 * [LittleHorse Connectors for Kafka Connect](#littlehorse-connectors-for-kafka-connect)
   * [Table Of Content](#table-of-content)
-  * [WfRunSinkConnector](#wfrunsinkconnector)
-    * [Expected Message Structure](#expected-message-structure)
-    * [Additional Metadata](#additional-metadata)
-    * [Quick Example](#quick-example)
-    * [Struct Variables](#struct-variables)
-  * [ExternalEventSinkConnector](#externaleventsinkconnector)
-    * [Expected Message Structure](#expected-message-structure-1)
-    * [Additional Metadata](#additional-metadata-1)
-    * [Quick Example](#quick-example-1)
-    * [Struct Content](#struct-content)
-  * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
-    * [Expected Message Structure](#expected-message-structure-2)
-    * [Additional Metadata](#additional-metadata-2)
-    * [Quick Example](#quick-example-2)
-    * [Struct Content](#struct-content-1)
-  * [Idempotent Writes](#idempotent-writes)
-  * [Multiple Tasks](#multiple-tasks)
-  * [Dead Letter Queue](#dead-letter-queue)
+  * [Connectors](#connectors)
+    * [WfRunSinkConnector](#wfrunsinkconnector)
+      * [Expected Message Structure](#expected-message-structure)
+      * [Additional Metadata](#additional-metadata)
+      * [Quick Example](#quick-example)
+      * [Struct Variables](#struct-variables)
+    * [ExternalEventSinkConnector](#externaleventsinkconnector)
+      * [Expected Message Structure](#expected-message-structure-1)
+      * [Additional Metadata](#additional-metadata-1)
+      * [Quick Example](#quick-example-1)
+      * [Struct Content](#struct-content)
+    * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
+      * [Expected Message Structure](#expected-message-structure-2)
+      * [Additional Metadata](#additional-metadata-2)
+      * [Quick Example](#quick-example-2)
+      * [Struct Content](#struct-content-1)
+    * [Idempotent Writes](#idempotent-writes)
+    * [Multiple Tasks](#multiple-tasks)
+    * [Dead Letter Queue](#dead-letter-queue)
+  * [Transforms](#transforms)
+    * [JsonPathMapperTransform](#jsonpathmappertransform)
+    * [LiteralMapperTransform](#literalmappertransform)
+  * [Predicates](#predicates)
+    * [FilterByFieldPredicate](#filterbyfieldpredicate)
+    * [JsonPathFilterPredicate](#jsonpathfilterpredicate)
   * [Data Types](#data-types)
+  * [Troubleshooting](#troubleshooting)
   * [Converters](#converters)
   * [External Secrets](#external-secrets)
   * [Configurations](#configurations)
@@ -41,27 +51,29 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [License](#license)
 <!-- TOC -->
 
-## WfRunSinkConnector
+## Connectors
+
+These sink connectors run workflows and post events into LittleHorse from Kafka records.
+
+### WfRunSinkConnector
 
 This connector allows you to execute [WfRuns](https://littlehorse.io/docs/server/concepts/workflows#the-wfrun) into LittleHorse.
 It supports all the [Variable Types](https://littlehorse.io/docs/server/concepts/variables) provided by LittleHorse.
 
 More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/docs/server/getting-started/quickstart).
 
-### Expected Message Structure
+#### Expected Message Structure
 
 | Message Part | Description                                                                                                              | Type   | Valid Values       |
 |--------------|--------------------------------------------------------------------------------------------------------------------------|--------|--------------------|
-| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format    |
+| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). Precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key. | string | hostname format    |
 | `value`      | Define the `variables` field of the workflow.                                                                            | map    | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
 
-> `wfRunId` precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key.
-
-### Additional Metadata
+#### Additional Metadata
 
 Optionally this sink connector uses the record headers to configure the wf runs:
 
@@ -70,7 +82,7 @@ Optionally this sink connector uses the record headers to configure the wf runs:
 | `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 | `parentWfRunId` | Optional, sets a parent wf run.                                                                                          | string | hostname format |
 
-### Quick Example
+#### Quick Example
 
 Next workflow executes a task that receives a `String` as parameter called `name`:
 
@@ -109,7 +121,7 @@ Next connector configuration will execute `WfRuns` with the variable `name`.
 
 More configurations at [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 
-### Struct Variables
+#### Struct Variables
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) variables.
 On startup it reads the `WfSpec` referenced by `wf.spec.name` (honoring `wf.spec.major.version`
@@ -140,13 +152,13 @@ key: null, value: {"pilot":{"name":"Anakin Skywalker","vehicle":{"model":"Podrac
 > If the `WfSpec` cannot be loaded at startup, the connector fails to start, so make sure the
 > `WfSpec` is registered before the connector runs.
 
-## ExternalEventSinkConnector
+### ExternalEventSinkConnector
 
 This connector allows you to execute [External Events](https://littlehorse.io/docs/server/concepts/external-events) into LittleHorse.
 
 More about running external events at [LittleHorse External Events](https://littlehorse.io/docs/server/concepts/external-events#in-practice).
 
-### Expected Message Structure
+#### Expected Message Structure
 
 | Message Part | Description                                                                                     | Type   | Valid Values    |
 |--------------|-------------------------------------------------------------------------------------------------|--------|-----------------|
@@ -157,7 +169,7 @@ More about external event fields at [PutExternalEventRequest](https://littlehors
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
 
-### Additional Metadata
+#### Additional Metadata
 
 Optionally this sink connector uses the record headers to configure the external event:
 
@@ -166,7 +178,7 @@ Optionally this sink connector uses the record headers to configure the external
 | `wfRunId`  | Associated `wfRunId`. It looks for the `wfRunId` in the message key if it is not provided in the headers.                                              | string | hostname format |
 | `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 
-### Quick Example
+#### Quick Example
 
 Next workflow waits for the event `set-name` to assign the variable `name` and then execute the task `greet`.
 
@@ -206,7 +218,7 @@ the message value will be the `Content` (more at [PutExternalEventRequest](https
 
 More configurations at [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 
-### Struct Content
+#### Struct Content
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
 On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
@@ -233,9 +245,9 @@ key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicl
 > If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
 > sure the `ExternalEventDef` is registered before the connector runs.
 
-## CorrelatedEventSinkConnector
+### CorrelatedEventSinkConnector
 
-###  Expected Message Structure
+####  Expected Message Structure
 
 | Message Part | Description                                                                                                 | Type   | Valid Values     |
 |--------------|-------------------------------------------------------------------------------------------------------------|--------|------------------|
@@ -246,7 +258,7 @@ More about correlated event fields at [PutCorrelatedEventRequest](https://little
 
 You can manipulate the message structure with [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
 
-### Additional Metadata
+#### Additional Metadata
 
 Optionally this sink connector uses the record headers to configure the external event:
 
@@ -254,7 +266,7 @@ Optionally this sink connector uses the record headers to configure the external
 |-----------------|-----------------------------------------------------------------------------------------------------------------------|--------|------------------|
 | `correlationId` | Associated `correlationId`. It looks for the `correlationId` in the message key if it is not provided in the headers. | string | non-empty string |
 
-### Quick Example
+#### Quick Example
 
 Next workflow waits for the event `payment-id` with a specific id (`CorrelationId`),
 when the correlated event is trigger with the same id the workflow is allowed to continue.
@@ -295,7 +307,7 @@ the message `value` will be the `Content` (more at [PutCorrelatedEventRequest](h
 
 More configurations at [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
 
-### Struct Content
+#### Struct Content
 
 This connector supports [StructDef](https://littlehorse.io/docs/server/concepts/structs) content.
 On startup it reads the `ExternalEventDef` referenced by `external.event.name` and inspects its
@@ -325,7 +337,7 @@ key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicl
 > If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
 > sure the `ExternalEventDef` is registered before the connector runs.
 
-## Idempotent Writes
+### Idempotent Writes
 
 To ensure idempotency, we generate a unique id
 for each request to LH in **lowercase** and with the next format:
@@ -342,20 +354,20 @@ More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-gui
 > If two topics generate the same unique id (example: `My_Topic` and `My.Topic` generate `my-topic`)
 > it is recommended to create two different connectors.
 
-## Multiple Tasks
+### Multiple Tasks
 
 These connectors support parallelism by running more than one task.
 Specify the number of tasks in the `tasks.max` configuration parameter.
 
 More configurations at [Configure Sink Connector](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 
-## Dead Letter Queue
+### Dead Letter Queue
 
 These connectors support Dead Letter Queue (DLQ).
 
 More about DLQs at [Kafka Connect Dead Letter Queue](https://docs.confluent.io/platform/current/connect/index.html#dead-letter-queue).
 
-### Error Handling
+#### Error Handling
 
 These connectors distinguish between two kinds of failures so that transient
 problems do not cause data loss:
@@ -387,41 +399,122 @@ Retry timing is controlled by the standard Kafka Connect configurations
 
 See the [wfrun-dlq example](examples/wfrun-dlq/README.md) for a runnable setup.
 
-## Data Types
+## Transforms
 
-Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with either [WfRunSinkConnector](#wfrunsinkconnector) or [ExternalEventSinkConnector](#externaleventsinkconnector) the data types in the topic correlate with the data LittleHorse kernel expects.
+Besides the standard [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html),
+these connectors ship two custom mapper transforms that build a record part (the key, value or
+headers) from a set of declarative `mapping` properties. Each transform has a `$Key`, `$Value` and
+`$Headers` variant that selects which part of the record is written, and each mapping is its own
+property: the bare `mapping` targets the whole part, while `mapping.<path>` (a dotted path) builds
+nested objects (for the `$Headers` variant the whole path is a single, flat header name).
 
-A common issue is with the Boolean data type.  If LittleHorse kernel expects a Boolean type "True" or "False", this must match Boolean data type in the schema of the topic.
+### JsonPathMapperTransform
 
-For testing, it is common to use `kafka-console-producer.sh` tool provided by Apache Kafka, this tool can only produce String or Integer values. In order to accuratly send a primitive type other than String or Interger you must use a converter in the Kafka Connect connector configuration.
+Builds the operating domain by evaluating JSONPath expressions (each value must start with `$`)
+against the record envelope `{key, value, headers}`. It is construct-only: fields that are not
+mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
 
-Example:
 ```json
 {
-  "name": "external-identity-verified",
-  "config": {
-    "tasks.max": 2,
-    "topics": "names",
-    "connector.class": "io.littlehorse.connect.ExternalEventSinkConnector",
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "lhc.api.port": 2023,
-    "lhc.api.host": "localhost",
-    "lhc.tenant.id": "default",
-    "transforms": "Cast",
-    "transforms.Cast.type": "org.apache.kafka.connect.transforms.Cast$Value",
-    "transforms.Cast.spec": "boolean",
-    "external.event.name": "identity-verified"
-  }
+  "transforms": "WfRunVariablesMapper",
+  "transforms.WfRunVariablesMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.WfRunVariablesMapper.mapping.film.title": "$.value.title",
+  "transforms.WfRunVariablesMapper.mapping.episode": "$.value.id",
+  "transforms.WfRunVariablesMapper.mapping.summary": "$.concat($.value.title, \" by \", $.value.director)"
 }
 ```
 
-Note the lines that begin with "transforms", with those we are casting the String data type sent by `kafka-console-producer.sh` to the primitive Boolean.
+### LiteralMapperTransform
 
-For more information:
+Injects constant, type-inferred values into the operating domain (an integer, a double, a boolean,
+`null`, otherwise a string; wrap the value in double quotes to force a string). Unlike the JSONPath
+transform, it merges its constants onto the existing domain, overriding fields with the same name,
+so it can add fields on top of a value another transform produced.
 
-- [Single Message Transformations (SMTs)](https://docs.confluent.io/kafka-connectors/transforms/current/overview.html).
-- [Cast SMT](https://docs.confluent.io/kafka-connectors/transforms/current/cast.html).
+Set `implicit.casting.enabled` to `false` to disable type inference and keep every value as its
+original string.
+
+```json
+{
+  "transforms": "WfRunVariablesMapper,StampFranchise",
+  "transforms.StampFranchise.type": "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
+  "transforms.StampFranchise.mapping.franchise.name": "Star Wars",
+  "transforms.StampFranchise.mapping.franchise.producer": "Lucasfilm"
+}
+```
+
+See the [wfrun-transform example](examples/wfrun-transform/README.md) for a complete setup chaining
+both transforms, and the [transform configurations](CONFIGURATIONS.md#jsonpathmappertransform-configurations)
+for all options.
+
+## Predicates
+
+Kafka Connect [predicates](https://docs.confluent.io/kafka-connectors/transforms/current/filter-ak.html)
+let you apply a transformation only to the records that match a condition. Besides the standard
+predicates, these connectors ship a custom one.
+
+### FilterByFieldPredicate
+
+Matches a record by testing a Java regex `pattern` against a string `field`. It has a `$Key` and a
+`$Value` variant that read the field from the record's `Struct` key or value (which must be a
+`Struct` carrying that field), and a `$Headers` variant where `field` is a header name and the
+record matches against that header's value.
+
+Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
+transform to drop records:
+
+- `operation=exclude` (default): records whose `field` matches `pattern` are dropped.
+- `operation=include`: only records whose `field` matches `pattern` are kept.
+
+```json
+{
+  "transforms": "FilterMessage",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "FilterByField",
+  "predicates": "FilterByField",
+  "predicates.FilterByField.type": "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
+  "predicates.FilterByField.operation": "include",
+  "predicates.FilterByField.pattern": "example-wfrun-filter",
+  "predicates.FilterByField.field": "wfSpecName"
+}
+```
+
+See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete setup, and the
+[predicate configurations](CONFIGURATIONS.md#filterbyfieldpredicate-configurations) for all options.
+
+### JsonPathFilterPredicate
+
+Matches a record by evaluating a JSONPath `expression` against the record envelope
+`{key, value, headers}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the
+expression itself selects `$.key`, `$.value` or `$.headers`, so it can reach nested fields and does
+not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
+number, a non-empty string, or a non-empty match list or object (e.g. an inline filter `[?(...)]`);
+it does not match on `null`, `false`, `0`, an empty string, or an empty match.
+
+Pair it with the standard [`Filter`](https://docs.confluent.io/kafka-connectors/transforms/current/filter-keep.html)
+transform, and use the transform's `negate` option to invert the result. For example, keep only the
+records whose `wfSpecName` starts with `order-`:
+
+```json
+{
+  "transforms": "FilterMessage",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "IsOrder",
+  "transforms.FilterMessage.negate": true,
+  "predicates": "IsOrder",
+  "predicates.IsOrder.type": "io.littlehorse.connect.predicate.JsonPathFilterPredicate",
+  "predicates.IsOrder.expression": "$.value[?(@.wfSpecName =~ /order-.*/)]"
+}
+```
+
+See the [wfrun-json-path-filter example](examples/wfrun-json-path-filter/README.md) for a complete
+setup, and the [predicate configurations](CONFIGURATIONS.md#jsonpathfilterpredicate-configurations)
+for all options.
+
+## Data Types
+
+Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with
+any LH connector the data types in the topic correlate with the data LittleHorse kernel expects.
 
 ## Converters
 
@@ -435,10 +528,31 @@ Kafka connect ensures provisioning secrets through the [ConfigProvider](https://
 
 More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets).
 
+## Versioning
+
+These connectors keep the same versioning as [LittleHorse](https://github.com/littlehorse-enterprises/littlehorse/releases).
+
+## Examples
+
+For more examples go to [examples](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples).
+
+## Troubleshooting
+
+For common issues and solutions, see [TROUBLESHOOTING.md](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/TROUBLESHOOTING.md).
+
+## Development
+
+For development instructions go to [DEVELOPMENT.md](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/DEVELOPMENT.md).
+
 ## Configurations
 
 - [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 - [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
+- [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
+- [JsonPathMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathmappertransform-configurations).
+- [LiteralMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#literalmappertransform-configurations).
+- [FilterByFieldPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#filterbyfieldpredicate-configurations).
+- [JsonPathFilterPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathfilterpredicate-configurations).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
 
@@ -448,18 +562,6 @@ More about secrets at [Externalize Secrets](https://docs.confluent.io/platform/c
 <a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).
-
-## Versioning
-
-These connectors keep the same versioning as [LittleHorse](https://github.com/littlehorse-enterprises/littlehorse/releases).
-
-## Examples
-
-For more examples go to [examples](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples).
-
-## Development
-
-For development instructions go to [DEVELOPMENT.md](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/DEVELOPMENT.md).
 
 ## Dependencies
 

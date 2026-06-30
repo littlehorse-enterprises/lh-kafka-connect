@@ -12,6 +12,9 @@ dependencies {
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${lhVersion}"
 
+    // jsonpath
+    implementation "com.jayway.jsonpath:json-path:${jsonPathVersion}"
+
     // kafka connect
     compileOnly "org.apache.kafka:connect-api:${kafkaVersion}"
     compileOnly "org.apache.kafka:connect-runtime:${kafkaVersion}"

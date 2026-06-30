@@ -39,6 +39,30 @@ public class InstallPluginsTest extends E2ETest {
                                         "predicate"),
                                 buildEntry(
                                         "io.littlehorse.connect.predicate.FilterByFieldPredicate$Value",
-                                        "predicate")));
+                                        "predicate"),
+                                buildEntry(
+                                        "io.littlehorse.connect.predicate.FilterByFieldPredicate$Headers",
+                                        "predicate"),
+                                buildEntry(
+                                        "io.littlehorse.connect.predicate.JsonPathFilterPredicate",
+                                        "predicate"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.JsonPathMapperTransform$Key",
+                                        "transformation"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+                                        "transformation"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.JsonPathMapperTransform$Headers",
+                                        "transformation"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.LiteralMapperTransform$Key",
+                                        "transformation"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.LiteralMapperTransform$Value",
+                                        "transformation"),
+                                buildEntry(
+                                        "io.littlehorse.connect.transform.LiteralMapperTransform$Headers",
+                                        "transformation")));
     }
 }

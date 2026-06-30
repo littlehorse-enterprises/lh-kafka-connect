@@ -1,0 +1,21 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-json-path-filter",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.json.JsonSchemaConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+  "transforms": "FilterMessage,ReplaceField",
+  "transforms.FilterMessage.type": "org.apache.kafka.connect.transforms.Filter",
+  "transforms.FilterMessage.predicate": "HighPriority",
+  "transforms.FilterMessage.negate": true,
+  "transforms.ReplaceField.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+  "transforms.ReplaceField.exclude": "priority",
+  "predicates": "HighPriority",
+  "predicates.HighPriority.type": "io.littlehorse.connect.predicate.JsonPathFilterPredicate",
+  "predicates.HighPriority.expression": "$.value[?(@.priority == 'high')]",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-json-path-filter"
+}

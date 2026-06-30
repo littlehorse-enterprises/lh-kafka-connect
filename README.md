@@ -66,7 +66,7 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 
 | Message Part | Description                                                                                                              | Type   | Valid Values       |
 |--------------|--------------------------------------------------------------------------------------------------------------------------|--------|--------------------|
-| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). Precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key. | string | hostname format    |
+| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). Precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key (when `auto.idempotency.key.enabled` is `true`). | string | hostname format    |
 | `value`      | Define the `variables` field of the workflow.                                                                            | map    | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
@@ -79,7 +79,7 @@ Optionally this sink connector uses the record headers to configure the wf runs:
 
 | Header Key      | Description                                                                                                              | Type   | Valid Values    |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
-| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
+| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present (when `auto.idempotency.key.enabled` is `true`), check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 | `parentWfRunId` | Optional, sets a parent wf run.                                                                                          | string | hostname format |
 
 #### Quick Example
@@ -176,7 +176,7 @@ Optionally this sink connector uses the record headers to configure the external
 | Header Key | Description                                                                                                                                            | Type   | Valid Values    |
 |------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
 | `wfRunId`  | Associated `wfRunId`. It looks for the `wfRunId` in the message key if it is not provided in the headers.                                              | string | hostname format |
-| `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
+| `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present (when `auto.idempotency.key.enabled` is `true`), check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 
 #### Quick Example
 
@@ -353,6 +353,13 @@ More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-gui
 
 > If two topics generate the same unique id (example: `My_Topic` and `My.Topic` generate `my-topic`)
 > it is recommended to create two different connectors.
+
+This automatic id generation is enabled by default and is controlled by the
+`auto.idempotency.key.enabled` configuration on the `WfRunSinkConnector` (the generated
+`wfRunId`) and the `ExternalEventSinkConnector` (the generated `guid`). When set to `false`,
+the connector does not generate an id: a record that does not provide an explicit
+`wfRunId`/`guid` (via header or message key) fails with a non-retriable error. The record is
+then routed to the DLQ when `errors.tolerance` is `all`, or stops the task when it is `none`.
 
 ### Multiple Tasks
 

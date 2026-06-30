@@ -26,6 +26,11 @@ allprojects{
         }
     }
 
+    configurations.all {
+        // Always fetch the latest LittleHorse snapshots instead of using Gradle's 24h cache.
+        resolutionStrategy.cacheChangingModulesFor 0, "seconds"
+    }
+
     spotless {
         java {
             removeUnusedImports()

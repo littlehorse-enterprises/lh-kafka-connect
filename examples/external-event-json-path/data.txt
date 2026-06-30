@@ -1,0 +1,10 @@
+427a63878fae4f91b251040e0449b19a|{"name":"Luke Skywalker","model":"Snowspeeder"}
+003246152ac542b5a816d2ea9f304f1d|{"name":"Han Solo","model":"Millennium Falcon"}
+39c2fef095874e2b8daa5e40205bc992|{"name":"Anakin Skywalker","model":"Jedi starfighter"}
+532c0e6d7e144c479f22e0ddacdc8805|{"name":"Leia Organa","model":"Tantive IV"}
+fa4751cfcd1d49bf8fbdaacc4dedb849|{"name":"Padme Amidala","model":"Naboo Royal Starship"}
+1ae7e59edb994c498a9439c05fd8d8dd|{"name":"Obi-Wan Kenobi","model":"Jedi starfighter"}
+694ed302937a475f9c0c42eac8b6f02e|{"name":"Boba Fett","model":"Slave I"}
+547ac029716a401fa69983fba5e7c92f|{"name":"Lando Calrissian","model":"Millennium Falcon"}
+bf95d1a8eebd490982ea6bbf8ef1bd72|{"name":"Wedge Antilles","model":"X-wing"}
+6a3132c856984460b0431794d5032835|{"name":"Darth Vader","model":"TIE Advanced x1"}

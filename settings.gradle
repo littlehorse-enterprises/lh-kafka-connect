@@ -29,6 +29,7 @@ include "common"
         "wfrun-parent",
         "wfrun-transform",
         "external-event-json",
+        "external-event-json-path",
         "external-event-value-to-key",
         "external-event-simple",
         "external-event-struct",
@@ -36,6 +37,7 @@ include "common"
         "correlated-event-simple",
         "correlated-event-struct",
         "correlated-event-json",
+        "correlated-event-json-path",
         "correlated-event-headers"
 ].each { example ->
     include "example-$example"

@@ -41,6 +41,8 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
     public static final String TRANSIENT_ERRORS_TOLERANCE_NONE = "none";
     public static final String TRANSIENT_ERRORS_TOLERANCE_TRANSIENTS = "transients";
 
+    public static final String AUTO_IDEMPOTENCY_KEY_ENABLED_KEY = "auto.idempotency.key.enabled";
+
     public static final String LH_API_PROTOCOL_PLAINTEXT = "PLAINTEXT";
     public static final String LH_API_PROTOCOL_TLS = "TLS";
 

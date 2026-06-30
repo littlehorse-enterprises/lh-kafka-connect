@@ -1,34 +1,24 @@
-name: tests
-run-name: Test Connector
+name: pull-request
+run-name: Check PR on branch "${{ github.head_ref }}"
 on:
+  workflow_dispatch:
   pull_request:
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Get version
+        id: get_version
+        run: echo "version=$(sed -n 's/^version=//p' gradle.properties)" >> $GITHUB_OUTPUT
+
   tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ "17", "21" ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v5
-        with:
-          distribution: "corretto"
-          java-version: ${{ matrix.java-version }}
-      - name: Unit Tests
-        run: ./gradlew connector:test
-      - name: Build Bundle
-        run: ./gradlew connector:buildConfluentBundle
-  e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: "corretto"
-          java-version: "17"
-      - name: E2E Tests
-        run: ./gradlew connector:e2e
+    needs:
+      - prepare
+    uses: ./.github/workflows/tests.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}

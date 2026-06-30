@@ -38,12 +38,24 @@ public class WfRunSinkConnectorConfig extends LHSinkConnectorConfig {
                     Type.STRING,
                     null,
                     Importance.LOW,
-                    "Optionally specify the default parent WfRunId.");
+                    "Optionally specify the default parent WfRunId.")
+            .define(
+                    AUTO_IDEMPOTENCY_KEY_ENABLED_KEY,
+                    Type.BOOLEAN,
+                    true,
+                    Importance.MEDIUM,
+                    "When true (default) the connector automatically generates a deterministic"
+                            + " idempotency key (derived from the connector name, topic, partition"
+                            + " and offset) and uses it as the WfRunId when the record provides no"
+                            + " explicit id (via the 'wfRunId' header or the record key). When false"
+                            + " no idempotency key is generated, so a record without an explicit"
+                            + " WfRunId fails with a non-retriable error.");
 
     private final String wfSpecName;
     private final Integer wfSpecRevision;
     private final Integer wfSpecMajorVersion;
     private final String wfRunParentId;
+    private final boolean autoIdempotencyKeyEnabled;
 
     public WfRunSinkConnectorConfig(Map<?, ?> props) {
         super(CONFIG_DEF, props);
@@ -51,5 +63,6 @@ public class WfRunSinkConnectorConfig extends LHSinkConnectorConfig {
         wfSpecRevision = getInt(WF_SPEC_REVISION_KEY);
         wfSpecMajorVersion = getInt(WF_SPEC_MAJOR_VERSION_KEY);
         wfRunParentId = getString(WF_RUN_PARENT_ID_KEY);
+        autoIdempotencyKeyEnabled = getBoolean(AUTO_IDEMPOTENCY_KEY_ENABLED_KEY);
     }
 }

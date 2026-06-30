@@ -10,7 +10,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
     // littlehorse
-    implementation "io.littlehorse:littlehorse-client:${lhVersion}"
+    implementation "io.littlehorse:littlehorse-client:${version}"
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"

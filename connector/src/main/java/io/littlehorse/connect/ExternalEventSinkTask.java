@@ -62,8 +62,7 @@ public class ExternalEventSinkTask extends LHSinkTask {
 
     private PutExternalEventRequest buildRequest(IdempotentSinkRecord sinkRecord) {
         return PutExternalEventRequest.newBuilder()
-                .setGuid(
-                        sinkRecord.guid() == null ? sinkRecord.idempotencyKey() : sinkRecord.guid())
+                .setGuid(extractGuid(sinkRecord))
                 .setWfRunId(LHLibUtil.wfRunIdFromString(
                         sinkRecord.wfRunId() == null
                                 ? extractWfRunId(sinkRecord.key())
@@ -73,6 +72,20 @@ public class ExternalEventSinkTask extends LHSinkTask {
                 .setExternalEventDefId(
                         ExternalEventDefId.newBuilder().setName(config.getExternalEventName()))
                 .build();
+    }
+
+    private String extractGuid(IdempotentSinkRecord sinkRecord) {
+        if (sinkRecord.guid() != null) {
+            return sinkRecord.guid();
+        }
+
+        if (config.isAutoIdempotencyKeyEnabled()) {
+            return sinkRecord.idempotencyKey();
+        }
+
+        throw new DataException("No guid provided and automatic idempotency key generation is"
+                + " disabled; provide a '" + IdempotentSinkRecord.GUID + "' header or enable '"
+                + ExternalEventSinkConnectorConfig.AUTO_IDEMPOTENCY_KEY_ENABLED_KEY + "'");
     }
 
     private String extractWfRunId(Object object) {

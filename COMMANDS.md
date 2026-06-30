@@ -5,7 +5,7 @@
 Run compose:
 
 ```shell
-docker compose up -d
+./gradlew dockerComposeUp
 ```
 
 Check kafka connect logs:
@@ -24,7 +24,7 @@ docker compose restart kafka-connect
 Stop containers:
 
 ```shell
-docker compose down
+./gradlew dockerComposeDown
 ```
 
 ## Kafka Connect

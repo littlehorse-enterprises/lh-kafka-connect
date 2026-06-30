@@ -66,7 +66,7 @@ More about running workflows at [LittleHorse Quickstart](https://littlehorse.io/
 
 | Message Part | Description                                                                                                              | Type   | Valid Values       |
 |--------------|--------------------------------------------------------------------------------------------------------------------------|--------|--------------------|
-| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). Precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key. | string | hostname format    |
+| `key`        | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). Precedence: 1. Look for metadata header, 2. Look for key message, 3. Generates an idempotency key (when `auto.idempotency.key.enabled` is `true`). | string | hostname format    |
 | `value`      | Define the `variables` field of the workflow.                                                                            | map    | key-value not null |
 
 More about run workflow fields at [RunWfRequest](https://littlehorse.io/docs/server/api#runwfrequest).
@@ -79,7 +79,7 @@ Optionally this sink connector uses the record headers to configure the wf runs:
 
 | Header Key      | Description                                                                                                              | Type   | Valid Values    |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
-| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
+| `wfRunId`       | Optional, custom wfRunId. The connector genererates an id if not present (when `auto.idempotency.key.enabled` is `true`), check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 | `parentWfRunId` | Optional, sets a parent wf run.                                                                                          | string | hostname format |
 
 #### Quick Example
@@ -176,7 +176,7 @@ Optionally this sink connector uses the record headers to configure the external
 | Header Key | Description                                                                                                                                            | Type   | Valid Values    |
 |------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-----------------|
 | `wfRunId`  | Associated `wfRunId`. It looks for the `wfRunId` in the message key if it is not provided in the headers.                                              | string | hostname format |
-| `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present, check [Idempotent Writes](#idempotent-writes). | string | hostname format |
+| `guid`     | Optional, sets the unique guid for the external event.  The connector genererates an id if not present (when `auto.idempotency.key.enabled` is `true`), check [Idempotent Writes](#idempotent-writes). | string | hostname format |
 
 #### Quick Example
 
@@ -353,6 +353,13 @@ More at [LittleHorse Variables](https://littlehorse.io/docs/server/developer-gui
 
 > If two topics generate the same unique id (example: `My_Topic` and `My.Topic` generate `my-topic`)
 > it is recommended to create two different connectors.
+
+This automatic id generation is enabled by default and is controlled by the
+`auto.idempotency.key.enabled` configuration on the `WfRunSinkConnector` (the generated
+`wfRunId`) and the `ExternalEventSinkConnector` (the generated `guid`). When set to `false`,
+the connector does not generate an id: a record that does not provide an explicit
+`wfRunId`/`guid` (via header or message key) fails with a non-retriable error. The record is
+then routed to the DLQ when `errors.tolerance` is `all`, or stops the task when it is `none`.
 
 ### Multiple Tasks
 
@@ -558,8 +565,15 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 
 ## Download
 
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="github" src="https://img.shields.io/badge/releases-orange?logo=github&logoColor=white"></a>
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest&color=blue"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="Latest Snapshot" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?include_prereleases&label=snapshot&color=orange"></a>
+
+Each release ships the connector bundle as a `lh-kafka-connect-<version>.zip` asset:
+
+- **Stable releases** are permanent and published on every `v*` tag. Download the latest one from
+  [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases/latest).
+- **Snapshots** track the latest development build. A single pre-release is replaced on every push
+  to `main`, so its assets always reflect the newest snapshot.
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).
 

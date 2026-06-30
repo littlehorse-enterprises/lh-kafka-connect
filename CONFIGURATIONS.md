@@ -28,6 +28,13 @@
   * Valid Values: [PLAINTEXT, TLS]
   * Importance: high
 
+``auto.idempotency.key.enabled``
+  When true (default) the connector automatically generates a deterministic idempotency key (derived from the connector name, topic, partition and offset) and uses it as the WfRunId when the record provides no explicit id (via the 'wfRunId' header or the record key). When false no idempotency key is generated, so a record without an explicit WfRunId fails with a non-retriable error.
+
+  * Type: boolean
+  * Default: true
+  * Importance: medium
+
 ``lhc.tenant.id``
   Tenant ID which represents a logically isolated environment within LittleHorse.
 
@@ -147,6 +154,13 @@
   * Default: PLAINTEXT
   * Valid Values: [PLAINTEXT, TLS]
   * Importance: high
+
+``auto.idempotency.key.enabled``
+  When true (default) the connector automatically generates a deterministic idempotency key (derived from the connector name, topic, partition and offset) and uses it as the ExternalEvent guid when the record provides no explicit guid (via the 'guid' header). When false no idempotency key is generated, so a record without an explicit guid fails with a non-retriable error.
+
+  * Type: boolean
+  * Default: true
+  * Importance: medium
 
 ``lhc.tenant.id``
   Tenant ID which represents a logically isolated environment within LittleHorse.

@@ -149,6 +149,13 @@ public class WfRunSinkTask extends LHSinkTask {
             return sinkRecord.key().toString();
         }
 
-        return sinkRecord.idempotencyKey();
+        if (config.isAutoIdempotencyKeyEnabled()) {
+            return sinkRecord.idempotencyKey();
+        }
+
+        throw new DataException("No WfRunId provided and automatic idempotency key generation is"
+                + " disabled; provide a '" + IdempotentSinkRecord.WF_RUN_ID + "' header, a record"
+                + " key, or enable '" + WfRunSinkConnectorConfig.AUTO_IDEMPOTENCY_KEY_ENABLED_KEY
+                + "'");
     }
 }

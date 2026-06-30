@@ -3,3 +3,4 @@ build/
 bin/
 .idea/
 .vscode/
+.env

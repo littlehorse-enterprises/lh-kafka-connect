@@ -565,8 +565,15 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 
 ## Download
 
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="github" src="https://img.shields.io/badge/releases-orange?logo=github&logoColor=white"></a>
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest&color=blue"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="Latest Snapshot" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?include_prereleases&label=snapshot&color=orange"></a>
+
+Each release ships the connector bundle as a `lh-kafka-connect-<version>.zip` asset:
+
+- **Stable releases** are permanent and published on every `v*` tag. Download the latest one from
+  [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases/latest).
+- **Snapshots** track the latest development build. A single pre-release is replaced on every push
+  to `main`, so its assets always reflect the newest snapshot.
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).
 

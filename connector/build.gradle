@@ -45,6 +45,7 @@ dependencies {
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
     testImplementation "net.datafaker:datafaker:${datafakerVersion}"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 }
 
 test {
@@ -79,6 +80,9 @@ tasks.register("e2e", Test) {
 def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").get()
 
 shadowJar {
+    // `mergeServiceFiles()` requires `INCLUDE` to merge duplicate service descriptors;
+    // the default `EXCLUDE` would drop the extra ones (see Shadow 9 migration guide).
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     mergeServiceFiles()
     destinationDirectory = bundleDirectory.dir("lib")
     archiveBaseName = rootProject.name

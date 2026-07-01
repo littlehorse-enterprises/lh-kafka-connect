@@ -60,7 +60,7 @@ jobs:
         run: |
           gh release delete "v$VERSION" --yes --cleanup-tag || true
           gh release create "v$VERSION" \
-            --title "$VERSION" \
+            --title "v$VERSION" \
             --notes "Latest snapshot build from ${{ github.ref_name }} (${{ github.sha }})." \
             --prerelease \
             --target "${{ github.sha }}" \

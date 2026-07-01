@@ -566,7 +566,7 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 ## Download
 
 <a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?label=latest&color=blue"></a>
-<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="Latest Snapshot" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?include_prereleases&label=snapshot&color=orange"></a>
+<a href="https://github.com/littlehorse-enterprises/lh-kafka-connect/releases"><img alt="Latest Snapshot" src="https://img.shields.io/github/v/release/littlehorse-enterprises/lh-kafka-connect?include_prereleases&filter=*-SNAPSHOT&label=snapshot&color=orange"></a>
 
 Each release ships the connector bundle as a `lh-kafka-connect-<version>.zip` asset:
 

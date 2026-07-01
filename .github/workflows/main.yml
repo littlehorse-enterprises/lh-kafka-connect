@@ -58,8 +58,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete "$VERSION" --yes --cleanup-tag || true
-          gh release create "$VERSION" \
+          gh release delete "v$VERSION" --yes --cleanup-tag || true
+          gh release create "v$VERSION" \
             --title "$VERSION" \
             --notes "Latest snapshot build from ${{ github.ref_name }} (${{ github.sha }})." \
             --prerelease \

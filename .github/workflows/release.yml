@@ -68,7 +68,7 @@ jobs:
           PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
         run: |
           gh release create "${{ github.ref_name }}" \
-            --title "$VERSION" \
+            --title "${{ github.ref_name }}" \
             --notes-file CHANGELOG.md \
             --prerelease="$PRERELEASE" \
             connector/build/dist/lh-kafka-connect-"$VERSION".zip

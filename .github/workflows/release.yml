@@ -13,10 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set_version.outputs.version }}
+      prerelease: ${{ steps.set_version.outputs.prerelease }}
     steps:
       - name: Set version
         id: set_version
-        run: echo "version=$(echo $GITHUB_REF | sed -n 's/refs\/tags\/v//p')" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="$(echo $GITHUB_REF | sed -n 's/refs\/tags\/v//p')"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          # Mark SemVer pre-releases (e.g. 1.2.0-rc1) as GitHub pre-releases.
+          if printf '%s' "$VERSION" | grep -q -- '-'; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
   tests:
     needs:
@@ -56,8 +65,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.prepare.outputs.version }}
+          PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
         run: |
           gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
+            --title "$VERSION" \
             --notes-file CHANGELOG.md \
+            --prerelease="$PRERELEASE" \
             connector/build/dist/lh-kafka-connect-"$VERSION".zip

@@ -144,10 +144,6 @@ tasks.register("generateManifest", Task) {
     doLast {
         manifestFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(data)))
         manifestFile.append("\n")
-        copy {
-            from manifestFile
-            into "../"
-        }
     }
 }
 

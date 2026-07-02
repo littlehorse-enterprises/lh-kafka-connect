@@ -13,8 +13,25 @@
 # The build context must be the repository root and the connector bundle must be
 # built beforehand (`./gradlew connector:buildConfluentBundle`).
 
+# Global build args (declared before any FROM so they are available to every
+# stage, including the base image references).
 ARG STRIMZI_VERSION=0.50.1
 ARG KAFKA_VERSION=4.1.0
+
+# Downloads the Apicurio Registry Kafka Connect converters so they can be shipped
+# as a dedicated plugin next to the LittleHorse connectors.
+FROM alpine:3.20 AS apicurio
+
+# Version of the Apicurio Registry converters to bundle.
+ARG APICURIO_VERSION=3.3.0
+# Maven coordinates of the Apicurio Connect converter distribution.
+ARG APICURIO_DISTRO_URL=https://repo1.maven.org/maven2/io/apicurio/apicurio-registry-distro-connect-converter/${APICURIO_VERSION}/apicurio-registry-distro-connect-converter-${APICURIO_VERSION}.tar.gz
+
+RUN apk add --no-cache curl tar \
+    && mkdir -p /apicurio \
+    && curl -fsSL "${APICURIO_DISTRO_URL}" -o /tmp/apicurio.tar.gz \
+    && tar -xzf /tmp/apicurio.tar.gz -C /apicurio \
+    && rm /tmp/apicurio.tar.gz
 
 FROM quay.io/strimzi/kafka:${STRIMZI_VERSION}-kafka-${KAFKA_VERSION}
 
@@ -26,5 +43,6 @@ ARG PLUGIN_PATH=/opt/kafka/plugins
 USER root:root
 
 COPY ${BUNDLE_PATH}/ ${PLUGIN_PATH}/
+COPY --from=apicurio /apicurio/ ${PLUGIN_PATH}/apicurio-converters/
 
 USER 1001

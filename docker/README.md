@@ -17,6 +17,11 @@ The `Dockerfile.strimzi` image bundles the connector plugins on top of the
 official Strimzi Kafka image. It is meant to be referenced from a custom
 `KafkaConnect` custom resource.
 
+It also bundles the [Apicurio Registry](https://www.apicur.io/registry/) Kafka
+Connect converters (Avro, JSON Schema, and Protobuf) as an additional plugin
+under `/opt/kafka/plugins/apicurio-converters/`, so records serialized against an
+Apicurio Registry can be converted without extra setup.
+
 ### Published images
 
 Images are published to the GitHub Container Registry:
@@ -27,14 +32,15 @@ ghcr.io/littlehorse-enterprises/lh-kafka-connect/strimzi
 
 ### Configurable versions
 
-The base image is built from two build args:
+The image is built from the following build args:
 
 | Build arg         | Default                | Description                                                        |
 |-------------------|------------------------|--------------------------------------------------------------------|
-| `STRIMZI_VERSION` | `0.50.1`               | Strimzi version, first half of the base image tag.                 |
-| `KAFKA_VERSION`   | `4.1.0`                | Kafka version, second half of the base image tag.                  |
-| `BUNDLE_PATH`     | `connector/build/bundle` | Path to the built connector bundle within the build context.     |
-| `PLUGIN_PATH`     | `/opt/kafka/plugins`   | Directory where Strimzi discovers connector plugins.               |
+| `STRIMZI_VERSION`   | `0.50.1`               | Strimzi version, first half of the base image tag.                 |
+| `KAFKA_VERSION`     | `4.1.0`                | Kafka version, second half of the base image tag.                  |
+| `BUNDLE_PATH`       | `connector/build/bundle` | Path to the built connector bundle within the build context.     |
+| `PLUGIN_PATH`       | `/opt/kafka/plugins`   | Directory where Strimzi discovers connector plugins.               |
+| `APICURIO_VERSION`  | `3.3.0`                | Apicurio Registry version whose Connect converters are bundled.    |
 
 Together, `STRIMZI_VERSION` and `KAFKA_VERSION` resolve the base image:
 `quay.io/strimzi/kafka:${STRIMZI_VERSION}-kafka-${KAFKA_VERSION}`.

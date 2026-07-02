@@ -43,7 +43,7 @@ jobs:
       ORG_GRADLE_PROJECT_version: ${{ needs.prepare.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Java
@@ -89,7 +89,7 @@ jobs:
       PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Java
         uses: actions/setup-java@v5
         with:

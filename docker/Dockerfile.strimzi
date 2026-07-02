@@ -13,6 +13,11 @@
 # The build context must be the repository root and the connector bundle must be
 # built beforehand (`./gradlew connector:buildConfluentBundle`).
 
+# Global build args (declared before any FROM so they are available to every
+# stage, including the base image references).
+ARG STRIMZI_VERSION=0.50.1
+ARG KAFKA_VERSION=4.1.0
+
 # Downloads the Apicurio Registry Kafka Connect converters so they can be shipped
 # as a dedicated plugin next to the LittleHorse connectors.
 FROM alpine:3.20 AS apicurio
@@ -27,9 +32,6 @@ RUN apk add --no-cache curl tar \
     && curl -fsSL "${APICURIO_DISTRO_URL}" -o /tmp/apicurio.tar.gz \
     && tar -xzf /tmp/apicurio.tar.gz -C /apicurio \
     && rm /tmp/apicurio.tar.gz
-
-ARG STRIMZI_VERSION=0.50.1
-ARG KAFKA_VERSION=4.1.0
 
 FROM quay.io/strimzi/kafka:${STRIMZI_VERSION}-kafka-${KAFKA_VERSION}
 

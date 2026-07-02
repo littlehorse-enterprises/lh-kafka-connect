@@ -32,7 +32,7 @@ ghcr.io/littlehorse-enterprises/lh-kafka-connect/strimzi
 
 ### Configurable versions
 
-The base image is built from two build args:
+The image is built from the following build args:
 
 | Build arg         | Default                | Description                                                        |
 |-------------------|------------------------|--------------------------------------------------------------------|

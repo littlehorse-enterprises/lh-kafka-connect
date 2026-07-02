@@ -114,12 +114,15 @@ public class RunWorkflowsStructVersionTest extends E2ETest {
 
         int pinnedVersion = pinnedStructVersion();
 
-        // Sanity check: a newer version exists and it does carry the extra field.
-        StructDef newerVersion = lhClient.getStructDef(StructDefId.newBuilder()
-                .setName(STRUCT_NAME)
-                .setVersion(pinnedVersion + 1)
-                .build());
-        assertThat(newerVersion.getStructDef().getFieldsMap()).containsKey("callsign");
+        // Sanity check: a newer version exists and it does carry the extra field. Struct
+        // registration is eventually consistent, so poll until the newer version is queryable.
+        await(() -> {
+            StructDef newerVersion = lhClient.getStructDef(StructDefId.newBuilder()
+                    .setName(STRUCT_NAME)
+                    .setVersion(pinnedVersion + 1)
+                    .build());
+            assertThat(newerVersion.getStructDef().getFieldsMap()).containsKey("callsign");
+        });
 
         createTopics(INPUT_TOPIC);
         // The record carries both fields; "callsign" only exists in the newer version.

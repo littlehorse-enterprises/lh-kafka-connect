@@ -118,4 +118,23 @@ public class TransformLiteralWithFileSinkTest extends E2ETest {
             assertThat(content).contains("tier=gold");
         });
     }
+
+    @Test
+    public void shouldKeepValueUnchangedWhenNoMappingProvided() {
+        String topic = "literal-no-mapping";
+        String file = "/tmp/literal-no-mapping.txt";
+
+        createTopics(topic);
+        produceValues(topic, KafkaMessage.of("{\"keep\":\"me\"}"));
+
+        // No mapping is provided. The literal transform merges its constants onto the existing
+        // value, so with nothing to merge the value is left unchanged.
+        Map<String, Object> config = fileSinkConfig(topic, file);
+        registerConnector(topic, config);
+
+        await(() -> {
+            String content = readFileFromKafkaConnect(file);
+            assertThat(content).isEqualTo("{keep=me}\n");
+        });
+    }
 }

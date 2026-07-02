@@ -65,7 +65,8 @@ jobs:
             --prerelease \
             --target "${{ github.sha }}" \
             connector/build/dist/lh-kafka-connect-"$VERSION".zip \
-            connector/build/bundle/lh-kafka-connect/manifest.json
+            connector/build/bundle/lh-kafka-connect/manifest.json \
+            connector/build/bundle/lh-kafka-connect/lib/lh-kafka-connect-"$VERSION".jar
 
   docker:
     needs:
@@ -87,27 +88,12 @@ jobs:
           java-version: "17"
       - name: Build Bundle
         run: ./gradlew connector:buildConfluentBundle
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Extract Docker Metadata
-        id: meta
+      - name: Build and Publish Strimzi Image
         # Snapshot tag only; the `latest` tag is reserved for stable releases.
-        uses: docker/metadata-action@v6
+        uses: littlehorse-enterprises/publish-image@v1
         with:
-          images: ghcr.io/${{ github.repository }}/strimzi
+          image-name: strimzi
+          dockerfile: docker/Dockerfile.strimzi
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=${{ env.VERSION }}
-      - name: Build and Push Strimzi Image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/Dockerfile.strimzi
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}

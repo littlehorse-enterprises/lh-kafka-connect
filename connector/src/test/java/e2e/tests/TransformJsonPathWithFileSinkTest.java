@@ -120,4 +120,44 @@ public class TransformJsonPathWithFileSinkTest extends E2ETest {
             assertThat(content).contains("region=us-east-1");
         });
     }
+
+    @Test
+    public void shouldDefaultValueToNullWhenNoMappingProvided() {
+        String topic = "jsonpath-value-no-mapping";
+        String file = "/tmp/jsonpath-value-no-mapping.txt";
+
+        createTopics(topic);
+        produceValues(topic, KafkaMessage.of("{\"keep\":\"me\"}"));
+
+        // No mapping is provided. The JSONPath transform builds the operating domain from
+        // scratch, so with nothing to write the whole value defaults to null.
+        Map<String, Object> config = fileSinkConfig(topic, file);
+        registerConnector(topic, config);
+
+        await(() -> {
+            String content = readFileFromKafkaConnect(file);
+            assertThat(content).isEqualTo("null\n");
+        });
+    }
+
+    @Test
+    public void shouldDefaultMissingFieldToNull() {
+        String topic = "jsonpath-missing-field";
+        String file = "/tmp/jsonpath-missing-field.txt";
+
+        createTopics(topic);
+        produceValues(topic, KafkaMessage.of("{\"present\":\"here\"}"));
+
+        Map<String, Object> config = fileSinkConfig(topic, file);
+        config.put("transforms.map.mapping.present", "$.value.present");
+        // The source has no "absent" field; a missing JSONPath leaf resolves to null.
+        config.put("transforms.map.mapping.absent", "$.value.absent");
+        registerConnector(topic, config);
+
+        await(() -> {
+            String content = readFileFromKafkaConnect(file);
+            assertThat(content).contains("present=here");
+            assertThat(content).contains("absent=null");
+        });
+    }
 }

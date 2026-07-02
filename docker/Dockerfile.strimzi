@@ -1,0 +1,30 @@
+# Builds a Strimzi-compatible Kafka Connect image bundled with the LittleHorse
+# sink connectors. Use it as the `image` of a custom `KafkaConnect` CRD cluster.
+#
+# The base image is derived from the Strimzi and Kafka versions, both of which
+# are configurable via build args, e.g.:
+#
+#   docker build \
+#     -f docker/Dockerfile.strimzi \
+#     --build-arg STRIMZI_VERSION=0.50.1 \
+#     --build-arg KAFKA_VERSION=4.1.0 \
+#     -t ghcr.io/littlehorse-enterprises/lh-kafka-connect/strimzi:local .
+#
+# The build context must be the repository root and the connector bundle must be
+# built beforehand (`./gradlew connector:buildConfluentBundle`).
+
+ARG STRIMZI_VERSION=0.50.1
+ARG KAFKA_VERSION=4.1.0
+
+FROM quay.io/strimzi/kafka:${STRIMZI_VERSION}-kafka-${KAFKA_VERSION}
+
+# Location of the built connector bundle within the Docker build context.
+ARG BUNDLE_PATH=connector/build/bundle
+# Directory where Strimzi looks for connector plugins.
+ARG PLUGIN_PATH=/opt/kafka/plugins
+
+USER root:root
+
+COPY ${BUNDLE_PATH}/ ${PLUGIN_PATH}/
+
+USER 1001

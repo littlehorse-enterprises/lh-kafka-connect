@@ -44,6 +44,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [External Secrets](#external-secrets)
   * [Configurations](#configurations)
   * [Download](#download)
+  * [Docker Images](#docker-images)
   * [Versioning](#versioning)
   * [Examples](#examples)
   * [Development](#development)
@@ -576,6 +577,19 @@ Each release ships the connector bundle as a `lh-kafka-connect-<version>.zip` as
   to `main`, so its assets always reflect the newest snapshot.
 
 For all available versions go to [GitHub Releases](https://github.com/littlehorse-enterprises/lh-kafka-connect/releases).
+
+## Docker Images
+
+Container images that bundle the connectors are published to the GitHub Container Registry. The
+[`docker/`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/docker) folder
+holds the Dockerfiles.
+
+A [Strimzi](https://strimzi.io/)-compatible image is available for use as the `image` of a custom
+`KafkaConnect` CRD cluster:
+
+```text
+ghcr.io/littlehorse-enterprises/lh-kafka-connect/strimzi
+```
 
 ## Dependencies
 

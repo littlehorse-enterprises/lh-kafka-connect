@@ -127,6 +127,8 @@ services:
         condition: service_healthy
       schema-registry:
         condition: service_healthy
+      apicurio:
+        condition: service_healthy
     healthcheck:
       test: curl http://localhost:8083
       interval: 30s
@@ -136,6 +138,22 @@ services:
     volumes:
       - ./connector/build/bundle:/usr/local/share/kafka/plugins
       - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties
+      - ./examples/apicurio-json-schema-source-sink:/data:ro
+
+  apicurio:
+    image: apicurio/apicurio-registry:${APICURIO_VERSION}
+    environment:
+      QUARKUS_HTTP_PORT: 8080
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    healthcheck:
+      test: curl http://localhost:8080/apis/registry/v3/system/info
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
 
   lhctl:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}

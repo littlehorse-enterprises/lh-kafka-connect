@@ -76,6 +76,7 @@ public class ConfluentBundleTest {
                     .as("merged service descriptors")
                     .contains(
                             "META-INF/services/org.apache.kafka.connect.sink.SinkConnector",
+                            "META-INF/services/org.apache.kafka.connect.storage.Converter",
                             "META-INF/services/org.apache.kafka.connect.transforms.Transformation",
                             "META-INF/services/org.apache.kafka.connect.transforms.predicates.Predicate",
                             "META-INF/services/io.littlehorse.grpc.LoadBalancerProvider",

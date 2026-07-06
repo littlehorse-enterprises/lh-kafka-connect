@@ -41,6 +41,7 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
   * [Data Types](#data-types)
   * [Troubleshooting](#troubleshooting)
   * [Converters](#converters)
+    * [Apicurio Registry JSON Schema Converter](#apicurio-registry-json-schema-converter)
   * [External Secrets](#external-secrets)
   * [Configurations](#configurations)
   * [Download](#download)
@@ -530,6 +531,37 @@ These connectors support `Protobuf`, `Json` and `Avro` through converters.
 
 More about converters at [Kafka Connect Converters](https://docs.confluent.io/platform/current/connect/index.html#converters)
 
+### Apicurio Registry JSON Schema Converter
+
+The connector plugin also bundles `io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter`,
+a Kafka Connect converter backed by [Apicurio Registry](https://www.apicur.io/registry/)'s JSON Schema
+serde (`JsonSchemaKafkaSerializer` / `JsonSchemaKafkaDeserializer`). It resolves schemas from the
+registry (with optional payload validation and schema references) and produces standard schemaless
+Kafka Connect values, so it works with any sink or source connector.
+
+> [!NOTE]
+> This converter is supported against Apicurio Registry `3.3.*`.
+
+Every property is forwarded to the underlying serde, so all `apicurio.registry.*` settings are
+supported. Configure it like any other converter (prefix its options with `key.converter.` /
+`value.converter.`):
+
+```json
+{
+  "value.converter": "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter",
+  "value.converter.apicurio.registry.url": "http://apicurio:8080/apis/registry/v3"
+}
+```
+
+For the full list of `apicurio.registry.*` properties supported by the underlying
+`JsonSchemaKafkaSerializer` / `JsonSchemaKafkaDeserializer`, see the
+[Apicurio Registry serde configuration reference](https://www.apicur.io/registry/docs/apicurio-registry/3.3.x/getting-started/assembly-configuring-kafka-client-serdes.html).
+
+See the [`wfrun-apicurio-json-schema`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema),
+[`wfrun-apicurio-json-schema-reference`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-reference)
+and [`apicurio-json-schema-source-sink`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/apicurio-json-schema-source-sink)
+examples.
+
 ## External Secrets
 
 Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interface, so these connectors support external secrets by default.
@@ -557,6 +589,7 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 - [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 - [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 - [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
+- [JsonSchemaKafkaConverter Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonschemakafkaconverter-configurations).
 - [JsonPathMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathmappertransform-configurations).
 - [LiteralMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#literalmappertransform-configurations).
 - [FilterByFieldPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#filterbyfieldpredicate-configurations).

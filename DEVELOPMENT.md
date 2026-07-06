@@ -25,10 +25,16 @@ Build plugin bundle:
 ./gradlew buildConfluentBundle
 ```
 
-Run compose:
+Run compose (builds the plugin bundle first):
 
 ```shell
 ./gradlew dockerComposeUp
+```
+
+Rebuild the plugin bundle and restart Kafka Connect to load the new build:
+
+```shell
+./gradlew updateConfluentBundle
 ```
 
 Check that LH plugin was installed:

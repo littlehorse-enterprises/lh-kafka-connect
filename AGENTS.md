@@ -37,7 +37,8 @@ Use the Gradle wrapper. Common commands:
 Local stack:
 
 ```shell
-./gradlew dockerComposeUp
+./gradlew dockerComposeUp        # build the bundle and start the stack
+./gradlew updateConfluentBundle  # rebuild the bundle and reload Kafka Connect
 ```
 
 ## Conventions

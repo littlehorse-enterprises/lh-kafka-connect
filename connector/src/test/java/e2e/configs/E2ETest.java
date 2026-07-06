@@ -59,6 +59,11 @@ public abstract class E2ETest {
                     "ghcr.io/littlehorse-enterprises/littlehorse/lh-server")
             .withTag(LH_VERSION);
 
+    private static final String APICURIO_VERSION = System.getProperty("apicurioVersion", "latest");
+    public static final String APICURIO_INTERNAL_HOST = "apicurio";
+    private static final DockerImageName APICURIO_IMAGE =
+            DockerImageName.parse("apicurio/apicurio-registry").withTag(APICURIO_VERSION);
+
     private static final ConfluentKafkaContainer KAFKA = new ConfluentKafkaContainer(KAFKA_IMAGE)
             .withListener(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
@@ -76,12 +81,18 @@ public abstract class E2ETest {
             .withKafkaBootstrapServers(KAFKA_INTERNAL_BOOTSTRAP_SERVER)
             .withNetwork(NETWORK);
 
+    private static final ApicurioRegistryContainer APICURIO = new ApicurioRegistryContainer(
+                    APICURIO_IMAGE)
+            .withNetwork(NETWORK)
+            .withNetworkAliases(APICURIO_INTERNAL_HOST);
+
     protected static Logger log = LoggerFactory.getLogger(E2ETest.class);
 
     static {
         KAFKA.start();
         KAFKA_CONNECT.start();
         LITTLEHORSE.start();
+        APICURIO.start();
     }
 
     private LHConfig lhConfig;
@@ -96,6 +107,17 @@ public abstract class E2ETest {
 
     public String getKafkaBootstrapServers() {
         return KAFKA.getBootstrapServers();
+    }
+
+    /** External Apicurio Registry v3 API URL, reachable from the test JVM. */
+    public String getApicurioRegistryUrl() {
+        return APICURIO.getUrl();
+    }
+
+    /** Apicurio Registry v3 API URL reachable from other containers on the shared network. */
+    public String getApicurioRegistryInternalUrl() {
+        return "http://" + APICURIO_INTERNAL_HOST + ":" + ApicurioRegistryContainer.PORT
+                + "/apis/registry/v3";
     }
 
     public LHConfig getLittleHorseConfig() {

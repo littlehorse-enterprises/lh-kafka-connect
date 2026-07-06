@@ -332,6 +332,28 @@
   * Default: null
   * Importance: low
 
+## JsonSchemaKafkaConverter Configurations
+
+``apicurio.registry.url``
+  URL of the Apicurio Registry v3 API used to resolve JSON Schemas (e.g. http://apicurio:8080/apis/registry/v3). When set on a connector, prefix it with key.converter. or value.converter.. Every other apicurio.registry.* property is forwarded to the underlying Apicurio JSON Schema serde; see the full list of serde properties at https://www.apicur.io/registry/docs/apicurio-registry/3.3.x/getting-started/assembly-configuring-kafka-client-serdes.html.
+
+  * Type: string
+  * Importance: high
+
+``apicurio.registry.auto-register``
+  Whether to register the schema automatically when it is not already present in the registry. Typically only relevant when the converter serializes data (source connectors).
+
+  * Type: boolean
+  * Default: false
+  * Importance: medium
+
+``apicurio.registry.find-latest``
+  Whether to use the latest version of the artifact when resolving a schema by its coordinates.
+
+  * Type: boolean
+  * Default: false
+  * Importance: low
+
 ## FilterByFieldPredicate Configurations
 
 ``field``

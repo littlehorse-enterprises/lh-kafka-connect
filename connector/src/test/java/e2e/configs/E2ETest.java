@@ -1,5 +1,7 @@
 package e2e.configs;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.littlehorse.container.LittleHorseContainer;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
@@ -118,6 +120,73 @@ public abstract class E2ETest {
     public String getApicurioRegistryInternalUrl() {
         return "http://" + APICURIO_INTERNAL_HOST + ":" + ApicurioRegistryContainer.PORT
                 + "/apis/registry/v3";
+    }
+
+    /** A JSON Schema artifact reference mapping a {@code $ref} name to a registered artifact. */
+    public record SchemaReference(String name, String groupId, String artifactId, String version) {}
+
+    /** Registers a JSON Schema artifact in the Apicurio Registry (group {@code default}). */
+    public void registerJsonSchema(String artifactId, String schema) {
+        registerJsonSchema(artifactId, schema, List.of());
+    }
+
+    /** Registers a JSON Schema artifact, optionally with JSON Schema references. */
+    public void registerJsonSchema(
+            String artifactId, String schema, List<SchemaReference> references) {
+        Map<String, Object> content = new HashMap<>();
+        content.put("content", schema);
+        content.put("contentType", "application/json");
+        if (!references.isEmpty()) {
+            content.put(
+                    "references",
+                    references.stream()
+                            .map(reference -> Map.of(
+                                    "name", reference.name(),
+                                    "groupId", reference.groupId(),
+                                    "artifactId", reference.artifactId(),
+                                    "version", reference.version()))
+                            .collect(Collectors.toList()));
+        }
+
+        Map<String, Object> body = Map.of(
+                "artifactId",
+                artifactId,
+                "artifactType",
+                "JSON",
+                "firstVersion",
+                Map.of("content", content));
+
+        await(() -> RestAssured.given()
+                .contentType(ContentType.JSON)
+                .queryParam("ifExists", "FIND_OR_CREATE_VERSION")
+                .body(body)
+                .when()
+                .post(getApicurioRegistryUrl() + "/groups/default/artifacts")
+                .then()
+                .assertThat()
+                .statusCode(200));
+    }
+
+    /** Produces records to a topic serialized with the Apicurio JSON Schema serializer. */
+    public void produceJsonSchemaValues(String topic, JsonNode... values) {
+        Map<String, Object> config = new HashMap<>(getKafkaConfig());
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        config.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                "io.apicurio.registry.serde.jsonschema.JsonSchemaKafkaSerializer");
+        config.put("apicurio.registry.url", getApicurioRegistryUrl());
+        config.put("apicurio.registry.auto-register", "false");
+
+        try (Producer<String, JsonNode> producer = new KafkaProducer<>(config)) {
+            for (JsonNode value : values) {
+                try {
+                    producer.send(new ProducerRecord<>(topic, null, null, value))
+                            .get(5, TimeUnit.SECONDS);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     public LHConfig getLittleHorseConfig() {

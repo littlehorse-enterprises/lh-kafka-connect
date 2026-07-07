@@ -7,35 +7,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import e2e.configs.E2ETest;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
-import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
-import io.littlehorse.sdk.common.proto.TaskRunIdList;
-import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Verifies the {@code WfRunSinkConnector} can consume records serialized with Apicurio Registry's
- * JSON Schema serde by using the connector's own {@code JsonSchemaKafkaConverter}. A permissive JSON
- * Schema artifact is registered in the registry, records are produced with the Apicurio
- * {@code JsonSchemaKafkaSerializer}, and the connector deserializes them through the converter
- * (which resolves the schema from the registry) and runs a {@code WfRun} per record.
+ * Verifies that a record which cannot be deserialized by the {@code JsonSchemaKafkaConverter} (for
+ * example, a message that is not framed as an Apicurio JSON Schema payload and therefore does not
+ * match a valid schema) fails conversion and is routed to the Dead Letter Queue by Kafka Connect,
+ * while a valid record that follows it is still processed into a {@code WfRun}.
  */
-public class RunWorkflowsApicurioJsonSchemaTest extends E2ETest {
+public class RunWorkflowsApicurioJsonSchemaDlqTest extends E2ETest {
 
-    public static final String WORKFLOW_NAME = "apicurio-json-schema-workflow";
-    public static final String TASK_NAME = "apicurio-json-schema-workflow";
-    public static final String CONNECTOR_NAME = "apicurio-json-schema-workflow";
+    public static final String WORKFLOW_NAME = "apicurio-json-schema-dlq";
+    public static final String TASK_NAME = "apicurio-json-schema-dlq";
+    public static final String CONNECTOR_NAME = "apicurio-json-schema-dlq";
     private static final String INPUT_PARAMETER = "person";
-    private static final String INPUT_TOPIC = "apicurio-json-schema";
+    private static final String INPUT_TOPIC = "apicurio-json-schema-dlq";
+    private static final String DLQ_TOPIC = "apicurio-json-schema-dlq-errors";
     private static final String ARTIFACT_ID = INPUT_TOPIC + "-value";
     private static final String JSON_SCHEMA =
             "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\"}";
@@ -86,40 +86,31 @@ public class RunWorkflowsApicurioJsonSchemaTest extends E2ETest {
     }
 
     @Test
-    public void shouldExecuteWfRunFromApicurioJsonSchemaRecords() {
+    public void shouldRouteInvalidSchemaRecordToDlqAndKeepProcessing() {
         startWorker(this);
         registerWorkflow(WORKFLOW);
         registerJsonSchema(ARTIFACT_ID, JSON_SCHEMA);
-        createTopics(INPUT_TOPIC);
+        createTopics(INPUT_TOPIC, DLQ_TOPIC);
 
-        produceJsonSchemaValues(
-                INPUT_TOPIC, personEnvelope("Leia", "Organa"), personEnvelope("Luke", null));
+        // offset 0: not an Apicurio JSON Schema payload -> the converter fails to deserialize it.
+        // With errors.tolerance=all, Kafka Connect routes the conversion failure to the DLQ.
+        produceValues(
+                INPUT_TOPIC, KafkaMessage.of("this is not a valid apicurio json schema message"));
+        // offset 1: a valid Apicurio JSON Schema record -> processed into a WfRun.
+        produceJsonSchemaValues(INPUT_TOPIC, personEnvelope("Leia", "Organa"));
 
         registerConnector(CONNECTOR_NAME, getConnectorConfig());
 
         await(() -> {
-            SearchWfRunRequest criteria = SearchWfRunRequest.newBuilder()
-                    .setStatus(LHStatus.COMPLETED)
-                    .setWfSpecName(WORKFLOW_NAME)
-                    .build();
-            WfRunIdList result = lhClient.searchWfRun(criteria);
-
-            WfRunIdList expected = WfRunIdList.newBuilder()
-                    .addResults(WfRunId.newBuilder()
-                            .setId("%s-%s-0-0".formatted(CONNECTOR_NAME, INPUT_TOPIC))
-                            .build())
-                    .addResults(WfRunId.newBuilder()
-                            .setId("%s-%s-0-1".formatted(CONNECTOR_NAME, INPUT_TOPIC))
-                            .build())
-                    .build();
-            assertThat(result).isEqualTo(expected);
+            WfRun wfRun = lhClient.getWfRun(LHLibUtil.wfRunIdFromString(
+                    "%s-%s-0-1".formatted(CONNECTOR_NAME, INPUT_TOPIC)));
+            assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
         });
 
         await(() -> {
-            SearchTaskRunRequest criteria =
-                    SearchTaskRunRequest.newBuilder().setTaskDefName(TASK_NAME).build();
-            TaskRunIdList result = lhClient.searchTaskRun(criteria);
-            assertThat(result.getResultsCount()).isEqualTo(2);
+            List<ConsumerRecord<byte[], byte[]>> dlqRecords =
+                    consumeRecords(DLQ_TOPIC, Duration.ofSeconds(1));
+            assertThat(dlqRecords).isNotEmpty();
         });
     }
 
@@ -138,6 +129,10 @@ public class RunWorkflowsApicurioJsonSchemaTest extends E2ETest {
                 "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter");
         connectorConfig.put(
                 "value.converter.apicurio.registry.url", getApicurioRegistryInternalUrl());
+        connectorConfig.put("errors.tolerance", "all");
+        connectorConfig.put("errors.deadletterqueue.topic.name", DLQ_TOPIC);
+        connectorConfig.put("errors.deadletterqueue.topic.replication.factor", 1);
+        connectorConfig.put("errors.deadletterqueue.context.headers.enable", true);
         connectorConfig.put("lhc.api.port", 2023);
         connectorConfig.put("lhc.api.host", "littlehorse");
         connectorConfig.put("lhc.tenant.id", "default");

@@ -43,6 +43,23 @@ Check that LH plugin was installed:
 http :8083/connector-plugins connectorsOnly==false | jq -r '.[].class|select(startswith("io.littlehorse"))'
 ```
 
+## Services
+
+The `dockerComposeUp` task starts the following services, available on `localhost`:
+
+| Service           | Port    | Description                                 |
+|-------------------|---------|---------------------------------------------|
+| `kafka1`          | `19092` | Kafka broker (external listener)            |
+| `kafka2`          | `29092` | Kafka broker (external listener)            |
+| `kafka3`          | `39092` | Kafka broker (external listener)            |
+| `schema-registry` | `8081`  | Confluent Schema Registry REST API          |
+| `kafka-connect`   | `8083`  | Kafka Connect REST API                      |
+| `kafka-ui`        | `8090`  | Kafka & Kafka Connect web UI                |
+| `apicurio`        | `8080`  | Apicurio Registry v3 REST API               |
+| `apicurio-ui`     | `8888`  | Apicurio Registry web UI                    |
+| `littlehorse`     | `2023`  | LittleHorse gRPC API                        |
+| `dashboard`       | `3000`  | LittleHorse dashboard                       |
+
 ## Tests
 
 Run unit tests:

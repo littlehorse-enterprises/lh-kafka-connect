@@ -136,8 +136,8 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - ./connector/build/bundle:/usr/local/share/kafka/plugins
-      - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties
+      - ./connector/build/bundle:/usr/local/share/kafka/plugins:ro
+      - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties:ro
       - ./examples/apicurio-json-schema-source-sink:/data:ro
 
   apicurio:
@@ -154,6 +154,34 @@ services:
       retries: 5
       start_period: 30s
 
+  apicurio-ui:
+    image: apicurio/apicurio-registry-ui:${APICURIO_VERSION}
+    environment:
+      # Browser-accessible URL of the registry API (mapped to the host on 8080).
+      REGISTRY_API_URL: http://localhost:8080/apis/registry/v3
+    ports:
+      - "8888:8080"
+    restart: on-failure
+    depends_on:
+      apicurio:
+        condition: service_healthy
+
+  kafka-ui:
+    image: kafbat/kafka-ui:latest
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: connect
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://kafka-connect:8083
+    ports:
+      - "8090:8080"
+    restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka-connect:
+        condition: service_healthy
 
   lhctl:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}

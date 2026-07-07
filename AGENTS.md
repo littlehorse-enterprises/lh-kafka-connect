@@ -124,6 +124,22 @@ Local stack:
   of the record is rebuilt. For the `$Headers` variant a `mapping.<path>` is a single, flat
   header name rather than a nested path.
 
+### Apicurio JSON Schema converter
+
+- `converter/apicurio/JsonSchemaKafkaConverter` is a Kafka Connect `Converter` (bundled and shaded
+  into the plugin) that wraps Apicurio Registry's `JsonSchemaKafkaSerializer`/`Deserializer`. It
+  bridges Connect data and JSON via the built-in `JsonConverter` (`schemas.enable=false`), so it
+  produces standard schemaless values usable by any sink or source connector, and forwards every
+  `apicurio.registry.*` property to the serde. It implements `Versioned` (via `VersionReader`) so
+  it shows up with a version under `GET /connector-plugins?connectorsOnly=false`, and is registered
+  in `META-INF/services/org.apache.kafka.connect.storage.Converter`.
+- The Apicurio serde version is `apicurioVersion` in `gradle.properties` (currently `3.3.*`). e2e
+  tests spin up an in-memory `apicurio/apicurio-registry` container (`e2e.configs.ApicurioRegistryContainer`);
+  `docker-compose.yml` runs the registry (`apicurio`, port 8080) plus its UI (`apicurio-ui`, 8888).
+- Its documented options come from a `CONFIG_DEF` surfaced in `CONFIGURATIONS.md` by `ConfigExporter`;
+  the runnable examples are `wfrun-apicurio-json-schema`, `wfrun-apicurio-json-schema-reference`, and
+  `apicurio-json-schema-source-sink`.
+
 ### End-to-end tests
 
 - e2e tests live in `src/test/java/e2e/`, extend `e2e.configs.E2ETest`, and are matched by
@@ -150,7 +166,12 @@ Local stack:
 
 ## Documentation
 
-- `README.md` — connector usage and message structure.
-- `DEVELOPMENT.md` — local development workflow.
-- `CONFIGURATIONS.md` — connector configuration reference.
+Keep documentation in sync with the code: whenever you add or change a feature, connector,
+converter, transform, predicate, configuration, example, or the local dev setup (Gradle tasks,
+`docker-compose.yml`, ports, etc.), update the relevant document(s) in the same change. When a
+configuration changes, regenerate `CONFIGURATIONS.md` via `./gradlew connector:generateConfigurationDoc`.
+
+- `README.md` — connector usage, converters, transforms, predicates, and message structure.
+- `DEVELOPMENT.md` — local development workflow and the docker-compose services/ports table.
+- `CONFIGURATIONS.md` — generated connector/converter/transform/predicate configuration reference.
 - `COMMANDS.md` — useful commands.

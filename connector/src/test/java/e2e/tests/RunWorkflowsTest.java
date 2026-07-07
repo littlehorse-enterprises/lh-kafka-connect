@@ -17,6 +17,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class RunWorkflowsTest extends E2ETest {
 
@@ -65,7 +66,7 @@ public class RunWorkflowsTest extends E2ETest {
                                     .formatted(
                                             CONNECTOR_NAME,
                                             INPUT_TOPIC_2
-                                                    .toLowerCase()
+                                                    .toLowerCase(Locale.ROOT)
                                                     .replace("_", "-")
                                                     .replace(".", "-")))
                             .build())

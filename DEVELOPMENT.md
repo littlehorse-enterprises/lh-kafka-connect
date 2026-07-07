@@ -58,7 +58,7 @@ The `dockerComposeUp` task starts the following services, available on `localhos
 | `apicurio`        | `8080`  | Apicurio Registry v3 REST API               |
 | `apicurio-ui`     | `8888`  | Apicurio Registry web UI                    |
 | `littlehorse`     | `2023`  | LittleHorse gRPC API                        |
-| `dashboard`       | `3000`  | LittleHorse dashboard                       |
+| `littlehorse-ui`  | `3000`  | LittleHorse dashboard                       |
 
 ## Tests
 

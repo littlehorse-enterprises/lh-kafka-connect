@@ -11,41 +11,22 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Registers a referenced JSON Schema in Apicurio Registry and produces records serialized with the
- * Apicurio JSON Schema serializer. The value schema {@code $ref}s a separate {@code address} schema
- * artifact, demonstrating JSON Schema references. Run with
- * {@code -DmainClass=io.littlehorse.example.Producer}.
+ * Registers the JSON Schema in Apicurio Registry and produces valid records serialized with the
+ * Apicurio JSON Schema serializer. Run with {@code -DmainClass=io.littlehorse.example.Producer}.
+ * Malformed records (that do not match a valid schema) are produced separately in the README to
+ * demonstrate the Dead Letter Queue.
  */
 public class Producer {
 
     private static final String BOOTSTRAP_SERVERS = "localhost:19092";
     private static final String APICURIO_URL = "http://localhost:8080/apis/registry/v3";
-    private static final String TOPIC = "example-wfrun-apicurio-json-schema-reference";
+    private static final String TOPIC = "example-wfrun-apicurio-json-schema-dlq";
     private static final String ARTIFACT_ID = TOPIC + "-value";
-    private static final String ADDRESS_ARTIFACT_ID = "example-address";
-    private static final String ADDRESS_REF = "https://littlehorse.io/schemas/address.json";
 
-    // Standalone schema that the value schema references.
-    private static final String ADDRESS_SCHEMA = """
-            {
-              "$id": "https://littlehorse.io/schemas/address.json",
-              "$schema": "http://json-schema.org/draft-07/schema#",
-              "title": "Address",
-              "type": "object",
-              "properties": {
-                "street": { "type": "string" },
-                "city": { "type": "string" }
-              },
-              "required": ["street", "city"]
-            }
-            """;
-
-    // Value schema referencing the address schema via $ref.
-    private static final String PERSON_SCHEMA = """
+    private static final String SCHEMA = """
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
               "title": "Person envelope",
@@ -54,10 +35,10 @@ public class Producer {
                 "person": {
                   "type": "object",
                   "properties": {
-                    "name": { "type": "string" },
-                    "address": { "$ref": "https://littlehorse.io/schemas/address.json" }
+                    "firstName": { "type": "string" },
+                    "lastName": { "type": "string" }
                   },
-                  "required": ["name", "address"]
+                  "required": ["firstName", "lastName"]
                 }
               },
               "required": ["person"]
@@ -70,15 +51,7 @@ public class Producer {
     public static void main(String[] args) {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
 
-        ApicurioRegistry registry = new ApicurioRegistry(APICURIO_URL);
-        // Register the referenced schema first, then the value schema that references it.
-        registry.register("default", ADDRESS_ARTIFACT_ID, ADDRESS_SCHEMA);
-        registry.register(
-                "default",
-                ARTIFACT_ID,
-                PERSON_SCHEMA,
-                List.of(new ApicurioRegistry.Reference(
-                        ADDRESS_REF, "default", ADDRESS_ARTIFACT_ID, "1")));
+        new ApicurioRegistry(APICURIO_URL).register("default", ARTIFACT_ID, SCHEMA);
 
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -92,11 +65,8 @@ public class Producer {
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
                 Person person = Person.builder()
-                        .name(FAKER.name().fullName())
-                        .address(Address.builder()
-                                .street(FAKER.address().streetAddress())
-                                .city(FAKER.address().city())
-                                .build())
+                        .firstName(FAKER.name().firstName())
+                        .lastName(FAKER.name().lastName())
                         .build();
                 JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PERSON, person));
                 producer.send(new ProducerRecord<>(TOPIC, null, null, value));

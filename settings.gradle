@@ -22,6 +22,7 @@ include "common"
         "wfrun-avro",
         "wfrun-apicurio-json-schema",
         "wfrun-apicurio-json-schema-reference",
+        "wfrun-apicurio-json-schema-dlq",
         "apicurio-json-schema-source-sink",
         "wfrun-list",
         "wfrun-filter",

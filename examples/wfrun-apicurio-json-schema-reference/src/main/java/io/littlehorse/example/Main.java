@@ -12,10 +12,6 @@ public class Main {
 
     public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-reference-greet";
     public static final String WF_NAME = "example-wfrun-apicurio-json-schema-reference";
-    public static final String TOPIC = "example-wfrun-apicurio-json-schema-reference";
-    public static final String ARTIFACT_ID = TOPIC + "-value";
-    public static final String ADDRESS_ARTIFACT_ID = "example-address";
-    public static final String ADDRESS_REF = "https://littlehorse.io/schemas/address.json";
     public static final String VARIABLE_PERSON = "person";
 
     public static Workflow getWorkflow() {

@@ -165,6 +165,12 @@ services:
     depends_on:
       apicurio:
         condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8080
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   kafka-ui:
     image: kafbat/kafka-ui:latest
@@ -182,17 +188,12 @@ services:
         condition: service_healthy
       kafka-connect:
         condition: service_healthy
-
-  lhctl:
-    image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}
-    command: version
-    depends_on:
-      littlehorse:
-        condition: service_healthy
-    restart: on-failure
-    environment:
-      LHC_API_HOST: littlehorse
-      LHC_API_PORT: 2024
+    healthcheck:
+      test: wget --no-verbose --spider http://localhost:8080/actuator/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   littlehorse:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:${LITTLEHORSE_VERSION}
@@ -217,7 +218,7 @@ services:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
       LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN
 
-  dashboard:
+  littlehorse-ui:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:${LITTLEHORSE_VERSION}
     ports:
       - "3000:3000"
@@ -229,7 +230,7 @@ services:
       LHC_API_PORT: 2024
       LHC_OAUTH_ENABLED: false
     healthcheck:
-      test: wget --no-verbose --spider 0.0.0.0:3000
+      test: wget --no-verbose --spider http://localhost:3000
       interval: 10s
       timeout: 10s
       retries: 5

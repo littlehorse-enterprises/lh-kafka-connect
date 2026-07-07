@@ -10,6 +10,7 @@ import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -143,12 +144,12 @@ public abstract class LHSinkConnectorConfig extends AbstractConfig {
 
     private static String parseKafkaConnectConfig(String key) {
         // transform LH config (ex: LHC_API_HOST) into a kafka connect config (ex: lhc.api.host)
-        return key.replace("_", ".").toLowerCase();
+        return key.replace("_", ".").toLowerCase(Locale.ROOT);
     }
 
     private static String parseLHConfig(String key) {
         // transform kafka connect config (ex: lhc.api.host) into LH config (ex: LHC_API_HOST)
-        return key.replace(".", "_").toUpperCase();
+        return key.replace(".", "_").toUpperCase(Locale.ROOT);
     }
 
     public LHConfig toLHConfig() {

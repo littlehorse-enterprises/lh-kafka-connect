@@ -133,12 +133,18 @@ Local stack:
   `apicurio.registry.*` property to the serde. It implements `Versioned` (via `VersionReader`) so
   it shows up with a version under `GET /connector-plugins?connectorsOnly=false`, and is registered
   in `META-INF/services/org.apache.kafka.connect.storage.Converter`.
+- Conversion failures are classified: network-level errors (e.g. the registry being temporarily
+  unavailable) are rethrown as `RetriableException` so Kafka Connect retries them for up to
+  `errors.retry.timeout` before `errors.tolerance` applies (`transient.errors.tolerance=none` opts
+  out); malformed payloads and schema/validation failures are permanent `DataException`s handled
+  immediately per `errors.tolerance`. Note converter-stage `RetriableException`s are still subject
+  to the DLQ once retries are exhausted (unlike the sink task's `put()` stage).
 - The Apicurio serde version is `apicurioVersion` in `gradle.properties` (currently `3.3.*`). e2e
   tests spin up an in-memory `apicurio/apicurio-registry` container (`e2e.configs.ApicurioRegistryContainer`);
   `docker-compose.yml` runs the registry (`apicurio`, port 8080) plus its UI (`apicurio-ui`, 8888).
 - Its documented options come from a `CONFIG_DEF` surfaced in `CONFIGURATIONS.md` by `ConfigExporter`;
-  the runnable examples are `wfrun-apicurio-json-schema`, `wfrun-apicurio-json-schema-reference`, and
-  `apicurio-json-schema-source-sink`.
+  the runnable examples are `wfrun-apicurio-json-schema`, `wfrun-apicurio-json-schema-reference`,
+  `wfrun-apicurio-json-schema-dlq`, and `apicurio-json-schema-source-sink`.
 
 ### End-to-end tests
 

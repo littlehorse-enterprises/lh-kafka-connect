@@ -21,6 +21,8 @@ public class Producer {
 
     private static final String BOOTSTRAP_SERVERS = "localhost:19092";
     private static final String APICURIO_URL = "http://localhost:8080/apis/registry/v3";
+    private static final String TOPIC = "example-wfrun-apicurio-json-schema";
+    private static final String ARTIFACT_ID = TOPIC + "-value";
 
     private static final String SCHEMA = """
             {
@@ -47,7 +49,7 @@ public class Producer {
     public static void main(String[] args) {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
 
-        new ApicurioRegistry(APICURIO_URL).register("default", Main.ARTIFACT_ID, SCHEMA);
+        new ApicurioRegistry(APICURIO_URL).register("default", ARTIFACT_ID, SCHEMA);
 
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -65,7 +67,7 @@ public class Producer {
                         .lastName(FAKER.name().lastName())
                         .build();
                 JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PERSON, person));
-                producer.send(new ProducerRecord<>(Main.TOPIC, null, null, value));
+                producer.send(new ProducerRecord<>(TOPIC, null, null, value));
                 System.out.println("Produced: " + value);
             }
             producer.flush();

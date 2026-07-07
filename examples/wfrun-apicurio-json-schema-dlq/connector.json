@@ -1,0 +1,15 @@
+{
+  "tasks.max": 1,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-apicurio-json-schema-dlq",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter",
+  "value.converter.apicurio.registry.url": "http://apicurio:8080/apis/registry/v3",
+  "errors.tolerance": "all",
+  "errors.deadletterqueue.topic.name": "example-wfrun-apicurio-json-schema-dlq-errors",
+  "errors.deadletterqueue.context.headers.enable": true,
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-apicurio-json-schema-dlq"
+}

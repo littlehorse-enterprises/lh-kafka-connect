@@ -347,6 +347,14 @@
   * Default: false
   * Importance: medium
 
+``transient.errors.tolerance``
+  How to handle transient (retriable) errors such as the Apicurio Registry being temporarily unavailable. When 'transients' (default) the error is rethrown as a RetriableException, so Kafka Connect retries it for up to errors.retry.timeout before errors.tolerance applies; when 'none' the transient error is treated like any other conversion error and handled immediately according to errors.tolerance.
+
+  * Type: string
+  * Default: transients
+  * Valid Values: [none, transients]
+  * Importance: medium
+
 ``apicurio.registry.find-latest``
   Whether to use the latest version of the artifact when resolving a schema by its coordinates.
 

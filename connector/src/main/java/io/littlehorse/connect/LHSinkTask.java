@@ -24,6 +24,7 @@ import org.apache.kafka.connect.sink.SinkTask;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -70,7 +71,7 @@ public abstract class LHSinkTask extends SinkTask {
                 .trim();
         errorsTolerance = ToleranceType.valueOf(
                 props.getOrDefault(ERRORS_TOLERANCE_CONFIG, ToleranceType.NONE.value())
-                        .toUpperCase());
+                        .toUpperCase(Locale.ROOT));
         connectorConfig = configure(props);
         lhConfig = connectorConfig.toLHConfig();
         blockingStub = lhConfig.getBlockingStub();

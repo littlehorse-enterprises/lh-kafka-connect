@@ -558,7 +558,8 @@ For the full list of `apicurio.registry.*` properties supported by the underlyin
 [Apicurio Registry serde configuration reference](https://www.apicur.io/registry/docs/apicurio-registry/3.3.x/getting-started/assembly-configuring-kafka-client-serdes.html).
 
 See the [`wfrun-apicurio-json-schema`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema),
-[`wfrun-apicurio-json-schema-reference`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-reference)
+[`wfrun-apicurio-json-schema-reference`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-reference),
+[`wfrun-apicurio-json-schema-dlq`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-dlq)
 and [`apicurio-json-schema-source-sink`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/apicurio-json-schema-source-sink)
 examples.
 

@@ -19,8 +19,9 @@ public class DataGenerator {
     }
 
     public static List<Droid> newDroidsList(int total) {
-        return Stream.generate(() ->
-                        Droid.builder().name(SampleData.starWars().droids()).build())
+        return Stream.generate(() -> Droid.builder()
+                        .name(SampleData.starWars().droid().name())
+                        .build())
                 .limit(total)
                 .collect(Collectors.toList());
     }

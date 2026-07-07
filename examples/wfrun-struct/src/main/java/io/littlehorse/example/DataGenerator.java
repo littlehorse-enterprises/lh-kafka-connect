@@ -10,11 +10,10 @@ public class DataGenerator {
     }
 
     private static Pilot newPilot() {
+        SampleData.StarWars.Pilot source = SampleData.starWars().pilot();
         return Pilot.builder()
-                .name(SampleData.starWars().characterName().fullName())
-                .vehicle(Vehicle.builder()
-                        .model(SampleData.starWars().vehicles())
-                        .build())
+                .name(source.name())
+                .vehicle(Vehicle.builder().model(source.vehicle()).build())
                 .build();
     }
 }

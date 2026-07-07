@@ -14,7 +14,6 @@ public class DataGenerator {
     private static String newCharacter() {
         return "%s|%s"
                 .formatted(
-                        SampleData.newKey(),
-                        SampleData.starWars().characterName().fullName());
+                        SampleData.newKey(), SampleData.starWars().character().fullName());
     }
 }

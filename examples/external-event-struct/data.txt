@@ -1,10 +1,10 @@
-18642b6816f74541881040421f7a3646|{"name":"Boba Fett","vehicle":{"model":"Resistance Ski Speeder"}}
-ec8511c7659f4c19813fb17ea2cf954f|{"name":"Kylo Ren","vehicle":{"model":"Gungan Bongo Submarine"}}
-1c84a8c9777c469a8013ccd89a8192e2|{"name":"Han Solo","vehicle":{"model":"Sandcrawler"}}
-3534442864d9445f8084133f40df17c4|{"name":"Padmé Amidala","vehicle":{"model":"V-Wing Fighter"}}
-e1859533fe304a008d76710ea552b057|{"name":"Mace Windu","vehicle":{"model":"AT-ST Walker"}}
-e3c933924e434f82b82c314c07eaefd8|{"name":"Boba Fett","vehicle":{"model":"MTT"}}
-f1adae31dc8341378cc58d36c0e0538e|{"name":"Mace Windu","vehicle":{"model":"X-Wing Fighter"}}
-49ad2f6007c04ce6a2e9e445eabe65ef|{"name":"Obi-Wan Kenobi","vehicle":{"model":"V-Wing Fighter"}}
-ba7f21e2d41c478c8863f0a304c0b532|{"name":"Poe Dameron","vehicle":{"model":"Flash Speeder"}}
-1530f66cfa44445b852108b14992051d|{"name":"Kylo Ren","vehicle":{"model":"First Order TIE Fighter"}}
+9a9eb229a00e44aba62bb5ba7cb60323|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+32d211b40980467fb9e7b35a3c8de9c8|{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+803758e4976c42248d51d02f334521b8|{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+64f00aeab2bb4385bef1f0343b4949de|{"name":"Jek Porkins","vehicle":{"model":"T-65 X-wing"}}
+09c7d52b1fdc4c068cb46960b0ffcc5d|{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}
+1df94d845af84b358f323cad72c88488|{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+cb590448875c4aac95ec86ee7c0ba7af|{"name":"Garven Dreis","vehicle":{"model":"T-65 X-wing"}}
+b2c55d091e53460084525cf5ebe4e061|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+9e9319432d8d43efa2b755d818e0990c|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+af82327b40184e77bd9cb1cd2f0f0de0|{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}

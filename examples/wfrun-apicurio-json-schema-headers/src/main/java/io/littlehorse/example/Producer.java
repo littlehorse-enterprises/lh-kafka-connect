@@ -12,32 +12,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Registers the JSON Schema in Apicurio Registry and produces records to the topic using the
- * Apicurio JSON Schema serializer. Run with {@code -DmainClass=io.littlehorse.example.Producer}.
+ * Registers the JSON Schema in Apicurio Registry and produces records serialized with the Apicurio
+ * JSON Schema serializer. The serializer is configured with
+ * {@code apicurio.registry.headers.enabled=true}, so the schema coordinates travel in the Kafka
+ * record headers instead of the message payload; the connector's converter is configured the same
+ * way to read them back. Run with {@code -DmainClass=io.littlehorse.example.Producer}.
  */
 public class Producer {
 
     private static final String BOOTSTRAP_SERVERS = "localhost:19092";
     private static final String APICURIO_URL = "http://localhost:8080/apis/registry/v3";
-    private static final String TOPIC = "example-wfrun-apicurio-json-schema";
+    private static final String TOPIC = "example-wfrun-apicurio-json-schema-headers";
     private static final String ARTIFACT_ID = TOPIC + "-value";
 
     private static final String SCHEMA = """
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "title": "Person envelope",
+              "title": "Force wielder envelope",
               "type": "object",
               "properties": {
-                "person": {
+                "wielder": {
                   "type": "object",
                   "properties": {
-                    "firstName": { "type": "string" },
-                    "lastName": { "type": "string" }
+                    "name": { "type": "string" },
+                    "type": { "type": "string", "enum": ["SITH", "JEDI"] },
+                    "lightsaberColor": { "type": "string" }
                   },
-                  "required": ["firstName", "lastName"]
+                  "required": ["name", "type", "lightsaberColor"]
                 }
               },
-              "required": ["person"]
+              "required": ["wielder"]
             }
             """;
 
@@ -56,15 +60,13 @@ public class Producer {
                 "io.apicurio.registry.serde.jsonschema.JsonSchemaKafkaSerializer");
         config.put("apicurio.registry.url", APICURIO_URL);
         config.put("apicurio.registry.auto-register", "false");
+        // Carry the schema coordinates in the Kafka record headers rather than the payload.
+        config.put("apicurio.registry.headers.enabled", "true");
 
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
-                SampleData.StarWars.CharacterName name = SampleData.starWars().characterName();
-                Person person = Person.builder()
-                        .firstName(name.firstName())
-                        .lastName(name.lastName())
-                        .build();
-                JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PERSON, person));
+                SampleData.StarWars.ForceWielder wielder = SampleData.starWars().forceWielder();
+                JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_WIELDER, wielder));
                 producer.send(new ProducerRecord<>(TOPIC, null, null, value));
                 System.out.println("Produced: " + value);
             }

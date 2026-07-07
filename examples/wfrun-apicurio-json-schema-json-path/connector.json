@@ -1,0 +1,20 @@
+{
+  "tasks.max": 1,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-apicurio-json-schema-json-path",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter",
+  "value.converter.apicurio.registry.url": "http://apicurio:8080/apis/registry/v3",
+  "value.converter.apicurio.registry.artifact.group-id": "star-wars",
+  "value.converter.apicurio.registry.artifact.artifact-id": "planet",
+  "transforms": "WfRunVariablesMapper",
+  "transforms.WfRunVariablesMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.WfRunVariablesMapper.mapping.name": "$.value.name",
+  "transforms.WfRunVariablesMapper.mapping.climate": "$.value.climate",
+  "transforms.WfRunVariablesMapper.mapping.terrain": "$.value.terrain",
+  "transforms.WfRunVariablesMapper.mapping.population": "$.value.population",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-apicurio-json-schema-json-path"
+}

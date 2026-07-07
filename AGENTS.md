@@ -143,8 +143,9 @@ Local stack:
   tests spin up an in-memory `apicurio/apicurio-registry` container (`e2e.configs.ApicurioRegistryContainer`);
   `docker-compose.yml` runs the registry (`apicurio`, port 8080) plus its UI (`apicurio-ui`, 8888).
 - Its documented options come from a `CONFIG_DEF` surfaced in `CONFIGURATIONS.md` by `ConfigExporter`;
-  the runnable examples are `wfrun-apicurio-json-schema`, `wfrun-apicurio-json-schema-reference`,
-  `wfrun-apicurio-json-schema-dlq`, and `apicurio-json-schema-source-sink`.
+  the runnable examples are `wfrun-apicurio-json-schema-envelope`, `wfrun-apicurio-json-schema-reference`,
+  `wfrun-apicurio-json-schema-json-path`, `wfrun-apicurio-json-schema-headers`, and
+  `apicurio-json-schema-source-sink`.
 
 ### End-to-end tests
 

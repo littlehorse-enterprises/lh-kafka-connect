@@ -9,6 +9,16 @@ In this example you will:
 - Create a `WfRunSinkConnector` that deserializes them with the
   `io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter`.
 
+> [!NOTE]
+> The records carry the pilot fields at the **top level** (no envelope), so the connector uses a
+> [`JsonPathMapperTransform$Value`](../../CONFIGURATIONS.md) to rebuild the `pilot` `JSON_OBJ`
+> variable from the flat value:
+>
+> | Path                   | Mapping                    |
+> | ---------------------- | -------------------------- |
+> | `pilot.name`           | `$.value.name`             |
+> | `pilot.vehicle.model`  | `$.value.vehicle.model`    |
+
 > [!WARNING]
 > Run the commands in the root directory
 

@@ -14,9 +14,10 @@ public class DataGenerator {
     // The raw records are flat; the JsonPathMapperTransform reshapes them into the nested
     // Pilot/Vehicle struct, so the generator emits the source fields, not the struct.
     private static String newRecord() {
+        SampleData.StarWars.Pilot pilot = SampleData.starWars().pilot();
         Map<String, Object> raw = new LinkedHashMap<>();
-        raw.put("name", SampleData.starWars().characterName().fullName());
-        raw.put("model", SampleData.starWars().vehicles());
+        raw.put("name", pilot.name());
+        raw.put("model", pilot.vehicle());
         return "%s|%s".formatted(SampleData.newKey(), JsonSerializer.serialize(raw));
     }
 }

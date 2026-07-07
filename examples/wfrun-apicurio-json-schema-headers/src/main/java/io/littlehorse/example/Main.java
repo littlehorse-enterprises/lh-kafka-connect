@@ -10,17 +10,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 
-    public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-dlq-greet";
-    public static final String WF_NAME = "example-wfrun-apicurio-json-schema-dlq";
-    public static final String VARIABLE_PERSON = "person";
+    public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-headers-greet";
+    public static final String WF_NAME = "example-wfrun-apicurio-json-schema-headers";
+    public static final String VARIABLE_WIELDER = "wielder";
 
     public static Workflow getWorkflow() {
         return Workflow.newWorkflow(
-                WF_NAME, wf -> wf.execute(TASK_DEF_NAME, wf.declareJsonObj(VARIABLE_PERSON)));
+                WF_NAME, wf -> wf.execute(TASK_DEF_NAME, wf.declareJsonObj(VARIABLE_WIELDER)));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
-        LHTaskWorker worker = new LHTaskWorker(new PersonWorker(), TASK_DEF_NAME, lhConfig);
+        LHTaskWorker worker = new LHTaskWorker(new WielderWorker(), TASK_DEF_NAME, lhConfig);
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
@@ -37,11 +37,14 @@ public class Main {
         worker.start();
     }
 
-    public static class PersonWorker {
+    public static class WielderWorker {
 
         @LHTaskMethod(TASK_DEF_NAME)
-        public String greet(Person person) {
-            String message = "Hello " + person.getFirstName() + " " + person.getLastName() + "!";
+        public String greet(ForceWielder wielder) {
+            String side = "SITH".equals(wielder.getType()) ? "the dark side" : "the light side";
+            String message = String.format(
+                    "%s (%s) wields a %s lightsaber and serves %s.",
+                    wielder.getName(), wielder.getType(), wielder.getLightsaberColor(), side);
             log.info(message);
             return message;
         }

@@ -1,4 +1,4 @@
-# WfRun Connector with Apicurio Registry (JSON Schema)
+# WfRun Connector with Apicurio Registry (JSON Schema, envelope)
 
 In this example you will:
 
@@ -37,7 +37,7 @@ The producer registers the JSON Schema in Apicurio Registry and produces records
 serialized with the Apicurio JSON Schema serializer:
 
 ```shell
-./gradlew example-wfrun-apicurio-json-schema:run -DmainClass="io.littlehorse.example.Producer" --args="10"
+./gradlew example-wfrun-apicurio-json-schema-envelope:run -DmainClass="io.littlehorse.example.Producer" --args="10"
 ```
 
 ## Check Schema Registry
@@ -51,23 +51,23 @@ http :8080/apis/registry/v3/search/artifacts
 ## Run Worker
 
 ```shell
-./gradlew example-wfrun-apicurio-json-schema:run
+./gradlew example-wfrun-apicurio-json-schema-envelope:run
 ```
 
 ## Create Connector
 
 ```shell
-http PUT :8083/connectors/example-wfrun-apicurio-json-schema/config < examples/wfrun-apicurio-json-schema/connector.json
+http PUT :8083/connectors/example-wfrun-apicurio-json-schema-envelope/config < examples/wfrun-apicurio-json-schema-envelope/connector.json
 ```
 
 Get connector:
 
 ```shell
-http :8083/connectors/example-wfrun-apicurio-json-schema
+http :8083/connectors/example-wfrun-apicurio-json-schema-envelope
 ```
 
 ## Check WfRuns
 
 ```shell
-lhctl search wfRun example-wfrun-apicurio-json-schema
+lhctl search wfRun example-wfrun-apicurio-json-schema-envelope
 ```

@@ -1,10 +1,10 @@
-{"name":"Poe Dameron"}
-{"name":"Padmé Amidala"}
-{"name":"Mace Windu"}
-{"name":"Leia Organa"}
-{"name":"Kylo Ren"}
-{"name":"Han Solo","description":"This description will cause the connector to fail"}
-{"name":"Luke Skywalker"}
-{"name":"Han Solo"}
-{"name":"Mace Windu"}
+{"name":"Wedge Antilles"}
 {"name":"Obi-Wan Kenobi"}
+{"name":"Leia Organa"}
+{"name":"Mace Windu","description":"This description will cause the connector to fail"}
+{"name":"Saw Gerrera"}
+{"name":"Cassian Andor"}
+{"name":"Lando Calrissian"}
+{"name":"Darth Vader"}
+{"name":"Han Solo"}
+{"name":"Boba Fett"}

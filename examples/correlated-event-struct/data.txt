@@ -1,10 +1,10 @@
-8b803e5e5cba41c7a6a8816146a9910d|{"name":"Obi-Wan Kenobi","vehicle":{"model":"AT-M6 Walker"}}
-6cf34b7532ad4a99a3e0f338b52ceb69|{"name":"Darth Vader","vehicle":{"model":"AT-ST Walker"}}
-e6f3b02774d64ae293233eada6737773|{"name":"Darth Vader","vehicle":{"model":"Resistance Ski Speeder"}}
-bccd50f379cd417f80c542eaa2a22770|{"name":"Leia Organa","vehicle":{"model":"Gungan Bongo Submarine"}}
-47c91c2224ff49cc9392e2a57817781e|{"name":"Boba Fett","vehicle":{"model":"Resistance Bomber"}}
-a8e762a312304500bb74e6c17fedce84|{"name":"Obi-Wan Kenobi","vehicle":{"model":"Speeder Bike"}}
-5d4c2cf330f247568b779a41aa89439c|{"name":"Han Solo","vehicle":{"model":"Ghost"}}
-3903ca087a0248259a3f4e4758be7980|{"name":"Leia Organa","vehicle":{"model":"Gungan Bongo Submarine"}}
-a6f503e048d1470d8ab2a7b8c60ecc41|{"name":"Padmé Amidala","vehicle":{"model":"Gungan Bongo Submarine"}}
-02c008a59d9c446693649b93e32a1694|{"name":"Obi-Wan Kenobi","vehicle":{"model":"Y-Wing Starfighter"}}
+16765bfb89ff42439b82ace009595f8f|{"name":"Dutch Vander","vehicle":{"model":"BTL-A4 Y-wing"}}
+03ba7cb7961642ddbe4f890e551d80c7|{"name":"Luke Skywalker","vehicle":{"model":"T-65 X-wing"}}
+f4a0adeccd0b4086aae19b50ee46680c|{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+a9aff08d3a094422a62b1e59d41f22dd|{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+147dff478d0a4c18bda1b9e6819887aa|{"name":"Zev Senesca","vehicle":{"model":"T-47 airspeeder"}}
+3bd26e971c3748abafc1153b3413e007|{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+a44adcf217664397b26f08d212045074|{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+d7ca09f3c4cf4b50b7fd49f92c65adf8|{"name":"Biggs Darklighter","vehicle":{"model":"T-65 X-wing"}}
+9bb8e9ea0d11440287695cc066d03c84|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+ff9d90b5319e488baaa02b467fcc39be|{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}

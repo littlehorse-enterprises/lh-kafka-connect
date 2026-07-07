@@ -1,10 +1,10 @@
-ce0bb79077bb40ccaa79cb22f51c42b7|{"name":"B4-D4","credits":9435.88}
-1c4de74c827340419006aae13fdb678d|{"name":"LM-432","credits":8786.67}
-64edad8289a64fc2bb86c51e18b3581c|{"name":"BB-9E","credits":2798.73}
-6c0bbb4ccbdc45a9a8cfc8022d67b29b|{"name":"C1-10P","credits":2288.17}
-b2f3a5e6cbfc43ebbb3398a833ea6979|{"name":"B1","credits":6276.61}
-e62edb35e2ec4b1cb734b2a02127128b|{"name":"Droideka","credits":1764.79}
-9307eb91c379435f94df0b979e350255|{"name":"C-3PO","credits":7264.04}
-11c747efb7ff4c7784d025b838be104e|{"name":"4-LOM","credits":1349.55}
-29e8f1d7c14c4a1d994783741ef1601d|{"name":"B2-RP","credits":9935.4}
-15a8bf20b6304ea9a8420086f2ea2aec|{"name":"Droideka","credits":8831.71}
+f1239dbd9dfb4bc58ff3b166473ea5fe|{"name":"BB-8","credits":3861.44}
+46f30f3e71224694a9efece8570f7d66|{"name":"327-T","credits":3031.16}
+4668898cb8644765b19a9407c2b7b00d|{"name":"11-4D","credits":3082.25}
+10ef257ec1e2443697389bd64267ada1|{"name":"Mouse Droid","credits":3420.05}
+a26890b8b0c44ee8a57bdc76842ebc70|{"name":"B4-D4","credits":2747.8}
+a10e5f294e1149aeb45b7c848bdbf20d|{"name":"GH-7","credits":1691.07}
+cbf645be94734b8aa8576daef1bf21a1|{"name":"BB-8","credits":9800.38}
+d6e265cf7d404a00966a1431ff3f1721|{"name":"ID9","credits":4578.17}
+be5f355ef4164367a626166e99a7e149|{"name":"LM-432","credits":3071.8}
+d9e6e173da3c4f8eb22c9c60a643faf6|{"name":"R2-D2","credits":8336.8}

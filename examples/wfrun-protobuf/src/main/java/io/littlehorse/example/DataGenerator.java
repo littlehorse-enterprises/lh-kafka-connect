@@ -13,6 +13,8 @@ public class DataGenerator {
     }
 
     private static Species newPlanet() {
-        return Species.newBuilder().setName(SampleData.starWars().species()).build();
+        return Species.newBuilder()
+                .setName(SampleData.starWars().species().name())
+                .build();
     }
 }

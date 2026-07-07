@@ -16,7 +16,7 @@ public class DataGenerator {
 
     private static List<SquadronUnit> newSquadron(int members) {
         return Stream.generate(() -> SquadronUnit.builder()
-                        .callSign(SampleData.starWars().callSign())
+                        .callSign(SampleData.starWars().pilot().callSign())
                         .build())
                 .limit(members)
                 .collect(Collectors.toList());

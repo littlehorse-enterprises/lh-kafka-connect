@@ -12,7 +12,7 @@ public class DataGenerator {
     private static Payment newPayment() {
         return Payment.builder()
                 .id(SampleData.newKey())
-                .droid(SampleData.starWars().droids())
+                .droid(SampleData.starWars().droid().name())
                 .credits(SampleData.numberBetween(1_000L, 10_000L, 2))
                 .build();
     }

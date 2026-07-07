@@ -17,7 +17,7 @@ public class DataGenerator {
 
     private static Character newCharacter() {
         return Character.builder()
-                .name(SampleData.starWars().characterName().fullName())
+                .name(SampleData.starWars().character().fullName())
                 .description(maybeAddError())
                 .build();
     }

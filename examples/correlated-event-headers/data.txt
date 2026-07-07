@@ -1,10 +1,10 @@
-{"id":"89df0df04da24a15b2ed745080dc6a17","droid":"C1-10P","credits":1482.3}
-{"id":"2959b52095eb49e28267360c9dbe2fcc","droid":"Buzz Droid","credits":6418.84}
-{"id":"753975b81d144d2cb56df941e42d3c5d","droid":"R2-Q5","credits":5558.16}
-{"id":"469bc6ce1df745459761700c6857c4a8","droid":"327-T","credits":8853.97}
-{"id":"53416ec743db4a17ab29175119bf0c5c","droid":"Interrogation Droid","credits":5962.36}
-{"id":"ef64c747847a4d38b099f0e4cff192a4","droid":"C1-10P","credits":9385.65}
-{"id":"bef7e967c85e4f418da2f11a83429295","droid":"BB-9E","credits":7444.09}
-{"id":"d98e8823b5d346ed808fb064ed8cea6f","droid":"2-1B","credits":7505.38}
-{"id":"16b5be5fa7f4455c85f3a155b32922e0","droid":"GNK","credits":3262.54}
-{"id":"7859012d5b04405c8db5771a60b1a8c4","droid":"Super Battle Droid","credits":4680.08}
+{"id":"a8189d590cab44318c574099392cc536","droid":"BD-3000","credits":9938.2}
+{"id":"12330ee9c4c9466c91eb510ea941ae24","droid":"Buzz Droid","credits":9767.08}
+{"id":"871f6cf469784b878aaeea7bfddc3f3f","droid":"ASP","credits":8708.57}
+{"id":"f5459aade7104e85bb884bbb4d707415","droid":"Super Battle Droid","credits":3398.74}
+{"id":"7f6d80fb582a4ca49cb16b52df8f699f","droid":"11-4D","credits":5326.76}
+{"id":"b67fdd7fd17d46618c3c18d31aff446d","droid":"C-3PO","credits":4509.15}
+{"id":"913b70fbb1074fc1a3fea4e5f76de823","droid":"BD-3000","credits":7298.19}
+{"id":"2229f26dbd6c45659c5b3725e8e7d498","droid":"B1","credits":8556.78}
+{"id":"1f7a90239538400eac661446a80ac5e4","droid":"B1","credits":8748.82}
+{"id":"382296203ed0457583656de6d84a2d3f","droid":"ID9","credits":3877.89}

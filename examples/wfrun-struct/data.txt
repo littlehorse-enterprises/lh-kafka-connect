@@ -1,10 +1,10 @@
-{"name":"Poe Dameron","vehicle":{"model":"Naboo N-1 Starfighter"}}
-{"name":"Han Solo","vehicle":{"model":"Imperial Star Destroyer"}}
-{"name":"Padmé Amidala","vehicle":{"model":"AT-AT Walker"}}
-{"name":"Mace Windu","vehicle":{"model":"Naboo Royal Starship"}}
-{"name":"Kylo Ren","vehicle":{"model":"Rey's Speeder"}}
-{"name":"Padmé Amidala","vehicle":{"model":"GR-75 Transport"}}
-{"name":"Luke Skywalker","vehicle":{"model":"Naboo N-1 Starfighter"}}
-{"name":"Han Solo","vehicle":{"model":"Naboo Royal Starship"}}
-{"name":"Kylo Ren","vehicle":{"model":"Phantom II"}}
-{"name":"Darth Vader","vehicle":{"model":"First Order TIE Fighter"}}
+{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}
+{"name":"Jek Porkins","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Dutch Vander","vehicle":{"model":"BTL-A4 Y-wing"}}
+{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+{"name":"Garven Dreis","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}

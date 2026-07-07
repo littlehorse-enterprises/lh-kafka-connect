@@ -10,11 +10,10 @@ public class DataGenerator {
     }
 
     private static String newRecord() {
+        SampleData.StarWars.Pilot source = SampleData.starWars().pilot();
         Pilot pilot = Pilot.builder()
-                .name(SampleData.starWars().characterName().fullName())
-                .vehicle(Vehicle.builder()
-                        .model(SampleData.starWars().vehicles())
-                        .build())
+                .name(source.name())
+                .vehicle(Vehicle.builder().model(source.vehicle()).build())
                 .build();
         return "%s|%s".formatted(SampleData.newKey(), pilot);
     }

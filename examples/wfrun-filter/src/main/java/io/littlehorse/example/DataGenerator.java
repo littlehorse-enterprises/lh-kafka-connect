@@ -21,7 +21,7 @@ public class DataGenerator {
     }
 
     private static Quote newQuote() {
-        String quote = SampleData.starWars().quotes();
+        String quote = SampleData.starWars().character().quote();
         return Quote.builder().quote(quote).length(quote.length()).build();
     }
 }

@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class ForceWielder {
 
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String type;
+    private String lightsaberColor;
 
     @Override
     public String toString() {

@@ -15,7 +15,7 @@ public class DataGenerator {
 
     private static Droid newDroid() {
         return Droid.builder()
-                .name(SampleData.starWars().droids())
+                .name(SampleData.starWars().droid().name())
                 .credits(SampleData.numberBetween(1_000L, 10_000L, 2))
                 .build();
     }

@@ -1,10 +1,10 @@
-{"name":"Naboo","population":7851468}
-{"name":"Alderaan","population":8340508}
-{"name":"Dathomir","population":5534075}
-{"name":"Lothal","population":4730100}
-{"name":"Alderaan","population":6969498}
-{"name":"Crait","population":9054090}
-{"name":"Kamino","population":3285211}
-{"name":"Felucia","population":3744329}
-{"name":"Tatooine","population":7256463}
-{"name":"Starkiller Base","population":8393969}
+{"name":"Kamino","population":1000000000}
+{"name":"Geonosis","population":100000000000}
+{"name":"Geonosis","population":100000000000}
+{"name":"Coruscant","population":1000000000000}
+{"name":"Tatooine","population":200000}
+{"name":"Kamino","population":1000000000}
+{"name":"Geonosis","population":100000000000}
+{"name":"Naboo","population":4500000000}
+{"name":"Geonosis","population":100000000000}
+{"name":"Geonosis","population":100000000000}

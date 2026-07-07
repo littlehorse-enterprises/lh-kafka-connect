@@ -22,10 +22,13 @@ public class DataGenerator {
     }
 
     private static List<SquadronUnit> newSquadronUnitList(int members) {
-        return Stream.generate(() -> SquadronUnit.builder()
-                        .callSign(SampleData.starWars().callSign())
-                        .pilot(SampleData.starWars().characterName().fullName())
-                        .build())
+        return Stream.generate(() -> {
+                    SampleData.StarWars.Pilot pilot = SampleData.starWars().pilot();
+                    return SquadronUnit.builder()
+                            .callSign(pilot.callSign())
+                            .pilot(pilot.name())
+                            .build();
+                })
                 .limit(members)
                 .collect(Collectors.toList());
     }

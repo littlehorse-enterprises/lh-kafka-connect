@@ -1,10 +1,10 @@
-{"name":"Neimoidian"}
-{"name":"Dathomirian"}
-{"name":"Jawa"}
-{"name":"Wookiee"}
-{"name":"Porg"}
+{"name":"Gungan"}
+{"name":"Mon Calamari"}
+{"name":"Mon Calamari"}
+{"name":"Sullustan"}
+{"name":"Gungan"}
 {"name":"Bith"}
-{"name":"Kaminoan"}
-{"name":"Porg"}
-{"name":"Gamorreans"}
 {"name":"Dathomirian"}
+{"name":"Hutt"}
+{"name":"Gungan"}
+{"name":"Kaminoan"}

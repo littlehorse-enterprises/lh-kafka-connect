@@ -15,7 +15,10 @@ import java.util.Map;
 /**
  * Registers a referenced JSON Schema in Apicurio Registry and produces records serialized with the
  * Apicurio JSON Schema serializer. The value schema {@code $ref}s a separate {@code vehicle} schema
- * artifact, demonstrating JSON Schema references. Run with
+ * artifact, demonstrating JSON Schema references.
+ *
+ * <p>The records carry the pilot fields at the top level (no envelope), so the connector relies on a
+ * {@code JsonPathMapperTransform} to reshape them into the {@code WfSpec} input variables. Run with
  * {@code -DmainClass=io.littlehorse.example.Producer}.
  */
 public class Producer {
@@ -41,23 +44,17 @@ public class Producer {
             }
             """;
 
-    // Value schema referencing the vehicle schema via $ref.
+    // Value schema referencing the vehicle schema via $ref (no envelope).
     private static final String PILOT_SCHEMA = """
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "title": "Pilot envelope",
+              "title": "Pilot",
               "type": "object",
               "properties": {
-                "pilot": {
-                  "type": "object",
-                  "properties": {
-                    "name": { "type": "string" },
-                    "vehicle": { "$ref": "https://littlehorse.io/schemas/vehicle.json" }
-                  },
-                  "required": ["name", "vehicle"]
-                }
+                "name": { "type": "string" },
+                "vehicle": { "$ref": "https://littlehorse.io/schemas/vehicle.json" }
               },
-              "required": ["pilot"]
+              "required": ["name", "vehicle"]
             }
             """;
 
@@ -87,13 +84,12 @@ public class Producer {
 
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
+                SampleData.StarWars.Pilot source = SampleData.starWars().pilot();
                 Pilot pilot = Pilot.builder()
-                        .name(SampleData.starWars().characterName().fullName())
-                        .vehicle(Vehicle.builder()
-                                .model(SampleData.starWars().vehicles())
-                                .build())
+                        .name(source.name())
+                        .vehicle(Vehicle.builder().model(source.vehicle()).build())
                         .build();
-                JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PILOT, pilot));
+                JsonNode value = MAPPER.valueToTree(pilot);
                 producer.send(new ProducerRecord<>(TOPIC, null, null, value));
                 System.out.println("Produced: " + value);
             }

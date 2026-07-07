@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 
-    public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-greet";
-    public static final String WF_NAME = "example-wfrun-apicurio-json-schema";
+    public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-envelope-greet";
+    public static final String WF_NAME = "example-wfrun-apicurio-json-schema-envelope";
     public static final String VARIABLE_PERSON = "person";
 
     public static Workflow getWorkflow() {

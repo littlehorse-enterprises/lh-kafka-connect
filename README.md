@@ -557,9 +557,10 @@ For the full list of `apicurio.registry.*` properties supported by the underlyin
 `JsonSchemaKafkaSerializer` / `JsonSchemaKafkaDeserializer`, see the
 [Apicurio Registry serde configuration reference](https://www.apicur.io/registry/docs/apicurio-registry/3.3.x/getting-started/assembly-configuring-kafka-client-serdes.html).
 
-See the [`wfrun-apicurio-json-schema`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema),
+See the [`wfrun-apicurio-json-schema-envelope`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-envelope),
 [`wfrun-apicurio-json-schema-reference`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-reference),
-[`wfrun-apicurio-json-schema-dlq`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-dlq)
+[`wfrun-apicurio-json-schema-json-path`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-json-path),
+[`wfrun-apicurio-json-schema-headers`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/wfrun-apicurio-json-schema-headers)
 and [`apicurio-json-schema-source-sink`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/apicurio-json-schema-source-sink)
 examples.
 

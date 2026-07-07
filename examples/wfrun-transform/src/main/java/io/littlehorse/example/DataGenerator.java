@@ -15,7 +15,7 @@ public class DataGenerator {
     // Film/Director struct, so the generator emits the source fields, not the struct. The
     // cast list is mapped to the JSON_ARR cast variable.
     private static String newFilm() {
-        SampleData.Film film = SampleData.starWars().film();
+        SampleData.StarWars.Film film = SampleData.starWars().film();
         Map<String, Object> raw = new LinkedHashMap<>();
         raw.put("id", film.id());
         raw.put("title", film.title());

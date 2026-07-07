@@ -1,10 +1,10 @@
-6ab9408f13d8435db6a08cd7ddcfeb5f|{"name":"Padmé Amidala","model":"TIE Interceptor"}
-8ee10ebbdac44e34aa5d724f541ff722|{"name":"Leia Organa","model":"GR-75 Transport"}
-f00571124da84ad7bbde64a942b8fc05|{"name":"Mace Windu","model":"ATT Battle Tank"}
-ffddfe2dd0384bc29c19b1195c484a43|{"name":"Padmé Amidala","model":"AT-M6 Walker"}
-e115027961ae4fa2a9cd349e074210b6|{"name":"Darth Vader","model":"AT-M6 Walker"}
-b9092db1ca2048c59300c2b7c6096b58|{"name":"Luke Skywalker","model":"Imperial Star Destroyer"}
-3d027040bee94dda9544e716d8bf80cf|{"name":"Mace Windu","model":"V-Wing Fighter"}
-a7d95368b3884c2794b23be503280878|{"name":"Obi-Wan Kenobi","model":"Sandcrawler"}
-2849bf641ab6414bb7ef2d7c3ff79a94|{"name":"Han Solo","model":"Phantom II"}
-2dc788d628fc41a484abecb6791942df|{"name":"Kylo Ren","model":"Sandcrawler"}
+da13f620768d4dd69f491f27c7d23d56|{"name":"Garven Dreis","model":"T-65 X-wing"}
+cc0c44a2f8804392baef553cb22517ce|{"name":"Dutch Vander","model":"BTL-A4 Y-wing"}
+05ee8dc46c2945a3aec0130272646964|{"name":"Luke Skywalker","model":"T-65 X-wing"}
+4b155ebfcc1f40f4ad4faac77c971c04|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+0e95e5b66cbc4e12b5c850a794492422|{"name":"Poe Dameron","model":"T-70 X-wing"}
+4cd93eb3cbbe401bb5351be13463a03e|{"name":"Wes Janson","model":"T-47 airspeeder"}
+8f7b27d4e16745139d97d579531a361f|{"name":"Wes Janson","model":"T-47 airspeeder"}
+f78d151b7d8d4afcbf185d6706d9fe0c|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+170a27aacd00456eb8f887330f60e781|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+0577270391d44541b42d63f038ddbbd1|{"name":"Zev Senesca","model":"T-47 airspeeder"}

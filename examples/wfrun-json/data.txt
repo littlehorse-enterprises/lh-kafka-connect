@@ -1,10 +1,10 @@
-{"name":"Boba Fett","vehicle":{"model":"TIE Bomber"}}
-{"name":"Han Solo","vehicle":{"model":"Republic Cruiser"}}
-{"name":"Mace Windu","vehicle":{"model":"First Order TIE Fighter"}}
-{"name":"Obi-Wan Kenobi","vehicle":{"model":"Imperial Interdictor"}}
-{"name":"Boba Fett","vehicle":{"model":"Millennium Falcon"}}
-{"name":"Kylo Ren","vehicle":{"model":"Naboo N-1 Starfighter"}}
-{"name":"Poe Dameron","vehicle":{"model":"Millennium Falcon"}}
-{"name":"Poe Dameron","vehicle":{"model":"GR-75 Transport"}}
-{"name":"Poe Dameron","vehicle":{"model":"Sith Infiltrator"}}
-{"name":"Leia Organa","vehicle":{"model":"Republic Attack Gunship"}}
+{"name":"Garven Dreis","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Jek Porkins","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}
+{"name":"Dutch Vander","vehicle":{"model":"BTL-A4 Y-wing"}}
+{"name":"Dutch Vander","vehicle":{"model":"BTL-A4 Y-wing"}}
+{"name":"Luke Skywalker","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Biggs Darklighter","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Jek Porkins","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Garven Dreis","vehicle":{"model":"T-65 X-wing"}}
+{"name":"Biggs Darklighter","vehicle":{"model":"T-65 X-wing"}}

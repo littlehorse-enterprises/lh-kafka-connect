@@ -10,9 +10,10 @@ public class DataGenerator {
     }
 
     private static Planet newPlanet() {
+        SampleData.StarWars.Planet source = SampleData.starWars().planet();
         return Planet.builder()
-                .name(SampleData.starWars().planets())
-                .population(SampleData.numberBetween(1_000_000L, 10_000_000L))
+                .name(source.name())
+                .population(source.population())
                 .build();
     }
 }

@@ -12,6 +12,6 @@ public class DataGenerator {
     }
 
     private static String newCharacter() {
-        return SampleData.starWars().characterName().fullName();
+        return SampleData.starWars().character().fullName();
     }
 }

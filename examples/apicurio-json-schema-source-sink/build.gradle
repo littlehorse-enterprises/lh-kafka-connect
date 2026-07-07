@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     // littlehorse example utils (ApicurioRegistry helper)
-    implementation project(":common")
+    implementation project(":examples-common")
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"

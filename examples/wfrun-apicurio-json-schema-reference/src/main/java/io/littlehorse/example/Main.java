@@ -12,15 +12,15 @@ public class Main {
 
     public static final String TASK_DEF_NAME = "example-wfrun-apicurio-json-schema-reference-greet";
     public static final String WF_NAME = "example-wfrun-apicurio-json-schema-reference";
-    public static final String VARIABLE_PERSON = "person";
+    public static final String VARIABLE_PILOT = "pilot";
 
     public static Workflow getWorkflow() {
         return Workflow.newWorkflow(
-                WF_NAME, wf -> wf.execute(TASK_DEF_NAME, wf.declareJsonObj(VARIABLE_PERSON)));
+                WF_NAME, wf -> wf.execute(TASK_DEF_NAME, wf.declareJsonObj(VARIABLE_PILOT)));
     }
 
     private static LHTaskWorker getTaskWorker(LHConfig lhConfig) {
-        LHTaskWorker worker = new LHTaskWorker(new PersonWorker(), TASK_DEF_NAME, lhConfig);
+        LHTaskWorker worker = new LHTaskWorker(new PilotWorker(), TASK_DEF_NAME, lhConfig);
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
         return worker;
     }
@@ -37,12 +37,12 @@ public class Main {
         worker.start();
     }
 
-    public static class PersonWorker {
+    public static class PilotWorker {
 
         @LHTaskMethod(TASK_DEF_NAME)
-        public String greet(Person person) {
-            String message =
-                    "Hello " + person.getName() + " from " + person.getAddress().getCity() + "!";
+        public String greet(Pilot pilot) {
+            String message = "Hello " + pilot.getName() + " flying a "
+                    + pilot.getVehicle().getModel() + "!";
             log.info(message);
             return message;
         }

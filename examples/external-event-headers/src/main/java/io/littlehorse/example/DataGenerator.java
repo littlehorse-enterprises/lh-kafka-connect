@@ -3,7 +3,6 @@ package io.littlehorse.example;
 import net.datafaker.Faker;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,13 +20,9 @@ public class DataGenerator {
 
     private static Squadron newSquadron(int squadronSize) {
         return Squadron.builder()
-                .id(newKey())
+                .id(SampleData.newKey())
                 .units(newSquadronUnitList(squadronSize))
                 .build();
-    }
-
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 
     private static List<SquadronUnit> newSquadronUnitList(int members) {

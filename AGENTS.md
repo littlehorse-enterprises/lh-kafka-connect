@@ -19,7 +19,7 @@ Three sink connectors are provided:
   - `src/main/java/io/littlehorse/connect/` — production code.
   - `src/test/java/io/littlehorse/connect/` — unit tests.
   - `src/test/java/e2e/` — end-to-end tests (Testcontainers + Kafka Connect).
-- `common/` — shared serializers used by examples and tests.
+- `examples-common/` — shared serializers and sample-data helpers used by examples and tests.
 - `examples/` — runnable example modules, each registered in `settings.gradle` as `example-<name>`.
 - `build.gradle`, `settings.gradle`, `gradle.properties` — build configuration; dependency versions live in `gradle.properties`.
 

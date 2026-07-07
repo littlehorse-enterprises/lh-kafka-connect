@@ -11,39 +11,11 @@ pluginManagement {
 
 rootProject.name = "lh-kafka-connect"
 include "connector"
-include "common"
+include "examples-common"
 
-[
-        "wfrun-json",
-        "wfrun-struct",
-        "wfrun-dlq",
-        "wfrun-simple",
-        "wfrun-headers",
-        "wfrun-avro",
-        "wfrun-apicurio-json-schema",
-        "wfrun-apicurio-json-schema-reference",
-        "wfrun-apicurio-json-schema-dlq",
-        "apicurio-json-schema-source-sink",
-        "wfrun-list",
-        "wfrun-filter",
-        "wfrun-json-path-filter",
-        "wfrun-protobuf",
-        "wfrun-secrets",
-        "wfrun-value-to-header",
-        "wfrun-parent",
-        "wfrun-transform",
-        "external-event-json",
-        "external-event-json-path",
-        "external-event-value-to-key",
-        "external-event-simple",
-        "external-event-struct",
-        "external-event-headers",
-        "correlated-event-simple",
-        "correlated-event-struct",
-        "correlated-event-json",
-        "correlated-event-json-path",
-        "correlated-event-headers"
-].each { example ->
-    include "example-$example"
-    project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")
+new File(rootProject.projectDir, "examples").eachDir { dir ->
+    if (new File(dir, "build.gradle").exists()) {
+        include "example-${dir.name}"
+        project(":example-${dir.name}").projectDir = dir
+    }
 }

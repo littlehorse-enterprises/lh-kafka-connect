@@ -2,7 +2,6 @@ package io.littlehorse.example;
 
 import net.datafaker.Faker;
 
-import java.util.UUID;
 import java.util.stream.Stream;
 
 public class DataGenerator {
@@ -14,15 +13,11 @@ public class DataGenerator {
         Stream.generate(DataGenerator::newRecord).limit(datasetSize).forEach(System.out::println);
     }
 
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
     private static String newRecord() {
         Pilot pilot = Pilot.builder()
                 .name(faker.starWars().character())
                 .vehicle(Vehicle.builder().model(faker.starWars().vehicles()).build())
                 .build();
-        return "%s|%s".formatted(newKey(), pilot);
+        return "%s|%s".formatted(SampleData.newKey(), pilot);
     }
 }

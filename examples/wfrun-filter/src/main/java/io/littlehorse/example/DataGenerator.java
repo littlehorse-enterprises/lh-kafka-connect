@@ -4,7 +4,6 @@ import static io.littlehorse.example.Main.WF_NAME;
 
 import net.datafaker.Faker;
 
-import java.util.UUID;
 import java.util.stream.Stream;
 
 public class DataGenerator {
@@ -20,13 +19,9 @@ public class DataGenerator {
 
     private static QuoteKey newQuoteKey() {
         return QuoteKey.builder()
-                .id(newKey())
+                .id(SampleData.newKey())
                 .wfSpecName(faker.bool().bool() ? WF_NAME : "invalid-wf-spec-name")
                 .build();
-    }
-
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 
     private static Quote newQuote() {

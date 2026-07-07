@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Registers a referenced JSON Schema in Apicurio Registry and produces records serialized with the
- * Apicurio JSON Schema serializer. The value schema {@code $ref}s a separate {@code address} schema
+ * Apicurio JSON Schema serializer. The value schema {@code $ref}s a separate {@code vehicle} schema
  * artifact, demonstrating JSON Schema references. Run with
  * {@code -DmainClass=io.littlehorse.example.Producer}.
  */
@@ -26,41 +26,40 @@ public class Producer {
     private static final String APICURIO_URL = "http://localhost:8080/apis/registry/v3";
     private static final String TOPIC = "example-wfrun-apicurio-json-schema-reference";
     private static final String ARTIFACT_ID = TOPIC + "-value";
-    private static final String ADDRESS_ARTIFACT_ID = "example-address";
-    private static final String ADDRESS_REF = "https://littlehorse.io/schemas/address.json";
+    private static final String VEHICLE_ARTIFACT_ID = "example-vehicle";
+    private static final String VEHICLE_REF = "https://littlehorse.io/schemas/vehicle.json";
 
     // Standalone schema that the value schema references.
-    private static final String ADDRESS_SCHEMA = """
+    private static final String VEHICLE_SCHEMA = """
             {
-              "$id": "https://littlehorse.io/schemas/address.json",
+              "$id": "https://littlehorse.io/schemas/vehicle.json",
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "title": "Address",
+              "title": "Vehicle",
               "type": "object",
               "properties": {
-                "street": { "type": "string" },
-                "city": { "type": "string" }
+                "model": { "type": "string" }
               },
-              "required": ["street", "city"]
+              "required": ["model"]
             }
             """;
 
-    // Value schema referencing the address schema via $ref.
-    private static final String PERSON_SCHEMA = """
+    // Value schema referencing the vehicle schema via $ref.
+    private static final String PILOT_SCHEMA = """
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "title": "Person envelope",
+              "title": "Pilot envelope",
               "type": "object",
               "properties": {
-                "person": {
+                "pilot": {
                   "type": "object",
                   "properties": {
                     "name": { "type": "string" },
-                    "address": { "$ref": "https://littlehorse.io/schemas/address.json" }
+                    "vehicle": { "$ref": "https://littlehorse.io/schemas/vehicle.json" }
                   },
-                  "required": ["name", "address"]
+                  "required": ["name", "vehicle"]
                 }
               },
-              "required": ["person"]
+              "required": ["pilot"]
             }
             """;
 
@@ -72,13 +71,13 @@ public class Producer {
 
         ApicurioRegistry registry = new ApicurioRegistry(APICURIO_URL);
         // Register the referenced schema first, then the value schema that references it.
-        registry.register("default", ADDRESS_ARTIFACT_ID, ADDRESS_SCHEMA);
+        registry.register("default", VEHICLE_ARTIFACT_ID, VEHICLE_SCHEMA);
         registry.register(
                 "default",
                 ARTIFACT_ID,
-                PERSON_SCHEMA,
+                PILOT_SCHEMA,
                 List.of(new ApicurioRegistry.Reference(
-                        ADDRESS_REF, "default", ADDRESS_ARTIFACT_ID, "1")));
+                        VEHICLE_REF, "default", VEHICLE_ARTIFACT_ID, "1")));
 
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -91,14 +90,13 @@ public class Producer {
 
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
-                Person person = Person.builder()
-                        .name(FAKER.name().fullName())
-                        .address(Address.builder()
-                                .street(FAKER.address().streetAddress())
-                                .city(FAKER.address().city())
+                Pilot pilot = Pilot.builder()
+                        .name(FAKER.starWars().character())
+                        .vehicle(Vehicle.builder()
+                                .model(FAKER.starWars().vehicles())
                                 .build())
                         .build();
-                JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PERSON, person));
+                JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PILOT, pilot));
                 producer.send(new ProducerRecord<>(TOPIC, null, null, value));
                 System.out.println("Produced: " + value);
             }

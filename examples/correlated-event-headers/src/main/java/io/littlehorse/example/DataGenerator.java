@@ -2,7 +2,6 @@ package io.littlehorse.example;
 
 import net.datafaker.Faker;
 
-import java.util.UUID;
 import java.util.stream.Stream;
 
 public class DataGenerator {
@@ -14,13 +13,9 @@ public class DataGenerator {
         Stream.generate(DataGenerator::newPayment).limit(datasetSize).forEach(System.out::println);
     }
 
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
     private static Payment newPayment() {
         return Payment.builder()
-                .id(newKey())
+                .id(SampleData.newKey())
                 .droid(faker.starWars().droids())
                 .credits(faker.number().numberBetween(1_000L, 10_000L))
                 .build();

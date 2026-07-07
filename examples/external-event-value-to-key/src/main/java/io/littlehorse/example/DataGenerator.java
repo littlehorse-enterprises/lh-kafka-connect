@@ -2,7 +2,6 @@ package io.littlehorse.example;
 
 import net.datafaker.Faker;
 
-import java.util.UUID;
 import java.util.stream.Stream;
 
 public class DataGenerator {
@@ -16,14 +15,10 @@ public class DataGenerator {
                 .forEach(System.out::println);
     }
 
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
     private static Character newCharacter() {
         return Character.builder()
                 .name(faker.starWars().character())
-                .wfRunId(newKey())
+                .wfRunId(SampleData.newKey())
                 .build();
     }
 }

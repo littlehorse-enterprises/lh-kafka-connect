@@ -1,10 +1,10 @@
-{"name":"Anakin Skywalker","vehicle":{"model":"TIE Interceptor"}}
-{"name":"Mace Windu","vehicle":{"model":"Resistance Ski Speeder"}}
-{"name":"Kylo Ren","vehicle":{"model":"First Order Dreadnought"}}
-{"name":"Shmi Skywalker","vehicle":{"model":"Sandcrawler"}}
-{"name":"Captain Phasma","vehicle":{"model":"ATT Battle Tank"}}
-{"name":"Watto","vehicle":{"model":"TIE Bomber"}}
-{"name":"Jango Fett","vehicle":{"model":"Republic Attack Gunship"}}
-{"name":"Chewbacca","vehicle":{"model":"TIE Silencer"}}
-{"name":"Sheev Palpatine","vehicle":{"model":"Speeder Bike"}}
-{"name":"Rose Tico","vehicle":{"model":"MTT"}}
+{"name":"Boba Fett","vehicle":{"model":"TIE Bomber"}}
+{"name":"Han Solo","vehicle":{"model":"Republic Cruiser"}}
+{"name":"Mace Windu","vehicle":{"model":"First Order TIE Fighter"}}
+{"name":"Obi-Wan Kenobi","vehicle":{"model":"Imperial Interdictor"}}
+{"name":"Boba Fett","vehicle":{"model":"Millennium Falcon"}}
+{"name":"Kylo Ren","vehicle":{"model":"Naboo N-1 Starfighter"}}
+{"name":"Poe Dameron","vehicle":{"model":"Millennium Falcon"}}
+{"name":"Poe Dameron","vehicle":{"model":"GR-75 Transport"}}
+{"name":"Poe Dameron","vehicle":{"model":"Sith Infiltrator"}}
+{"name":"Leia Organa","vehicle":{"model":"Republic Attack Gunship"}}

@@ -1,10 +1,10 @@
-427a63878fae4f91b251040e0449b19a|{"name":"Luke Skywalker","model":"Snowspeeder"}
-003246152ac542b5a816d2ea9f304f1d|{"name":"Han Solo","model":"Millennium Falcon"}
-39c2fef095874e2b8daa5e40205bc992|{"name":"Anakin Skywalker","model":"Jedi starfighter"}
-532c0e6d7e144c479f22e0ddacdc8805|{"name":"Leia Organa","model":"Tantive IV"}
-fa4751cfcd1d49bf8fbdaacc4dedb849|{"name":"Padme Amidala","model":"Naboo Royal Starship"}
-1ae7e59edb994c498a9439c05fd8d8dd|{"name":"Obi-Wan Kenobi","model":"Jedi starfighter"}
-694ed302937a475f9c0c42eac8b6f02e|{"name":"Boba Fett","model":"Slave I"}
-547ac029716a401fa69983fba5e7c92f|{"name":"Lando Calrissian","model":"Millennium Falcon"}
-bf95d1a8eebd490982ea6bbf8ef1bd72|{"name":"Wedge Antilles","model":"X-wing"}
-6a3132c856984460b0431794d5032835|{"name":"Darth Vader","model":"TIE Advanced x1"}
+6ab9408f13d8435db6a08cd7ddcfeb5f|{"name":"Padmé Amidala","model":"TIE Interceptor"}
+8ee10ebbdac44e34aa5d724f541ff722|{"name":"Leia Organa","model":"GR-75 Transport"}
+f00571124da84ad7bbde64a942b8fc05|{"name":"Mace Windu","model":"ATT Battle Tank"}
+ffddfe2dd0384bc29c19b1195c484a43|{"name":"Padmé Amidala","model":"AT-M6 Walker"}
+e115027961ae4fa2a9cd349e074210b6|{"name":"Darth Vader","model":"AT-M6 Walker"}
+b9092db1ca2048c59300c2b7c6096b58|{"name":"Luke Skywalker","model":"Imperial Star Destroyer"}
+3d027040bee94dda9544e716d8bf80cf|{"name":"Mace Windu","model":"V-Wing Fighter"}
+a7d95368b3884c2794b23be503280878|{"name":"Obi-Wan Kenobi","model":"Sandcrawler"}
+2849bf641ab6414bb7ef2d7c3ff79a94|{"name":"Han Solo","model":"Phantom II"}
+2dc788d628fc41a484abecb6791942df|{"name":"Kylo Ren","model":"Sandcrawler"}

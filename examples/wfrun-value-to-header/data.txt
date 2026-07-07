@@ -1,10 +1,10 @@
-{"id":"custom-id-73cab66c-1187-4e72-88e9-5b0ca57af75b","name":"Chewbacca"}
-{"id":"custom-id-55edd677-cf87-42c0-90bb-0bb8750e5bf0","name":"Sheev Palpatine"}
-{"id":"custom-id-9e64e104-3585-4eca-b3c2-af3237974d0d","name":"Hera Syndulla"}
-{"id":"custom-id-3bec2fce-ef6f-4a5f-ae43-802168c1eb46","name":"Ahsoka Tano"}
-{"id":"custom-id-68c51c16-f4f2-4f3b-bfb5-712ca9b4d6a0","name":"Obi-Wan Kenobi"}
-{"id":"custom-id-cdf12913-96b5-4fec-8530-01a28aff26c7","name":"Nute Gunray"}
-{"id":"custom-id-6b4b8491-cf2a-4db9-97d7-2a1cd7ba85ec","name":"Count Dooku"}
-{"id":"custom-id-15c27cae-ebc7-4bf4-a1c4-18abc15d3a76","name":"Rey"}
-{"id":"custom-id-f7f8e3fb-f5fe-4516-8bb2-f0df9265693a","name":"Rose Tico"}
-{"id":"custom-id-14589e23-75c1-44b8-8237-462bb6b27e38","name":"Vice Admiral Holdo"}
+{"id":"1037f2091eae4e659abb9e10986b0d8d","name":"Luke Skywalker"}
+{"id":"caa475dee9ea4630b71923830ea433e8","name":"Darth Vader"}
+{"id":"21ac670e305e4b48b802d5e617fd61db","name":"Padmé Amidala"}
+{"id":"f34ce32a38e04a98a24786f1633770ea","name":"Leia Organa"}
+{"id":"31415696c6bf42348bf73846070d7e27","name":"Boba Fett"}
+{"id":"1ceb362e244941888ada645ecb3fde96","name":"Padmé Amidala"}
+{"id":"3698fbc2f6d947e784afcd8cf44f56aa","name":"Boba Fett"}
+{"id":"0fef58aa79a645bcb9428a531f474e07","name":"Boba Fett"}
+{"id":"97bf4c40985e4bfca6311a46fdb1a9db","name":"Kylo Ren"}
+{"id":"17e21238618845d9a07b90a9c08fa707","name":"Leia Organa"}

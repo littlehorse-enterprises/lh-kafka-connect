@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     // utils
-    implementation "net.datafaker:datafaker:${datafakerVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation project(":examples-common")
 

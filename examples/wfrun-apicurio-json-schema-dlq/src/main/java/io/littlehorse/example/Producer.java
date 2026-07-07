@@ -61,7 +61,7 @@ public class Producer {
 
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
-                SampleData.CharacterName name = SampleData.characterName();
+                SampleData.StarWars.CharacterName name = SampleData.starWars().characterName();
                 Person person = Person.builder()
                         .firstName(name.firstName())
                         .lastName(name.lastName())

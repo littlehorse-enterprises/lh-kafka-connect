@@ -1,10 +1,10 @@
-{"name":"Luke Skywalker","vehicle":{"model":"Snowspeeder"}}
-{"name":"Han Solo","vehicle":{"model":"Millennium Falcon"}}
-{"name":"Anakin Skywalker","vehicle":{"model":"Jedi starfighter"}}
-{"name":"Leia Organa","vehicle":{"model":"Tantive IV"}}
-{"name":"Padme Amidala","vehicle":{"model":"Naboo Royal Starship"}}
-{"name":"Obi-Wan Kenobi","vehicle":{"model":"Jedi starfighter"}}
-{"name":"Boba Fett","vehicle":{"model":"Slave I"}}
-{"name":"Lando Calrissian","vehicle":{"model":"Millennium Falcon"}}
-{"name":"Wedge Antilles","vehicle":{"model":"X-wing"}}
-{"name":"Darth Vader","vehicle":{"model":"TIE Advanced x1"}}
+{"name":"Poe Dameron","vehicle":{"model":"Naboo N-1 Starfighter"}}
+{"name":"Han Solo","vehicle":{"model":"Imperial Star Destroyer"}}
+{"name":"Padmé Amidala","vehicle":{"model":"AT-AT Walker"}}
+{"name":"Mace Windu","vehicle":{"model":"Naboo Royal Starship"}}
+{"name":"Kylo Ren","vehicle":{"model":"Rey's Speeder"}}
+{"name":"Padmé Amidala","vehicle":{"model":"GR-75 Transport"}}
+{"name":"Luke Skywalker","vehicle":{"model":"Naboo N-1 Starfighter"}}
+{"name":"Han Solo","vehicle":{"model":"Naboo Royal Starship"}}
+{"name":"Kylo Ren","vehicle":{"model":"Phantom II"}}
+{"name":"Darth Vader","vehicle":{"model":"First Order TIE Fighter"}}

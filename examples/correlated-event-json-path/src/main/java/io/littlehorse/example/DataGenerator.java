@@ -14,7 +14,7 @@ public class DataGenerator {
     // The raw records carry flat firstName/lastName fields; the JsonPathMapperTransform
     // concatenates them into the single STR content the correlated event posts.
     private static String newRecord() {
-        SampleData.CharacterName name = SampleData.characterName();
+        SampleData.StarWars.CharacterName name = SampleData.starWars().characterName();
         Map<String, Object> raw = new LinkedHashMap<>();
         raw.put("firstName", name.firstName());
         raw.put("lastName", name.lastName());

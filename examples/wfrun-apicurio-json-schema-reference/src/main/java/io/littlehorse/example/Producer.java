@@ -3,8 +3,6 @@ package io.littlehorse.example;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.datafaker.Faker;
-
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -64,7 +62,6 @@ public class Producer {
             """;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final Faker FAKER = new Faker();
 
     public static void main(String[] args) {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
@@ -91,9 +88,9 @@ public class Producer {
         try (KafkaProducer<String, JsonNode> producer = new KafkaProducer<>(config)) {
             for (int i = 0; i < datasetSize; i++) {
                 Pilot pilot = Pilot.builder()
-                        .name(FAKER.starWars().character())
+                        .name(SampleData.starWars().characterName().fullName())
                         .vehicle(Vehicle.builder()
-                                .model(FAKER.starWars().vehicles())
+                                .model(SampleData.starWars().vehicles())
                                 .build())
                         .build();
                 JsonNode value = MAPPER.valueToTree(Map.of(Main.VARIABLE_PILOT, pilot));

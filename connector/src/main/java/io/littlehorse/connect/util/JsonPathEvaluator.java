@@ -17,6 +17,10 @@ import java.util.Map;
  * {@code {key, value, headers, partition, offset}}. {@code Struct} values are flattened to plain
  * maps/lists so they can be navigated by JSONPath, and missing paths resolve to {@code null}
  * instead of throwing.
+ *
+ * <p>{@code offset} is only populated for {@link SinkRecord}s (source records carry no Kafka
+ * offset, so it resolves to {@code null}), and {@code partition} is {@code null} whenever the
+ * record has no assigned partition.
  */
 public final class JsonPathEvaluator {
 

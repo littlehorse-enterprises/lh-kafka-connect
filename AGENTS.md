@@ -112,7 +112,12 @@ Local stack:
   value, so reaching this path means using the `null` literal text or a non-REST config source.
 - `JsonPathMapperTransform` builds the domain from scratch by evaluating JSONPath expressions
   (values must start with `$`) against the record envelope `{key, value, headers, partition,
-  offset}`; unmapped fields are dropped. Functions such as `concat`/`sum` are supported.
+  offset}`; unmapped fields are dropped. Functions such as `concat`/`sum` are supported. The
+  envelope is populated by `util/JsonPathEvaluator`: `offset` is only set for `SinkRecord`s (it is
+  `null` on source records, which carry no Kafka offset) and `partition` is `null` when the record
+  has no assigned partition, so on source connectors only `$.key`/`$.value`/`$.headers` are
+  generally useful. The transform is a plain SMT, so it also runs on source connectors (see the
+  `source-json-path` example).
 - `LiteralMapperTransform` injects constant values whose type is inferred (int, double,
   `true`/`false`, `null`, else string; double-quote to force a string). Setting
   `implicit.casting.enabled=false` disables inference and keeps every value as its original

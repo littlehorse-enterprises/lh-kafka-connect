@@ -139,6 +139,7 @@ services:
       - ./connector/build/bundle:/usr/local/share/kafka/plugins:ro
       - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties:ro
       - ./examples/apicurio-json-schema-source-sink:/data:ro
+      - ./examples/source-json-path:/data-json-path:ro
 
   apicurio:
     image: apicurio/apicurio-registry:${APICURIO_VERSION}

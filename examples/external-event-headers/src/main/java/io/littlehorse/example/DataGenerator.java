@@ -1,15 +1,10 @@
 package io.littlehorse.example;
 
-import net.datafaker.Faker;
-
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DataGenerator {
-
-    private static final Faker faker = new Faker();
 
     public static void main(String[] args) {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
@@ -21,20 +16,19 @@ public class DataGenerator {
 
     private static Squadron newSquadron(int squadronSize) {
         return Squadron.builder()
-                .id(newKey())
+                .id(SampleData.newKey())
                 .units(newSquadronUnitList(squadronSize))
                 .build();
     }
 
-    private static String newKey() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
     private static List<SquadronUnit> newSquadronUnitList(int members) {
-        return Stream.generate(() -> SquadronUnit.builder()
-                        .callSign(faker.starWars().callSign())
-                        .pilot(faker.starWars().character())
-                        .build())
+        return Stream.generate(() -> {
+                    SampleData.StarWars.Pilot pilot = SampleData.starWars().pilot();
+                    return SquadronUnit.builder()
+                            .callSign(pilot.callSign())
+                            .pilot(pilot.name())
+                            .build();
+                })
                 .limit(members)
                 .collect(Collectors.toList());
     }

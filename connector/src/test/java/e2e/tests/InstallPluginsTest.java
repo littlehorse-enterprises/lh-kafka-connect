@@ -35,6 +35,9 @@ public class InstallPluginsTest extends E2ETest {
                                         "sink"),
                                 buildEntry("io.littlehorse.connect.WfRunSinkConnector", "sink"),
                                 buildEntry(
+                                        "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter",
+                                        "converter"),
+                                buildEntry(
                                         "io.littlehorse.connect.predicate.FilterByFieldPredicate$Key",
                                         "predicate"),
                                 buildEntry(

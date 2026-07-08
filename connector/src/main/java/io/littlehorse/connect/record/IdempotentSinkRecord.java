@@ -4,6 +4,8 @@ import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.connect.header.Header;
 import org.apache.kafka.connect.sink.SinkRecord;
 
+import java.util.Locale;
+
 public class IdempotentSinkRecord extends SinkRecord {
     public static final String WF_RUN_ID = "wfRunId";
     public static final String PARENT_WF_RUN_ID = "parentWfRunId";
@@ -34,7 +36,7 @@ public class IdempotentSinkRecord extends SinkRecord {
         return String.format(
                         "%s-%s-%d-%d", connectorName(), topic(), kafkaPartition(), kafkaOffset())
                 // a topic supports ".", "_" and upper case
-                .toLowerCase()
+                .toLowerCase(Locale.ROOT)
                 .replace("_", "-")
                 .replace(".", "-");
     }

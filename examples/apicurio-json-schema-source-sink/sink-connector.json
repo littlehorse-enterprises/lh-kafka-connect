@@ -1,0 +1,9 @@
+{
+  "connector.class": "org.apache.kafka.connect.file.FileStreamSinkConnector",
+  "tasks.max": 1,
+  "file": "/tmp/sink.txt",
+  "topics": "example-apicurio-source-sink",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter",
+  "value.converter.apicurio.registry.url": "http://apicurio:8080/apis/registry/v3"
+}

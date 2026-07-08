@@ -4,11 +4,10 @@ plugins {
 
 dependencies {
     // utils
-    implementation "net.datafaker:datafaker:${datafakerVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
-    implementation project(":common")
+    implementation project(":examples-common")
 
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${version}"

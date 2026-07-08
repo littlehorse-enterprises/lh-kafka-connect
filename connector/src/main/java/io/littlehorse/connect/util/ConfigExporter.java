@@ -6,6 +6,7 @@ import io.littlehorse.connect.ExternalEventSinkConnector;
 import io.littlehorse.connect.ExternalEventSinkConnectorConfig;
 import io.littlehorse.connect.WfRunSinkConnector;
 import io.littlehorse.connect.WfRunSinkConnectorConfig;
+import io.littlehorse.connect.converter.apicurio.JsonSchemaKafkaConverter;
 import io.littlehorse.connect.predicate.FilterByFieldPredicate;
 import io.littlehorse.connect.predicate.FilterByFieldPredicateConfig;
 import io.littlehorse.connect.predicate.JsonPathFilterPredicate;
@@ -37,6 +38,10 @@ public class ConfigExporter {
             Section.builder()
                     .title(CorrelatedEventSinkConnector.class.getSimpleName())
                     .content(CorrelatedEventSinkConnectorConfig.CONFIG_DEF.toEnrichedRst())
+                    .build(),
+            Section.builder()
+                    .title(JsonSchemaKafkaConverter.class.getSimpleName())
+                    .content(JsonSchemaKafkaConverter.CONFIG_DEF.toEnrichedRst())
                     .build(),
             Section.builder()
                     .title(FilterByFieldPredicate.class.getSimpleName())

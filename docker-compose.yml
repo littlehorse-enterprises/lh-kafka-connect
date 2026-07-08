@@ -127,6 +127,8 @@ services:
         condition: service_healthy
       schema-registry:
         condition: service_healthy
+      apicurio:
+        condition: service_healthy
     healthcheck:
       test: curl http://localhost:8083
       interval: 30s
@@ -134,19 +136,64 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - ./connector/build/bundle:/usr/local/share/kafka/plugins
-      - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties
+      - ./connector/build/bundle:/usr/local/share/kafka/plugins:ro
+      - ./examples/wfrun-secrets/secrets.properties:/home/appuser/secrets.properties:ro
+      - ./examples/apicurio-json-schema-source-sink:/data:ro
 
-  lhctl:
-    image: ghcr.io/littlehorse-enterprises/littlehorse/lhctl:${LITTLEHORSE_VERSION}
-    command: version
-    depends_on:
-      littlehorse:
-        condition: service_healthy
-    restart: on-failure
+  apicurio:
+    image: apicurio/apicurio-registry:${APICURIO_VERSION}
     environment:
-      LHC_API_HOST: littlehorse
-      LHC_API_PORT: 2024
+      QUARKUS_HTTP_PORT: 8080
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    healthcheck:
+      test: curl http://localhost:8080/apis/registry/v3/system/info
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  apicurio-ui:
+    image: apicurio/apicurio-registry-ui:${APICURIO_VERSION}
+    environment:
+      # Browser-accessible URL of the registry API (mapped to the host on 8080).
+      REGISTRY_API_URL: http://localhost:8080/apis/registry/v3
+    ports:
+      - "8888:8080"
+    restart: on-failure
+    depends_on:
+      apicurio:
+        condition: service_healthy
+    healthcheck:
+      test: curl http://localhost:8080
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  kafka-ui:
+    image: kafbat/kafka-ui:latest
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: connect
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://kafka-connect:8083
+    ports:
+      - "8090:8080"
+    restart: on-failure
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka-connect:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --spider http://localhost:8080/actuator/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   littlehorse:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:${LITTLEHORSE_VERSION}
@@ -171,7 +218,7 @@ services:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
       LHS_LISTENERS_PROTOCOL_MAP: EXTERNAL:PLAIN,INTERNAL:PLAIN
 
-  dashboard:
+  littlehorse-ui:
     image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:${LITTLEHORSE_VERSION}
     ports:
       - "3000:3000"
@@ -183,7 +230,7 @@ services:
       LHC_API_PORT: 2024
       LHC_OAUTH_ENABLED: false
     healthcheck:
-      test: wget --no-verbose --spider 0.0.0.0:3000
+      test: wget --no-verbose --spider http://localhost:3000
       interval: 10s
       timeout: 10s
       retries: 5

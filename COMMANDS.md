@@ -15,10 +15,10 @@ docker compose logs -f kafka-connect
 docker compose logs -f kafka-connect --no-log-prefix
 ```
 
-Restart kafka connect:
+Rebuild the plugin bundle and restart kafka connect to load it:
 
 ```shell
-docker compose restart kafka-connect
+./gradlew updateConfluentBundle
 ```
 
 Stop containers:

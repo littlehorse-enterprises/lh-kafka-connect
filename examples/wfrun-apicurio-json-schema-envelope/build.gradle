@@ -1,16 +1,18 @@
 plugins {
-    id "java-library"
+    id "application"
 }
 
 dependencies {
     // utils
-    implementation "net.datafaker:datafaker:${datafakerVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    implementation project(":examples-common")
 
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${version}"
+
+    // kafka + apicurio json schema serde (used by the producer)
+    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
+    implementation "io.apicurio:apicurio-registry-jsonschema-serde-kafka:${apicurioVersion}"
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -27,6 +29,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = System.getProperty("mainClass", "io.littlehorse.example.Main")
 }
 
 compileJava {

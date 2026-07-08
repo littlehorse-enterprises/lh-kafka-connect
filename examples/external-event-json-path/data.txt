@@ -1,10 +1,10 @@
-427a63878fae4f91b251040e0449b19a|{"name":"Luke Skywalker","model":"Snowspeeder"}
-003246152ac542b5a816d2ea9f304f1d|{"name":"Han Solo","model":"Millennium Falcon"}
-39c2fef095874e2b8daa5e40205bc992|{"name":"Anakin Skywalker","model":"Jedi starfighter"}
-532c0e6d7e144c479f22e0ddacdc8805|{"name":"Leia Organa","model":"Tantive IV"}
-fa4751cfcd1d49bf8fbdaacc4dedb849|{"name":"Padme Amidala","model":"Naboo Royal Starship"}
-1ae7e59edb994c498a9439c05fd8d8dd|{"name":"Obi-Wan Kenobi","model":"Jedi starfighter"}
-694ed302937a475f9c0c42eac8b6f02e|{"name":"Boba Fett","model":"Slave I"}
-547ac029716a401fa69983fba5e7c92f|{"name":"Lando Calrissian","model":"Millennium Falcon"}
-bf95d1a8eebd490982ea6bbf8ef1bd72|{"name":"Wedge Antilles","model":"X-wing"}
-6a3132c856984460b0431794d5032835|{"name":"Darth Vader","model":"TIE Advanced x1"}
+da13f620768d4dd69f491f27c7d23d56|{"name":"Garven Dreis","model":"T-65 X-wing"}
+cc0c44a2f8804392baef553cb22517ce|{"name":"Dutch Vander","model":"BTL-A4 Y-wing"}
+05ee8dc46c2945a3aec0130272646964|{"name":"Luke Skywalker","model":"T-65 X-wing"}
+4b155ebfcc1f40f4ad4faac77c971c04|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+0e95e5b66cbc4e12b5c850a794492422|{"name":"Poe Dameron","model":"T-70 X-wing"}
+4cd93eb3cbbe401bb5351be13463a03e|{"name":"Wes Janson","model":"T-47 airspeeder"}
+8f7b27d4e16745139d97d579531a361f|{"name":"Wes Janson","model":"T-47 airspeeder"}
+f78d151b7d8d4afcbf185d6706d9fe0c|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+170a27aacd00456eb8f887330f60e781|{"name":"Biggs Darklighter","model":"T-65 X-wing"}
+0577270391d44541b42d63f038ddbbd1|{"name":"Zev Senesca","model":"T-47 airspeeder"}

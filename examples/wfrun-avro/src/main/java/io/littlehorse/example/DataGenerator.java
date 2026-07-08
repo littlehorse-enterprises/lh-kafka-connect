@@ -1,12 +1,8 @@
 package io.littlehorse.example;
 
-import net.datafaker.Faker;
-
 import java.util.stream.Stream;
 
 public class DataGenerator {
-
-    private static final Faker faker = new Faker();
 
     public static void main(String[] args) {
         int datasetSize = args.length > 0 ? Integer.parseInt(args[0]) : 10;
@@ -14,9 +10,10 @@ public class DataGenerator {
     }
 
     private static Planet newPlanet() {
+        SampleData.StarWars.Planet source = SampleData.starWars().planet();
         return Planet.builder()
-                .name(faker.starWars().planets())
-                .population(faker.number().numberBetween(1_000_000L, 10_000_000L))
+                .name(source.name())
+                .population(source.population())
                 .build();
     }
 }

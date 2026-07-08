@@ -19,7 +19,7 @@ Three sink connectors are provided:
   - `src/main/java/io/littlehorse/connect/` — production code.
   - `src/test/java/io/littlehorse/connect/` — unit tests.
   - `src/test/java/e2e/` — end-to-end tests (Testcontainers + Kafka Connect).
-- `common/` — shared serializers used by examples and tests.
+- `examples-common/` — shared serializers and sample-data helpers used by examples and tests.
 - `examples/` — runnable example modules, each registered in `settings.gradle` as `example-<name>`.
 - `build.gradle`, `settings.gradle`, `gradle.properties` — build configuration; dependency versions live in `gradle.properties`.
 
@@ -37,7 +37,8 @@ Use the Gradle wrapper. Common commands:
 Local stack:
 
 ```shell
-./gradlew dockerComposeUp
+./gradlew dockerComposeUp        # build the bundle and start the stack
+./gradlew updateConfluentBundle  # rebuild the bundle and reload Kafka Connect
 ```
 
 ## Conventions
@@ -123,6 +124,29 @@ Local stack:
   of the record is rebuilt. For the `$Headers` variant a `mapping.<path>` is a single, flat
   header name rather than a nested path.
 
+### Apicurio JSON Schema converter
+
+- `converter/apicurio/JsonSchemaKafkaConverter` is a Kafka Connect `Converter` (bundled and shaded
+  into the plugin) that wraps Apicurio Registry's `JsonSchemaKafkaSerializer`/`Deserializer`. It
+  bridges Connect data and JSON via the built-in `JsonConverter` (`schemas.enable=false`), so it
+  produces standard schemaless values usable by any sink or source connector, and forwards every
+  `apicurio.registry.*` property to the serde. It implements `Versioned` (via `VersionReader`) so
+  it shows up with a version under `GET /connector-plugins?connectorsOnly=false`, and is registered
+  in `META-INF/services/org.apache.kafka.connect.storage.Converter`.
+- Conversion failures are classified: network-level errors (e.g. the registry being temporarily
+  unavailable) are rethrown as `RetriableException` so Kafka Connect retries them for up to
+  `errors.retry.timeout` before `errors.tolerance` applies (`transient.errors.tolerance=none` opts
+  out); malformed payloads and schema/validation failures are permanent `DataException`s handled
+  immediately per `errors.tolerance`. Note converter-stage `RetriableException`s are still subject
+  to the DLQ once retries are exhausted (unlike the sink task's `put()` stage).
+- The Apicurio serde version is `apicurioVersion` in `gradle.properties` (currently `3.3.*`). e2e
+  tests spin up an in-memory `apicurio/apicurio-registry` container (`e2e.configs.ApicurioRegistryContainer`);
+  `docker-compose.yml` runs the registry (`apicurio`, port 8080) plus its UI (`apicurio-ui`, 8888).
+- Its documented options come from a `CONFIG_DEF` surfaced in `CONFIGURATIONS.md` by `ConfigExporter`;
+  the runnable examples are `wfrun-apicurio-json-schema-envelope`, `wfrun-apicurio-json-schema-reference`,
+  `wfrun-apicurio-json-schema-json-path`, `wfrun-apicurio-json-schema-headers`, and
+  `apicurio-json-schema-source-sink`.
+
 ### End-to-end tests
 
 - e2e tests live in `src/test/java/e2e/`, extend `e2e.configs.E2ETest`, and are matched by
@@ -149,7 +173,12 @@ Local stack:
 
 ## Documentation
 
-- `README.md` — connector usage and message structure.
-- `DEVELOPMENT.md` — local development workflow.
-- `CONFIGURATIONS.md` — connector configuration reference.
+Keep documentation in sync with the code: whenever you add or change a feature, connector,
+converter, transform, predicate, configuration, example, or the local dev setup (Gradle tasks,
+`docker-compose.yml`, ports, etc.), update the relevant document(s) in the same change. When a
+configuration changes, regenerate `CONFIGURATIONS.md` via `./gradlew connector:generateConfigurationDoc`.
+
+- `README.md` — connector usage, converters, transforms, predicates, and message structure.
+- `DEVELOPMENT.md` — local development workflow and the docker-compose services/ports table.
+- `CONFIGURATIONS.md` — generated connector/converter/transform/predicate configuration reference.
 - `COMMANDS.md` — useful commands.

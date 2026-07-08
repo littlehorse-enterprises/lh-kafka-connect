@@ -1,10 +1,10 @@
-427a63878fae4f91b251040e0449b19a|{"name":"Luke Skywalker","vehicle":{"model":"Snowspeeder"}}
-003246152ac542b5a816d2ea9f304f1d|{"name":"Han Solo","vehicle":{"model":"Millennium Falcon"}}
-39c2fef095874e2b8daa5e40205bc992|{"name":"Anakin Skywalker","vehicle":{"model":"Jedi starfighter"}}
-532c0e6d7e144c479f22e0ddacdc8805|{"name":"Leia Organa","vehicle":{"model":"Tantive IV"}}
-fa4751cfcd1d49bf8fbdaacc4dedb849|{"name":"Padme Amidala","vehicle":{"model":"Naboo Royal Starship"}}
-1ae7e59edb994c498a9439c05fd8d8dd|{"name":"Obi-Wan Kenobi","vehicle":{"model":"Jedi starfighter"}}
-694ed302937a475f9c0c42eac8b6f02e|{"name":"Boba Fett","vehicle":{"model":"Slave I"}}
-547ac029716a401fa69983fba5e7c92f|{"name":"Lando Calrissian","vehicle":{"model":"Millennium Falcon"}}
-bf95d1a8eebd490982ea6bbf8ef1bd72|{"name":"Wedge Antilles","vehicle":{"model":"X-wing"}}
-6a3132c856984460b0431794d5032835|{"name":"Darth Vader","vehicle":{"model":"TIE Advanced x1"}}
+9a9eb229a00e44aba62bb5ba7cb60323|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+32d211b40980467fb9e7b35a3c8de9c8|{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+803758e4976c42248d51d02f334521b8|{"name":"Wes Janson","vehicle":{"model":"T-47 airspeeder"}}
+64f00aeab2bb4385bef1f0343b4949de|{"name":"Jek Porkins","vehicle":{"model":"T-65 X-wing"}}
+09c7d52b1fdc4c068cb46960b0ffcc5d|{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}
+1df94d845af84b358f323cad72c88488|{"name":"Derek Klivian","vehicle":{"model":"T-47 airspeeder"}}
+cb590448875c4aac95ec86ee7c0ba7af|{"name":"Garven Dreis","vehicle":{"model":"T-65 X-wing"}}
+b2c55d091e53460084525cf5ebe4e061|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+9e9319432d8d43efa2b755d818e0990c|{"name":"Wedge Antilles","vehicle":{"model":"T-65 X-wing"}}
+af82327b40184e77bd9cb1cd2f0f0de0|{"name":"Poe Dameron","vehicle":{"model":"T-70 X-wing"}}

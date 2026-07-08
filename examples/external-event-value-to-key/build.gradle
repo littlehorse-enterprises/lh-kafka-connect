@@ -4,9 +4,8 @@ plugins {
 
 dependencies {
     // utils
-    implementation "net.datafaker:datafaker:${datafakerVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-    implementation project(":common")
+    implementation project(":examples-common")
 
     // littlehorse
     implementation "io.littlehorse:littlehorse-client:${version}"

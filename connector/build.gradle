@@ -14,9 +14,16 @@ dependencies {
     // jsonpath
     implementation "com.jayway.jsonpath:json-path:${jsonPathVersion}"
 
+    // apicurio json schema serde (bundled/shaded into the plugin so the
+    // JsonSchemaKafkaConverter can wrap it). Kafka is provided by the worker.
+    implementation("io.apicurio:apicurio-registry-jsonschema-serde-kafka:${apicurioVersion}") {
+        exclude group: "org.apache.kafka"
+    }
+
     // kafka connect
     compileOnly "org.apache.kafka:connect-api:${kafkaVersion}"
     compileOnly "org.apache.kafka:connect-runtime:${kafkaVersion}"
+    compileOnly "org.apache.kafka:connect-json:${kafkaVersion}"
 
     // log
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -36,6 +43,7 @@ dependencies {
     testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
     testImplementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
     testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
+    testImplementation "org.apache.kafka:connect-json:${kafkaVersion}"
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
@@ -75,6 +83,7 @@ tasks.register("e2e", Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     systemProperty "lhVersion", "${version}"
     systemProperty "confluentVersion", "${confluentVersion}"
+    systemProperty "apicurioVersion", "${apicurioVersion}"
 }
 
 def bundleDirectory = layout.buildDirectory.dir("bundle/${rootProject.name}").get()

@@ -111,8 +111,8 @@ Local stack:
   decides its meaning, but note the Kafka Connect REST API itself rejects a bare JSON `null` config
   value, so reaching this path means using the `null` literal text or a non-REST config source.
 - `JsonPathMapperTransform` builds the domain from scratch by evaluating JSONPath expressions
-  (values must start with `$`) against the record envelope `{key, value, headers}`; unmapped
-  fields are dropped. Functions such as `concat`/`sum` are supported.
+  (values must start with `$`) against the record envelope `{key, value, headers, partition,
+  offset}`; unmapped fields are dropped. Functions such as `concat`/`sum` are supported.
 - `LiteralMapperTransform` injects constant values whose type is inferred (int, double,
   `true`/`false`, `null`, else string; double-quote to force a string). Setting
   `implicit.casting.enabled=false` disables inference and keeps every value as its original

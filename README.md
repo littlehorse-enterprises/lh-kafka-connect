@@ -421,8 +421,8 @@ nested objects (for the `$Headers` variant the whole path is a single, flat head
 ### JsonPathMapperTransform
 
 Builds the operating domain by evaluating JSONPath expressions (each value must start with `$`)
-against the record envelope `{key, value, headers}`. It is construct-only: fields that are not
-mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
+against the record envelope `{key, value, headers, partition, offset}`. It is construct-only:
+fields that are not mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
 
 ```json
 {
@@ -495,9 +495,9 @@ See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete s
 ### JsonPathFilterPredicate
 
 Matches a record by evaluating a JSONPath `expression` against the record envelope
-`{key, value, headers}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the
-expression itself selects `$.key`, `$.value` or `$.headers`, so it can reach nested fields and does
-not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
+`{key, value, headers, partition, offset}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value`
+variant: the expression itself selects `$.key`, `$.value`, `$.headers`, `$.partition` or `$.offset`,
+so it can reach nested fields and does not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
 number, a non-empty string, or a non-empty match list or object (e.g. an inline filter `[?(...)]`);
 it does not match on `null`, `false`, `0`, an empty string, or an empty match.
 

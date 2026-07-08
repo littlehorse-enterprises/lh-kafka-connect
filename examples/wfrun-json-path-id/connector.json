@@ -1,0 +1,15 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-json-path-id",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "WfRunIdMapper",
+  "transforms.WfRunIdMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Headers",
+  "transforms.WfRunIdMapper.mapping.wfRunId": "$.concat(\"example-wfrun-json-path-id-\", \"p\", $.partition, \"-o\", $.offset)",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-json-path-id"
+}

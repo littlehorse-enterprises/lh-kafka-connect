@@ -21,7 +21,8 @@ public class JsonPathFilterPredicateConfig extends AbstractConfig {
                     ConfigDef.NO_DEFAULT_VALUE,
                     Importance.HIGH,
                     "A JSONPath expression (starting with '$') evaluated against the record"
-                            + " envelope {key, value, headers}. The record matches when the result"
+                            + " envelope {key, value, headers, partition, offset}. The record"
+                            + " matches when the result"
                             + " is truthy: a true boolean, a non-empty match list or object, or any"
                             + " other non-null value (e.g. an existence check); it does not match"
                             + " when the result is null, false, or an empty match. Combine with the"

@@ -91,6 +91,28 @@ class JsonPathMapperTransformTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void shouldMapPartitionAndOffsetFromEnvelope() {
+        Map<String, Object> value = new HashMap<>();
+        value.put("id", "ord-789");
+
+        SinkRecord record = new SinkRecord(TOPIC, 3, null, null, null, value, 42);
+
+        JsonPathMapperTransform.Value<SinkRecord> mapper = new JsonPathMapperTransform.Value<>();
+        mapper.configure(Map.of(
+                MAPPING_PREFIX + "partition", "$.partition",
+                MAPPING_PREFIX + "offset", "$.offset"));
+
+        SinkRecord result = mapper.apply(record);
+
+        Map<String, Object> resultValue = (Map<String, Object>) result.value();
+        assertThat(resultValue.get("partition")).isEqualTo(3);
+        assertThat(resultValue.get("offset")).isEqualTo(42L);
+
+        mapper.close();
+    }
+
+    @Test
     void shouldBuildHeadersFromMappings() {
         Map<String, Object> value = new HashMap<>();
         value.put("id", "ord-789");

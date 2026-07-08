@@ -15,7 +15,8 @@ import java.util.List;
 
 /**
  * Builds an operating domain (the record key, value, or headers) by evaluating JSONPath
- * expressions against an envelope of the record: {@code {key, value, headers}}. Mapping values
+ * expressions against an envelope of the record: {@code {key, value, headers, partition, offset}}.
+ * Mapping values
  * must be JSONPath expressions (they start with {@code $}); use {@link LiteralMapperTransform}
  * to inject constant values.
  */
@@ -28,7 +29,8 @@ public abstract class JsonPathMapperTransform<R extends ConnectRecord<R>>
                     + " dot-separated path such as ``mapping.pilot.vehicle.model``) builds nested"
                     + " objects; for the ``$Headers`` variant the whole path is a single, flat"
                     + " header name. The value must be a JSONPath expression (starting with '$')"
-                    + " evaluated against the record envelope ``{key, value, headers}``, and"
+                    + " evaluated against the record envelope ``{key, value, headers, partition,"
+                    + " offset}``, and"
                     + " functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``,"
                     + " ``$Value`` or ``$Headers`` nested variant to choose whether the record key,"
                     + " value or headers are rebuilt. The operating domain is built from scratch, so"

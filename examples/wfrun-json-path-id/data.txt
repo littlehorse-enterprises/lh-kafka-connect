@@ -1,0 +1,10 @@
+{"name":"Han Solo"}
+{"name":"Saw Gerrera"}
+{"name":"Luke Skywalker"}
+{"name":"Wilhuff Tarkin"}
+{"name":"Leia Organa"}
+{"name":"Lando Calrissian"}
+{"name":"Chewbacca"}
+{"name":"Cassian Andor"}
+{"name":"Din Djarin"}
+{"name":"Boba Fett"}

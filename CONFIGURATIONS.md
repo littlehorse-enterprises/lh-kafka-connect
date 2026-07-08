@@ -387,7 +387,7 @@
 ## JsonPathFilterPredicate Configurations
 
 ``expression``
-  A JSONPath expression (starting with '$') evaluated against the record envelope {key, value, headers}. The record matches when the result is truthy: a true boolean, a non-empty match list or object, or any other non-null value (e.g. an existence check); it does not match when the result is null, false, or an empty match. Combine with the transform's 'negate' option to invert the result.
+  A JSONPath expression (starting with '$') evaluated against the record envelope {key, value, headers, partition, offset}. The record matches when the result is truthy: a true boolean, a non-empty match list or object, or any other non-null value (e.g. an existence check); it does not match when the result is null, false, or an empty match. Combine with the transform's 'negate' option to invert the result.
 
   * Type: string
   * Importance: high
@@ -395,7 +395,7 @@
 ## JsonPathMapperTransform Configurations
 
 ``mapping``
-  Defines a mapping written into the operating domain. Each mapping is its own property: the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a dot-separated path such as ``mapping.pilot.vehicle.model``) builds nested objects; for the ``$Headers`` variant the whole path is a single, flat header name. The value must be a JSONPath expression (starting with '$') evaluated against the record envelope ``{key, value, headers}``, and functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``, ``$Value`` or ``$Headers`` nested variant to choose whether the record key, value or headers are rebuilt. The operating domain is built from scratch, so unmapped fields are dropped.
+  Defines a mapping written into the operating domain. Each mapping is its own property: the bare ``mapping`` targets the whole domain, while ``mapping.<path>`` (a dot-separated path such as ``mapping.pilot.vehicle.model``) builds nested objects; for the ``$Headers`` variant the whole path is a single, flat header name. The value must be a JSONPath expression (starting with '$') evaluated against the record envelope ``{key, value, headers, partition, offset}``, and functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``, ``$Value`` or ``$Headers`` nested variant to choose whether the record key, value or headers are rebuilt. The operating domain is built from scratch, so unmapped fields are dropped.
 
   * Type: string
   * Default: null

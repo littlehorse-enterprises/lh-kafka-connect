@@ -18,7 +18,8 @@ import java.util.Map;
 
 /**
  * A {@link Predicate} that matches a record by evaluating a JSONPath expression against an
- * envelope of the record: {@code {key, value, headers}}. The record matches when the result is
+ * envelope of the record: {@code {key, value, headers, partition, offset}}. The record matches
+ * when the result is
  * truthy: a {@code true} boolean, a non-zero number, a non-empty string, a non-empty match list
  * or object, or any other non-null value. It does not match when the result is {@code null},
  * {@code false}, {@code 0}, an empty string, or an empty match.

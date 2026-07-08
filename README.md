@@ -421,8 +421,18 @@ nested objects (for the `$Headers` variant the whole path is a single, flat head
 ### JsonPathMapperTransform
 
 Builds the operating domain by evaluating JSONPath expressions (each value must start with `$`)
-against the record envelope `{key, value, headers}`. It is construct-only: fields that are not
-mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
+against the record envelope `{key, value, headers, partition, offset}`. It is construct-only:
+fields that are not mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
+
+The envelope exposes these fields, but not all of them carry a value on every connector type:
+
+| Path          | Description                        | Sink connectors                     | Source connectors                                    |
+| ------------- | ---------------------------------- | ----------------------------------- | ---------------------------------------------------- |
+| `$.key`       | Record key                         | Yes                                 | Yes                                                  |
+| `$.value`     | Record value                       | Yes                                 | Yes                                                  |
+| `$.headers`   | Map of header name to header value | Yes                                 | Yes                                                  |
+| `$.partition` | Kafka partition                    | Yes                                 | `null` unless the source sets a partition            |
+| `$.offset`    | Kafka offset                       | Yes                                 | `null` (only sink records carry a Kafka offset)      |
 
 ```json
 {
@@ -433,6 +443,11 @@ mapped are dropped. JSONPath functions such as `concat` and `sum` are supported.
   "transforms.WfRunVariablesMapper.mapping.summary": "$.concat($.value.title, \" by \", $.value.director)"
 }
 ```
+
+Although the LittleHorse connectors are sinks, this transform is a standard SMT and can run on a
+source connector too. See the [source-json-path example](examples/source-json-path/README.md) for a
+runnable setup, and the [wfrun-json-path-id example](examples/wfrun-json-path-id/README.md) for
+building a `WfRunId` from `$.partition` and `$.offset` on a sink connector.
 
 ### LiteralMapperTransform
 
@@ -495,9 +510,11 @@ See the [wfrun-filter example](examples/wfrun-filter/README.md) for a complete s
 ### JsonPathFilterPredicate
 
 Matches a record by evaluating a JSONPath `expression` against the record envelope
-`{key, value, headers}`. Unlike `FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the
-expression itself selects `$.key`, `$.value` or `$.headers`, so it can reach nested fields and does
-not require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
+`{key, value, headers, partition, offset}` (the same fields, with the same connector-type
+applicability, as the [JsonPathMapperTransform](#jsonpathmappertransform)). Unlike
+`FilterByFieldPredicate` it has no `$Key`/`$Value` variant: the expression itself selects `$.key`,
+`$.value`, `$.headers`, `$.partition` or `$.offset`, so it can reach nested fields and does not
+require a `Struct`. A record matches when the result is truthy: a `true` boolean, a non-zero
 number, a non-empty string, or a non-empty match list or object (e.g. an inline filter `[?(...)]`);
 it does not match on `null`, `false`, `0`, an empty string, or an empty match.
 

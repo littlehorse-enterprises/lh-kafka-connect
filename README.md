@@ -32,23 +32,24 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
     * [Idempotent Writes](#idempotent-writes)
     * [Multiple Tasks](#multiple-tasks)
     * [Dead Letter Queue](#dead-letter-queue)
+      * [Error Handling](#error-handling)
   * [Transforms](#transforms)
     * [JsonPathMapperTransform](#jsonpathmappertransform)
     * [LiteralMapperTransform](#literalmappertransform)
   * [Predicates](#predicates)
     * [FilterByFieldPredicate](#filterbyfieldpredicate)
     * [JsonPathFilterPredicate](#jsonpathfilterpredicate)
-  * [Data Types](#data-types)
-  * [Troubleshooting](#troubleshooting)
   * [Converters](#converters)
     * [Apicurio Registry JSON Schema Converter](#apicurio-registry-json-schema-converter)
+  * [Data Types](#data-types)
   * [External Secrets](#external-secrets)
+  * [Versioning](#versioning)
+  * [Examples](#examples)
+  * [Troubleshooting](#troubleshooting)
+  * [Development](#development)
   * [Configurations](#configurations)
   * [Download](#download)
   * [Docker Images](#docker-images)
-  * [Versioning](#versioning)
-  * [Examples](#examples)
-  * [Development](#development)
   * [Dependencies](#dependencies)
   * [License](#license)
 <!-- TOC -->
@@ -520,11 +521,6 @@ See the [wfrun-json-path-filter example](examples/wfrun-json-path-filter/README.
 setup, and the [predicate configurations](CONFIGURATIONS.md#jsonpathfilterpredicate-configurations)
 for all options.
 
-## Data Types
-
-Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with
-any LH connector the data types in the topic correlate with the data LittleHorse kernel expects.
-
 ## Converters
 
 These connectors support `Protobuf`, `Json` and `Avro` through converters.
@@ -564,6 +560,11 @@ See the [`wfrun-apicurio-json-schema-envelope`](https://github.com/littlehorse-e
 and [`apicurio-json-schema-source-sink`](https://github.com/littlehorse-enterprises/lh-kafka-connect/tree/main/examples/apicurio-json-schema-source-sink)
 examples.
 
+## Data Types
+
+Note that LittleHorse kernel is data type aware.  When reading data from the Kafka topic with
+any LH connector the data types in the topic correlate with the data LittleHorse kernel expects.
+
 ## External Secrets
 
 Kafka connect ensures provisioning secrets through the [ConfigProvider](https://kafka.apache.org/20/javadoc/org/apache/kafka/common/config/provider/ConfigProvider.html) interface, so these connectors support external secrets by default.
@@ -591,11 +592,11 @@ For development instructions go to [DEVELOPMENT.md](https://github.com/littlehor
 - [WfRun Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#wfrunsinkconnector-configurations).
 - [ExternalEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#externaleventsinkconnector-configurations).
 - [CorrelatedEvent Sink Connector Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#correlatedeventsinkconnector-configurations).
-- [JsonSchemaKafkaConverter Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonschemakafkaconverter-configurations).
 - [JsonPathMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathmappertransform-configurations).
 - [LiteralMapperTransform Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#literalmappertransform-configurations).
 - [FilterByFieldPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#filterbyfieldpredicate-configurations).
 - [JsonPathFilterPredicate Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonpathfilterpredicate-configurations).
+- [JsonSchemaKafkaConverter Configurations](https://github.com/littlehorse-enterprises/lh-kafka-connect/blob/main/CONFIGURATIONS.md#jsonschemakafkaconverter-configurations).
 - [Kafka Sink Connector Configurations](https://docs.confluent.io/platform/current/installation/configuration/connect/sink-connect-configs.html).
 - [LittleHorse Client Configurations](https://littlehorse.io/docs/server/developer-guide/client-configuration#client-config-options).
 

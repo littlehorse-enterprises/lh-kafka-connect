@@ -34,7 +34,14 @@ public abstract class JsonPathMapperTransform<R extends ConnectRecord<R>>
                     + " functions such as ``concat`` and ``sum`` are supported. Use the ``$Key``,"
                     + " ``$Value`` or ``$Headers`` nested variant to choose whether the record key,"
                     + " value or headers are rebuilt. The operating domain is built from scratch, so"
-                    + " unmapped fields are dropped.");
+                    + " unmapped fields are dropped. Transforms run in the order listed in"
+                    + " ``transforms``: because each mapper rebuilds its operating domain from"
+                    + " scratch, a ``$Headers`` (or ``$Key``) mapping that reads ``$.value.*`` (or"
+                    + " ``$.key``) must be listed BEFORE any ``$Value`` transform; otherwise it"
+                    + " evaluates against the already-rebuilt value and the original fields resolve"
+                    + " to null (e.g. a ``wfRunId`` becomes ``prefix-``, which LittleHorse rejects"
+                    + " with ``'id' must be a valid hostname``). Id/header transforms that only use"
+                    + " record metadata (``$.partition``, ``$.offset``) are order-insensitive.");
 
     private final JsonPathEvaluator evaluator = new JsonPathEvaluator();
 

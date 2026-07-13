@@ -23,9 +23,16 @@ import org.apache.kafka.connect.errors.DataException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class WfRunSinkTask extends LHSinkTask {
+
+    // Mirrors the LittleHorse server's WfRunId validation (LHUtil.isValidLHName): the id must be a
+    // valid hostname label -- alphanumeric characters and dashes, starting and ending with an
+    // alphanumeric character (so it may not be empty, and may not start or end with a dash).
+    private static final Pattern VALID_WF_RUN_ID =
+            Pattern.compile("[A-Za-z0-9]([-A-Za-z0-9]*[A-Za-z0-9])?");
 
     private WfRunSinkConnectorConfig config;
     private final Map<String, TypeDefinition> variableTypeDefs = new HashMap<>();
@@ -137,6 +144,7 @@ public class WfRunSinkTask extends LHSinkTask {
 
     private String extractWfRunId(IdempotentSinkRecord sinkRecord) {
         if (sinkRecord.wfRunId() != null) {
+            validateWfRunId(sinkRecord.wfRunId());
             return sinkRecord.wfRunId();
         }
 
@@ -157,5 +165,21 @@ public class WfRunSinkTask extends LHSinkTask {
                 + " disabled; provide a '" + IdempotentSinkRecord.WF_RUN_ID + "' header, a record"
                 + " key, or enable '" + WfRunSinkConnectorConfig.AUTO_IDEMPOTENCY_KEY_ENABLED_KEY
                 + "'");
+    }
+
+    // Validates the wfRunId against the same rule the LittleHorse server enforces in runWf, so a
+    // malformed id fails with a clear, actionable message here instead of the opaque gRPC
+    // 'id' must be a valid hostname. A blank or dash-bounded value typically means an id transform
+    // ran after a '$Value' transform that rebuilt the record value, so the '$.value.*'/'$.key'
+    // fields it referenced resolved to null.
+    private void validateWfRunId(String wfRunId) {
+        if (!VALID_WF_RUN_ID.matcher(wfRunId).matches()) {
+            throw new DataException("wfRunId resolved to '" + wfRunId + "', which is not a valid"
+                    + " hostname (LittleHorse requires alphanumeric characters and dashes, starting"
+                    + " and ending with an alphanumeric character). If it is produced by a"
+                    + " '$Headers'/'$Key' id transform that reads '$.value.*' or '$.key', ensure"
+                    + " that transform is ordered before any '$Value' transform, otherwise the value"
+                    + " is rebuilt first and the fields it references resolve to null");
+        }
     }
 }

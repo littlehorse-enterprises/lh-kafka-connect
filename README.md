@@ -449,6 +449,16 @@ source connector too. See the [source-json-path example](examples/source-json-pa
 runnable setup, and the [wfrun-json-path-id example](examples/wfrun-json-path-id/README.md) for
 building a `WfRunId` from `$.partition` and `$.offset` on a sink connector.
 
+> [!IMPORTANT]
+> Transforms run in the order listed in `transforms`. Because each mapper rebuilds its operating
+> domain from scratch (unmapped fields are dropped), a `$Headers` (or `$Key`) mapping that reads
+> `$.value.*` (or `$.key`) must be listed **before** any `$Value` transform. Otherwise it evaluates
+> against the already-rebuilt value and the original fields resolve to `null` (e.g. a `wfRunId`
+> becomes `"prefix-"`, which LittleHorse rejects with `'id' must be a valid hostname`). Id/header
+> transforms that only use record metadata (`$.partition`, `$.offset`) are order-insensitive. See
+> the [wfrun-json-path-value-id example](examples/wfrun-json-path-value-id/README.md) for a
+> value-derived `WfRunId` with the correct ordering.
+
 ### LiteralMapperTransform
 
 Injects constant, type-inferred values into the operating domain (an integer, a double, a boolean,

@@ -1,0 +1,17 @@
+{
+  "tasks.max": 2,
+  "connector.class": "io.littlehorse.connect.WfRunSinkConnector",
+  "topics": "example-wfrun-json-path-value-id",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false,
+  "transforms": "WfRunIdMapper,WfRunVariablesMapper",
+  "transforms.WfRunIdMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Headers",
+  "transforms.WfRunIdMapper.mapping.wfRunId": "$.concat(\"order-\", $.value.orderId)",
+  "transforms.WfRunVariablesMapper.type": "io.littlehorse.connect.transform.JsonPathMapperTransform$Value",
+  "transforms.WfRunVariablesMapper.mapping.customer": "$.value.customer",
+  "lhc.api.port": 2024,
+  "lhc.api.host": "littlehorse",
+  "lhc.tenant.id": "default",
+  "wf.spec.name": "example-wfrun-json-path-value-id"
+}

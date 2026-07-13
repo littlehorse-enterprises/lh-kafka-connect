@@ -92,7 +92,7 @@ public abstract class LHSinkTask extends SinkTask {
     @Override
     public void stop() {
         log.debug("Stopping {}[{}]", getClass().getSimpleName(), connectorName);
-        if (blockingStub.getChannel() instanceof ManagedChannel channel) {
+        if (blockingStub != null && blockingStub.getChannel() instanceof ManagedChannel channel) {
             channel.shutdown();
             try {
                 log.debug(

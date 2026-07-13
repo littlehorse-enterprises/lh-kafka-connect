@@ -144,7 +144,8 @@ public class WfRunSinkTask extends LHSinkTask {
 
     private String extractWfRunId(IdempotentSinkRecord sinkRecord) {
         if (sinkRecord.wfRunId() != null) {
-            return validateWfRunId(sinkRecord.wfRunId());
+            validateWfRunId(sinkRecord.wfRunId());
+            return sinkRecord.wfRunId();
         }
 
         if (sinkRecord.key() != null) {
@@ -171,7 +172,7 @@ public class WfRunSinkTask extends LHSinkTask {
     // 'id' must be a valid hostname. A blank or dash-bounded value typically means an id transform
     // ran after a '$Value' transform that rebuilt the record value, so the '$.value.*'/'$.key'
     // fields it referenced resolved to null.
-    private String validateWfRunId(String wfRunId) {
+    private void validateWfRunId(String wfRunId) {
         if (!VALID_WF_RUN_ID.matcher(wfRunId).matches()) {
             throw new DataException("wfRunId resolved to '" + wfRunId + "', which is not a valid"
                     + " hostname (LittleHorse requires alphanumeric characters and dashes, starting"
@@ -180,6 +181,5 @@ public class WfRunSinkTask extends LHSinkTask {
                     + " that transform is ordered before any '$Value' transform, otherwise the value"
                     + " is rebuilt first and the fields it references resolve to null");
         }
-        return wfRunId;
     }
 }

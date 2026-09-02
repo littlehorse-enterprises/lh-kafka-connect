@@ -46,6 +46,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          fetch-tags: true
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
@@ -57,8 +58,9 @@ jobs:
         uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
+          version: "2.13.1"
           config: cliff.toml
-          args: --verbose --current
+          args: --verbose --latest --use-branch-tags
         env:
           OUTPUT: CHANGELOG.md
       - name: Create Release

@@ -48,4 +48,12 @@ class ObjectMapperTest {
         input.put("my-null-input", null);
         assertThat(objectMapper.removeStruct(input)).isEqualTo(input);
     }
+
+    @Test
+    void shouldPreserveNonStringMapKeys() {
+        Map<Integer, Object> input = new HashMap<>();
+        input.put(42, "answer");
+
+        assertThat(objectMapper.removeStruct(input)).isEqualTo(input);
+    }
 }

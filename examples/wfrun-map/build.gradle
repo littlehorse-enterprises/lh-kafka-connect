@@ -1,0 +1,38 @@
+plugins {
+    id "application"
+}
+
+dependencies {
+    // utils
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation project(":examples-common")
+
+    // littlehorse
+    implementation "io.littlehorse:littlehorse-client:${version}"
+
+    // log
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+
+    // lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // test
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = System.getProperty("mainClass", "io.littlehorse.example.Main")
+}
+
+compileJava {
+    options.compilerArgs << "-parameters"
+}
+

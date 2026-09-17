@@ -1,0 +1,10 @@
+{"inventory":{"8307":"Super Battle Droid","8308":"C-3PO","8309":"2-1B"},"requested-product-id":8308}
+{"inventory":{"879":"11-4D","880":"Mouse Droid","881":"Super Battle Droid"},"requested-product-id":881}
+{"inventory":{"6572":"Super Battle Droid","6573":"Mouse Droid","6574":"ID9"},"requested-product-id":6573}
+{"inventory":{"7522":"4-LOM","7523":"K-2SO","7524":"B2-RP"},"requested-product-id":7524}
+{"inventory":{"3931":"K-2SO","3932":"B2-RP","3933":"11-4D"},"requested-product-id":3932}
+{"inventory":{"4321":"Interrogation Droid","4322":"LM-432","4323":"ID9"},"requested-product-id":4322}
+{"inventory":{"9597":"FA-4","9598":"BB-9E","9599":"BD-3000"},"requested-product-id":9597}
+{"inventory":{"3459":"Super Battle Droid","3460":"C-3PO","3461":"327-T"},"requested-product-id":3459}
+{"inventory":{"6703":"C-3PO","6704":"B1","6705":"C-3PO"},"requested-product-id":6704}
+{"inventory":{"1954":"GNK","1955":"11-4D","1956":"11-4D"},"requested-product-id":1955}

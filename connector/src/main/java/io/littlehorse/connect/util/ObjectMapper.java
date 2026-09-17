@@ -28,9 +28,9 @@ public class ObjectMapper {
         }
 
         if (value instanceof Map) {
-            Map<String, Object> result = new HashMap<>();
-            for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
-                result.put(entry.getKey(), removeStruct(entry.getValue()));
+            Map<Object, Object> result = new HashMap<>();
+            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
+                result.put(removeStruct(entry.getKey()), removeStruct(entry.getValue()));
             }
             return result;
         }

@@ -73,14 +73,19 @@ Local stack:
 - When adding code that calls the LittleHorse gRPC API, let `StatusRuntimeException` bubble
   up so this central classifier can act on it; do not swallow it locally.
 
-### Struct content support
+### Typed collection and struct content support
 
 - Building `VariableValue`s from message payloads goes through `util/VariableValueMapper`,
-  which resolves `STRUCT` types and caches `StructDef` lookups (including nested structs).
-  Lookups use the versioned `StructDefId` carried by the `WfSpec`'s `TypeDefinition`, so the
-  connector builds structs from the version the `WfSpec` pinned, not the latest registered one.
-  Prefer it over calling `LHLibUtil.objToVarVal(...)` directly in tasks.
-- Connectors discover whether content is a `STRUCT` by reading metadata on startup
+  which recursively builds native `MAP`, `ARRAY`, and `STRUCT` values and caches `StructDef`
+  lookups. Lookups use the versioned `StructDefId` carried by the `WfSpec`'s `TypeDefinition`, so
+  the connector builds structs from the version the `WfSpec` pinned, not the latest registered
+  one. Maps always carry their authoritative `InlineMapDef`, and arrays carry their element type,
+  including when empty. Prefer the mapper over calling `LHLibUtil.objToVarVal(...)` directly in
+  tasks.
+- Schemaless JSON object keys arrive as strings. For native maps the mapper coerces keys and
+  values to their declared primitive types, allowing inputs such as `{"1":"one"}` for a
+  `Map<INT, STR>`. Schemaful Kafka maps retain non-string keys through `util/ObjectMapper`.
+- Connectors discover content types by reading metadata on startup
   (`afterStart()`):
   - `WfRunSinkTask` loads the type defs of the entrypoint thread's input variables from the
     `WfSpec`, fetched via the `getWfSpec` gRPC (when `wf.spec.major.version` and
@@ -90,10 +95,10 @@ Local stack:
     `ExternalEventDef`, fetched via the `getExternalEventDef` gRPC (resolved by
     `external.event.name`). Its `type_information` field is optional, so they guard with
     `hasTypeInformation()` before reading the return type.
-- Resolution at `put()` time is best-effort: `VariableValueMapper.toVariableValue` only builds a
-  struct when it receives a non-null `TypeDefinition` whose type is a `StructDef`. A message field
-  with no matching `STRUCT` type def (unknown variable, missing `type_information`, or a
-  non-struct type) falls back to `LHLibUtil.objToVarVal(...)` and keeps its value-inferred type.
+- Resolution at `put()` time is best-effort: `VariableValueMapper.toVariableValue` builds typed
+  values when it receives a non-null `TypeDefinition`. A message field with no matching type def
+  (unknown variable or missing `type_information`) falls back to `LHLibUtil.objToVarVal(...)` and
+  keeps its value-inferred type.
 - If the `WfSpec`/`ExternalEventDef` itself cannot be loaded at startup, the connector fails to
   start (so the metadata must be registered before the connector runs).
 

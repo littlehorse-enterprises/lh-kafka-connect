@@ -19,16 +19,19 @@ These connectors allow data transfer between Apache Kafka and LittleHorse.
       * [Additional Metadata](#additional-metadata)
       * [Quick Example](#quick-example)
       * [Struct Variables](#struct-variables)
+      * [Native Map Variables](#native-map-variables)
     * [ExternalEventSinkConnector](#externaleventsinkconnector)
       * [Expected Message Structure](#expected-message-structure-1)
       * [Additional Metadata](#additional-metadata-1)
       * [Quick Example](#quick-example-1)
       * [Struct Content](#struct-content)
+      * [Native Map Content](#native-map-content)
     * [CorrelatedEventSinkConnector](#correlatedeventsinkconnector)
       * [Expected Message Structure](#expected-message-structure-2)
       * [Additional Metadata](#additional-metadata-2)
       * [Quick Example](#quick-example-2)
       * [Struct Content](#struct-content-1)
+      * [Native Map Content](#native-map-content-1)
     * [Idempotent Writes](#idempotent-writes)
     * [Multiple Tasks](#multiple-tasks)
     * [Dead Letter Queue](#dead-letter-queue)
@@ -155,6 +158,28 @@ key: null, value: {"pilot":{"name":"Anakin Skywalker","vehicle":{"model":"Podrac
 > If the `WfSpec` cannot be loaded at startup, the connector fails to start, so make sure the
 > `WfSpec` is registered before the connector runs.
 
+#### Native Map Variables
+
+This connector supports strongly typed LittleHorse `Map` variables. On startup it reads each
+entrypoint variable's `InlineMapDef` from the `WfSpec`, then converts the corresponding Kafka
+message object into a native LittleHorse `Map` carrying its authoritative key and value types.
+Empty maps therefore remain typed. Map values are converted recursively and may contain native
+maps, arrays, or structs.
+
+Kafka Connect's schemaless JSON converter represents JSON object keys as strings. The connector
+coerces those keys to the type declared by `InlineMapDef`, so an input such as `{"1":"one"}` can
+populate a `Map<INT, STR>`. Schemaful converter maps may use non-string primitive keys directly.
+Values that cannot be converted to the declared type fail with a `DataException` and follow the
+connector's configured permanent-error handling.
+
+Produce a message whose value contains the map under its workflow variable name:
+
+```text
+key: null, value: {"word-counts":{"hello":2,"world":1}}
+```
+
+No additional connector configuration is required.
+
 ### ExternalEventSinkConnector
 
 This connector allows you to execute [External Events](https://littlehorse.io/docs/server/concepts/external-events) into LittleHorse.
@@ -248,6 +273,14 @@ key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicl
 > If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
 > sure the `ExternalEventDef` is registered before the connector runs.
 
+#### Native Map Content
+
+When the `ExternalEventDef` content type is an `InlineMapDef`, the connector converts the message
+value into a typed native LittleHorse `Map`. Nested maps, arrays, and structs are converted
+recursively, and schemaless JSON object keys are coerced to the declared primitive key type. Empty
+maps retain the key and value types declared by the event definition. No additional configuration
+is required.
+
 ### CorrelatedEventSinkConnector
 
 ####  Expected Message Structure
@@ -339,6 +372,14 @@ key: 64512de2a4b5470a9a8a2846b9a8a444, value: {"name":"Anakin Skywalker","vehicl
 
 > If the `ExternalEventDef` cannot be loaded at startup, the connector fails to start, so make
 > sure the `ExternalEventDef` is registered before the connector runs.
+
+#### Native Map Content
+
+When the `ExternalEventDef` content type is an `InlineMapDef`, the connector converts the message
+value into a typed native LittleHorse `Map`. Nested maps, arrays, and structs are converted
+recursively, and schemaless JSON object keys are coerced to the declared primitive key type. Empty
+maps retain the key and value types declared by the event definition. No additional configuration
+is required.
 
 ### Idempotent Writes
 

@@ -58,7 +58,7 @@ jobs:
         uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
-          version: "2.13.1"
+          version: "v2.13.1"
           config: cliff.toml
           args: --verbose --latest --use-branch-tags
         env:
